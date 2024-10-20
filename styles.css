@@ -987,38 +987,45 @@ header nav ul {
 
 @media screen and (max-width: 768px) {
     header nav {
-        flex-direction: row;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
-        padding: 10px 0;
     }
 
     header nav ul {
-        display: flex;
         flex-direction: row;
-        align-items: center;
-        margin-top: 0;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 10px;
     }
 
     header nav ul li {
-        margin: 0 10px;
-    }
-
-    .btn-header {
-        padding: 6px 12px;
-        font-size: 12px;
+        margin: 5px;
     }
 
     .resource-carousel {
-        height: auto;
-        flex-wrap: wrap;
-        justify-content: center;
+        height: 60px;
+        overflow: hidden;
     }
 
     .resource-item {
-        flex: 0 0 calc(50% - 10px);
+        flex: 0 0 calc(33.33% - 10px);
         margin: 5px;
         height: 40px;
+        font-size: 14px;
+    }
+
+    .hero-action {
+        font-size: 18px;
+        padding: 0 15px;
+    }
+
+    .cta-buttons {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .btn-modern {
+        padding: 10px 20px;
         font-size: 14px;
     }
 }
@@ -1052,6 +1059,6 @@ header nav ul {
     }
 
     .resource-item {
-        flex: 0 0 calc(100% - 10px);
+        flex: 0 0 calc(50% - 10px);
     }
 }

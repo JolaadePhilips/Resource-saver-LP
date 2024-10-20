@@ -240,23 +240,35 @@ function createResourceCarousel() {
     }
 
     function updateCarousel() {
-        carousel.innerHTML = ''; // Clear existing items
-        const itemsToShow = window.innerWidth <= 768 ? 6 : 5; // Show 6 items on mobile, 5 on larger screens
+        carousel.innerHTML = '';
+        const isMobile = window.innerWidth <= 768;
+        const itemsToShow = isMobile ? 3 : 5;
+
         for (let i = 0; i < itemsToShow; i++) {
             const index = (currentIndex + i) % resources.length;
             const newItem = createItem(resources[index], colors[i % colors.length]);
             carousel.appendChild(newItem);
         }
-        currentIndex = (currentIndex + 1) % resources.length;
+
+        if (isMobile) {
+            setTimeout(() => {
+                carousel.style.opacity = '0';
+                setTimeout(() => {
+                    currentIndex = (currentIndex + 3) % resources.length;
+                    updateCarousel();
+                    carousel.style.opacity = '1';
+                }, 500);
+            }, 3000);
+        } else {
+            currentIndex = (currentIndex + 1) % resources.length;
+        }
     }
 
-    // Initial population
     updateCarousel();
+    if (!window.innerWidth <= 768) {
+        setInterval(updateCarousel, 5000);
+    }
 
-    // Update every 5 seconds
-    setInterval(updateCarousel, 5000);
-
-    // Update on window resize
     window.addEventListener('resize', updateCarousel);
 }
 
