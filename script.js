@@ -240,42 +240,24 @@ function createResourceCarousel() {
     }
 
     function updateCarousel() {
-        const newItems = [];
-        for (let i = 0; i < 5; i++) {
+        carousel.innerHTML = ''; // Clear existing items
+        const itemsToShow = window.innerWidth <= 768 ? 6 : 5; // Show 6 items on mobile, 5 on larger screens
+        for (let i = 0; i < itemsToShow; i++) {
             const index = (currentIndex + i) % resources.length;
-            const newItem = createItem(resources[index], colors[i]);
-            newItem.style.opacity = '0';
+            const newItem = createItem(resources[index], colors[i % colors.length]);
             carousel.appendChild(newItem);
-            newItems.push(newItem);
         }
-        
-        currentIndex = (currentIndex + 5) % resources.length;
-
-        // Fade out current items
-        const currentItems = carousel.querySelectorAll('.resource-item:not(:nth-last-child(-n+5))');
-        currentItems.forEach(item => {
-            item.style.opacity = '0';
-            item.style.transform = 'translateY(-20px)';
-        });
-
-        // Remove old items and fade in new items
-        setTimeout(() => {
-            currentItems.forEach(item => item.remove());
-            newItems.forEach(item => {
-                item.style.opacity = '1';
-                item.style.transform = 'translateY(0)';
-            });
-        }, 500);
+        currentIndex = (currentIndex + 1) % resources.length;
     }
 
     // Initial population
-    for (let i = 0; i < 5; i++) {
-        const index = i % resources.length;
-        const newItem = createItem(resources[index], colors[i]);
-        carousel.appendChild(newItem);
-    }
+    updateCarousel();
 
-    setInterval(updateCarousel, 5000); // Change items every 5 seconds
+    // Update every 5 seconds
+    setInterval(updateCarousel, 5000);
+
+    // Update on window resize
+    window.addEventListener('resize', updateCarousel);
 }
 
 function createIdeaGalaxy() {
