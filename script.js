@@ -211,6 +211,16 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         productShowcase.scrollIntoView({ behavior: 'smooth' });
     });
+
+    const closeBtns = document.querySelectorAll('.close');
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const modal = btn.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
 });
 
 function createResourceCarousel() {
@@ -229,8 +239,6 @@ function createResourceCarousel() {
         'linear-gradient(45deg, #d4fc79, #96e6a1)'
     ];
 
-    let currentIndex = 0;
-
     function createItem(text, color) {
         const item = document.createElement('div');
         item.classList.add('resource-item');
@@ -240,51 +248,25 @@ function createResourceCarousel() {
     }
 
     function updateCarousel() {
+        carousel.innerHTML = '';
         const isMobile = window.innerWidth <= 768;
         
         if (isMobile) {
-            carousel.innerHTML = '';
-            const newItem = createItem(resources[currentIndex], colors[currentIndex % colors.length]);
-            carousel.appendChild(newItem);
-            
-            setTimeout(() => {
-                newItem.style.opacity = '0';
-                newItem.style.transform = 'translateY(-20px)';
-                
-                setTimeout(() => {
-                    currentIndex = (currentIndex + 1) % resources.length;
-                    const nextItem = createItem(resources[currentIndex], colors[currentIndex % colors.length]);
-                    nextItem.style.opacity = '0';
-                    nextItem.style.transform = 'translateY(20px)';
-                    carousel.appendChild(nextItem);
-                    
-                    setTimeout(() => {
-                        carousel.removeChild(newItem);
-                        nextItem.style.opacity = '1';
-                        nextItem.style.transform = 'translateY(0)';
-                    }, 50);
-                }, 450);
-            }, 2500);
+            resources.forEach((resource, index) => {
+                const newItem = createItem(resource, colors[index % colors.length]);
+                carousel.appendChild(newItem);
+            });
         } else {
-            // Desktop behavior remains the same
-            carousel.innerHTML = '';
             for (let i = 0; i < 5; i++) {
-                const index = (currentIndex + i) % resources.length;
+                const index = i % resources.length;
                 const newItem = createItem(resources[index], colors[i % colors.length]);
                 carousel.appendChild(newItem);
             }
-            currentIndex = (currentIndex + 1) % resources.length;
         }
     }
 
     updateCarousel();
-    setInterval(updateCarousel, isMobile ? 3000 : 5000);
-
-    window.addEventListener('resize', () => {
-        clearInterval(carouselInterval);
-        updateCarousel();
-        carouselInterval = setInterval(updateCarousel, window.innerWidth <= 768 ? 3000 : 5000);
-    });
+    window.addEventListener('resize', updateCarousel);
 }
 
 function createIdeaGalaxy() {
