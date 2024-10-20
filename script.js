@@ -240,36 +240,51 @@ function createResourceCarousel() {
     }
 
     function updateCarousel() {
-        carousel.innerHTML = '';
         const isMobile = window.innerWidth <= 768;
-        const itemsToShow = isMobile ? 3 : 5;
-
-        for (let i = 0; i < itemsToShow; i++) {
-            const index = (currentIndex + i) % resources.length;
-            const newItem = createItem(resources[index], colors[i % colors.length]);
-            carousel.appendChild(newItem);
-        }
-
+        
         if (isMobile) {
+            carousel.innerHTML = '';
+            const newItem = createItem(resources[currentIndex], colors[currentIndex % colors.length]);
+            carousel.appendChild(newItem);
+            
             setTimeout(() => {
-                carousel.style.opacity = '0';
+                newItem.style.opacity = '0';
+                newItem.style.transform = 'translateY(-20px)';
+                
                 setTimeout(() => {
-                    currentIndex = (currentIndex + 3) % resources.length;
-                    updateCarousel();
-                    carousel.style.opacity = '1';
-                }, 500);
-            }, 3000);
+                    currentIndex = (currentIndex + 1) % resources.length;
+                    const nextItem = createItem(resources[currentIndex], colors[currentIndex % colors.length]);
+                    nextItem.style.opacity = '0';
+                    nextItem.style.transform = 'translateY(20px)';
+                    carousel.appendChild(nextItem);
+                    
+                    setTimeout(() => {
+                        carousel.removeChild(newItem);
+                        nextItem.style.opacity = '1';
+                        nextItem.style.transform = 'translateY(0)';
+                    }, 50);
+                }, 450);
+            }, 2500);
         } else {
+            // Desktop behavior remains the same
+            carousel.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const index = (currentIndex + i) % resources.length;
+                const newItem = createItem(resources[index], colors[i % colors.length]);
+                carousel.appendChild(newItem);
+            }
             currentIndex = (currentIndex + 1) % resources.length;
         }
     }
 
     updateCarousel();
-    if (!window.innerWidth <= 768) {
-        setInterval(updateCarousel, 5000);
-    }
+    setInterval(updateCarousel, isMobile ? 3000 : 5000);
 
-    window.addEventListener('resize', updateCarousel);
+    window.addEventListener('resize', () => {
+        clearInterval(carouselInterval);
+        updateCarousel();
+        carouselInterval = setInterval(updateCarousel, window.innerWidth <= 768 ? 3000 : 5000);
+    });
 }
 
 function createIdeaGalaxy() {

@@ -1062,3 +1062,34 @@ header nav ul {
         flex: 0 0 calc(50% - 10px);
     }
 }
+
+@media screen and (max-width: 768px) {
+    header nav ul li:nth-last-child(-n+2) {
+        display: none; /* Hide login and get started buttons in header */
+    }
+
+    header nav {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    header nav ul {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    .resource-carousel {
+        height: auto;
+        flex-wrap: nowrap;
+        overflow: hidden;
+    }
+
+    .resource-item {
+        flex: 0 0 100%;
+        margin: 5px 0;
+        height: 40px;
+        font-size: 14px;
+        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    }
+}
