@@ -629,7 +629,7 @@ footer {
     padding: 10px;
     margin: 0 5px;
     border-radius: 10px;
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 0.5s ease-in-out;
 }
 
 #idea-galaxy {
@@ -1125,3 +1125,4 @@ header nav ul {
         cursor: pointer;
     }
 }
+

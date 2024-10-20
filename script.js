@@ -239,6 +239,8 @@ function createResourceCarousel() {
         'linear-gradient(45deg, #d4fc79, #96e6a1)'
     ];
 
+    let currentIndex = 0;
+
     function createItem(text, color) {
         const item = document.createElement('div');
         item.classList.add('resource-item');
@@ -248,25 +250,56 @@ function createResourceCarousel() {
     }
 
     function updateCarousel() {
-        carousel.innerHTML = '';
         const isMobile = window.innerWidth <= 768;
         
         if (isMobile) {
-            resources.forEach((resource, index) => {
-                const newItem = createItem(resource, colors[index % colors.length]);
+            carousel.innerHTML = '';
+            for (let i = 0; i < 2; i++) {
+                const index = (currentIndex + i) % resources.length;
+                const newItem = createItem(resources[index], colors[index % colors.length]);
+                newItem.style.opacity = '0';
                 carousel.appendChild(newItem);
-            });
+                setTimeout(() => {
+                    newItem.style.opacity = '1';
+                }, 50);
+            }
+            
+            setTimeout(() => {
+                const items = carousel.querySelectorAll('.resource-item');
+                items.forEach(item => {
+                    item.style.opacity = '0';
+                });
+                
+                setTimeout(() => {
+                    currentIndex = (currentIndex + 2) % resources.length;
+                    updateCarousel();
+                }, 500);
+            }, 3000);
         } else {
+            // Desktop behavior remains the same
+            carousel.innerHTML = '';
             for (let i = 0; i < 5; i++) {
-                const index = i % resources.length;
+                const index = (currentIndex + i) % resources.length;
                 const newItem = createItem(resources[index], colors[i % colors.length]);
                 carousel.appendChild(newItem);
             }
+            currentIndex = (currentIndex + 1) % resources.length;
         }
     }
 
     updateCarousel();
-    window.addEventListener('resize', updateCarousel);
+    
+    if (!window.matchMedia('(max-width: 768px)').matches) {
+        setInterval(updateCarousel, 5000);
+    }
+
+    window.addEventListener('resize', () => {
+        clearInterval(carouselInterval);
+        updateCarousel();
+        if (!window.matchMedia('(max-width: 768px)').matches) {
+            carouselInterval = setInterval(updateCarousel, 5000);
+        }
+    });
 }
 
 function createIdeaGalaxy() {
