@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Saver Pro - Curate Knowledge, Spark Brilliance</title>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <img src="images/Rs logo.png" alt="Resource Saver Pro Logo">
+                Resource Saver Pro
+            </a>
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="https://x.com/Jolaade_philips" target="_blank" id="creatorLink">Contact the Creator</a></li>
+                <li><a href="#" class="btn-header" id="headerLoginBtn">Log In</a></li>
+                <li><a href="#" class="btn-header btn-header-primary" id="headerSignupBtn">Get Started</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="container">
+                <h1>Save, Organize, and Find Everything—Effortlessly</h1>
+                <div class="hero-description">
+                    <div id="resource-carousel" class="resource-carousel">
+                        <!-- We'll populate this with JavaScript -->
+                    </div>
+                    <p class="hero-action">Save what matters, organize it your way, and find it when you need it—all in one place. The Resource Saver is simple, easy, and built to keep you on track.</p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn-modern" id="loginBtn">Log In</a>
+                        <a href="#" class="btn-modern" id="signupBtn">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="product-showcase">
+            <div class="container">
+                <h2>See Resource Saver Pro in Action</h2>
+                <div class="screenshot-description">
+                    <div id="screenshot-text"></div>
+                </div>
+                <div class="screenshot-carousel">
+                    <img src="images/Resource Bank.png" alt="Resource Bank Dashboard" class="active">
+                    <img src="images/Collections.png" alt="Collections Feature">
+                    <img src="images/Favorite.png" alt="Favorites List">
+                    <img src="images/Add Resource.png" alt="Adding a Resource">
+                    <img src="images/Extension.png" alt="Browser Extension">
+                    <div class="carousel-nav">
+                        <button class="prev">&lt;</button>
+                        <button class="next">&gt;</button>
+                    </div>
+                </div>
+                <div class="showcase-cta">
+                    <a href="#" class="btn-modern" id="showcaseLoginBtn">Log In</a>
+                    <a href="#" class="btn-modern" id="showcaseSignupBtn">Get Started</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="container">
+                <h2>See Resource Saver Pro in Action</h2>
+                <div id="idea-galaxy">
+                    <!-- We'll create this with JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <section id="cta">
+            <div class="container">
+                <h2>Okay, I need this, what's next?</h2>
+                <a href="#" class="btn-modern" id="ctaSignupBtn">Get Started</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Resource Saver Pro</h3>
+                    <p>Save, Organize, and Find Everything—Effortlessly.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://x.com/Jolaade_philips" target="_blank">Twitter</a>
+                    <a href="https://www.youtube.com/@WIBTAL" target="_blank">YouTube</a>
+                    <a href="https://x.com/Jolaade_philips" target="_blank" id="footerCreatorLink">Contact the Creator</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Join Resource Saver Pro</h2>
+            <form id="authForm">
+                <input type="email" id="email" placeholder="Your email" required>
+                <input type="password" id="password" placeholder="Create a password" required>
+                <p id="authError" class="error-message" style="display: none; color: red;"></p>
+                <button type="submit" id="authSubmit" class="btn-gradient">Get Started</button>
+            </form>
+            <p id="switchAuth">Already a member? <a href="#" id="switchAuthLink">Sign in</a></p>
+            <p id="forgotPassword"><a href="#" id="forgotPasswordLink">Forgot Password?</a></p>
+        </div>
+    </div>
+
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Reset Password</h2>
+            <form id="forgotPasswordForm">
+                <input type="email" id="resetEmail" placeholder="Your email" required>
+                <button type="submit" class="btn-gradient">Reset Password</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

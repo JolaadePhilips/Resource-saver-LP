@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Resource Saver Pro!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Add these styles for the welcome page */
+        .welcome-container {
+            max-width: 800px;
+            margin: 80px auto 0;
+            padding: 40px 20px;
+        }
+        .step {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        @media screen and (max-width: 768px) {
+            .welcome-container {
+                padding: 20px;
+            }
+            .step {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <img src="/Users/taiwojolaade/Resource saver/Landing page for resource saver pro/Rs logo.png" alt="Resource Saver Pro Logo">
+                Resource Saver Pro
+            </a>
+        </nav>
+    </header>
+
+    <main class="welcome-container">
+        <h1>Welcome to Resource Saver Pro!</h1>
+        <p>We're thrilled to have you on board. Let's get you set up to make the most of your new knowledge management powerhouse!</p>
+
+        <div class="step">
+            <h2>Step 1: Access Your Resource Bank</h2>
+            <p>Your Resource Bank is where all your saved content lives. It's ready for you to start organizing your digital world!</p>
+            <a href="chrome-extension://fcemcgjjommnhebhhckgikgglhjndnoh/resource-bank.html" class="btn-primary">Go to Resource Bank</a>
+        </div>
+
+        <div class="step">
+            <h2>Step 2: Supercharge Your Experience with Our Extension</h2>
+            <p>For the full Resource Saver Pro experience, let's get our extension set up. Don't worry, it's quick and easy!</p>
+            <ol>
+                <li>Download the extension ZIP file</li>
+                <li>Unzip the file to a folder on your computer</li>
+                <li>Open Google Chrome and go to <code>chrome://extensions</code></li>
+                <li>Enable "Developer mode" in the top right corner</li>
+                <li>Click "Load unpacked" and select the folder where you unzipped the extension</li>
+                <li>You're all set! You should see the Resource Saver Pro icon in your Chrome toolbar</li>
+            </ol>
+            <p>Need a visual guide? Check out our installation video:</p>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/b1_qxZsQ7So" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="step">
+            <h2>Step 3: Start Saving!</h2>
+            <p>Now you're ready to start curating your digital world. Here are some things you can do:</p>
+            <ul>
+                <li>Click the extension icon to save any webpage you're on</li>
+                <li>Use the Resource Bank to organize your saved content into collections</li>
+                <li>Add notes and tags to your saved resources for easy retrieval</li>
+            </ul>
+            <p>Remember, the more you save and organize, the more powerful your personal knowledge base becomes!</p>
+        </div>
+
+        <div class="step">
+            <h2>Need Help?</h2>
+            <p>We're here for you! If you have any questions or run into any issues, don't hesitate to reach out to our support team at <a href="mailto:support@resourcesaverpro.com">support@resourcesaverpro.com</a>.</p>
+        </div>
+
+        <p>Happy saving, and welcome to a more organized digital life!</p>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Resource Saver Pro</h3>
+                    <p>Save, Organize, and Find Everything—Effortlessly.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://x.com/Jolaade_philips" target="_blank">Twitter</a>
+                    <a href="https://www.youtube.com/@WIBTAL" target="_blank">YouTube</a>
+                    <a href="https://x.com/Jolaade_philips" target="_blank" id="footerCreatorLink">Contact the Creator</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

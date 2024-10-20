@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Saver Pro - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <img src="images/Rs logo.png" alt="Resource Saver Pro Logo">
+                Resource Saver Pro
+            </a>
+            <button id="logoutBtn" class="btn-subtle">Log Out</button>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <h1>Your Knowledge Hub</h1>
+        
+        <section class="stats-overview">
+            <div class="stat-card" id="totalResources">
+                <i class="fas fa-bookmark"></i>
+                <div class="stat-content">
+                    <h2>0</h2>
+                    <p>Total Resources</p>
+                </div>
+            </div>
+            <div class="stat-card" id="topCategory">
+                <i class="fas fa-folder"></i>
+                <div class="stat-content">
+                    <h2>-</h2>
+                    <p>Most Used Category <span class="count">(0)</span></p>
+                </div>
+            </div>
+            <div class="stat-card" id="topResourceType">
+                <i class="fas fa-file-alt"></i>
+                <div class="stat-content">
+                    <h2>-</h2>
+                    <p>Favorite Resource Type <span class="count">(0)</span></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="main-actions">
+            <a href="chrome-extension://fcemcgjjommnhebhhckgikgglhjndnoh/resource-bank.html" class="btn-primary">View Resource Bank</a>
+            <button id="downloadExtensionBtn" class="btn-secondary">Download Chrome Extension <i class="fas fa-chevron-down"></i></button>
+        </section>
+
+        <section id="extensionInstructions" class="hidden">
+            <h2>How to Install the Chrome Extension</h2>
+            <ol>
+                <li>Download the extension ZIP file</li>
+                <li>Unzip the file to a folder on your computer</li>
+                <li>Open Google Chrome and go to <code>chrome://extensions</code></li>
+                <li>Enable "Developer mode" in the top right corner</li>
+                <li>Click "Load unpacked" and select the folder where you unzipped the extension</li>
+                <li>You're all set! You should see the Resource Saver Pro icon in your Chrome toolbar</li>
+            </ol>
+            <div class="video-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/b1_qxZsQ7So" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Resource Saver Pro</h3>
+                    <p>Save, Organize, and Find Everything—Effortlessly.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://x.com/Jolaade_philips" target="_blank">Twitter</a>
+                    <a href="https://www.youtube.com/@WIBTAL" target="_blank">YouTube</a>
+                    <a href="https://x.com/Jolaade_philips" target="_blank" id="footerCreatorLink">Contact the Creator</a>
+                </div>
+            </div>
+            <p class="copyright">&copy; 2024 Resource Saver Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
