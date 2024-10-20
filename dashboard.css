@@ -336,18 +336,40 @@ main {
 }
 
 @media screen and (max-width: 768px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .stats-overview {
+        grid-template-columns: 1fr;
+    }
+
     .main-actions {
         flex-direction: column;
     }
-    
+
     .btn-primary, .btn-secondary {
         width: 100%;
         margin-bottom: 1rem;
     }
-    
+
     .video-container {
         max-width: 100%;
         padding-bottom: 56.25%;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-logo {
+        margin-bottom: 1rem;
+    }
+
+    .footer-links {
+        margin-top: 1rem;
     }
 }
 
@@ -355,15 +377,15 @@ main {
     h1 {
         font-size: 24px;
     }
-    
+
     .stat-card {
         padding: 10px;
     }
-    
+
     .stat-card h2 {
         font-size: 1.2rem;
     }
-    
+
     .stat-card p {
         font-size: 0.8rem;
     }
