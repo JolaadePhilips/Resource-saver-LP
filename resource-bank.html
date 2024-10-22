@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Saver Pro - Resource Bank</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="resource-bank.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="/Users/taiwojolaade/Resource saver/Landing page for resource saver pro/images/Rs logo.png" alt="Resource Saver Pro Logo">
+                <span>Resource Saver Pro</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#" class="nav-link active" data-tab="resources"><i class="fas fa-book"></i> Resources</a>
+                <a href="#" class="nav-link" data-tab="notes"><i class="fas fa-sticky-note"></i> Notes</a>
+                <a href="#" class="nav-link" data-tab="collections"><i class="fas fa-folder"></i> Collections</a>
+                <a href="#" class="nav-link" data-tab="favorites"><i class="fas fa-star"></i> Favorites</a>
+                <a href="#" class="nav-link" data-tab="tags"><i class="fas fa-tags"></i> Tags</a>
+                <a href="#" class="nav-link" data-tab="statistics"><i class="fas fa-chart-bar"></i> Statistics</a>
+                <a href="#" class="nav-link" data-tab="learning-paths"><i class="fas fa-road"></i> Learning Paths</a>
+                <a href="#" class="nav-link" data-tab="recent"><i class="fas fa-history"></i> Recent Activity</a>
+            </nav>
+            <div class="sidebar-buttons">
+                <button id="toggleThemeBtn" class="btn-subtle"><i class="fas fa-moon"></i> Toggle Theme</button>
+                <button id="logoutBtn" class="btn-subtle"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <div class="search-and-filter">
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="Search resources...">
+                        <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="filter-options">
+                        <select id="categoryFilter">
+                            <option value="">All Categories</option>
+                        </select>
+                        <select id="typeFilter">
+                            <option value="">All Types</option>
+                        </select>
+                        <select id="statusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="read">Read</option>
+                            <option value="unread">Unread</option>
+                        </select>
+                        <div class="view-toggle">
+                            <button id="gridViewBtn" class="active"><i class="fas fa-th-large"></i></button>
+                            <button id="listViewBtn"><i class="fas fa-list"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button id="addResourceBtnTop" class="btn-primary"><i class="fas fa-plus"></i> Add Resource</button>
+            </header>
+
+            <section id="contentArea" class="content-area grid-view">
+                <!-- Resources will be dynamically injected here -->
+            </section>
+
+            <section id="notesSection" class="notes-section" style="display: none;">
+                <div class="notes-header">
+                    <h2>Notes</h2>
+                </div>
+                <div class="notes-search">
+                    <input type="text" id="notesSearch" placeholder="Search notes...">
+                </div>
+                <div id="notesList" class="notes-list content-area grid-view">
+                    <!-- Notes will be dynamically injected here -->
+                </div>
+                <div id="notesPagination" class="pagination">
+                    <!-- Pagination controls will be dynamically injected here -->
+                </div>
+            </section>
+
+            <footer>
+                <div id="pagination" class="pagination"></div>
+            </footer>
+        </main>
+
+        <!-- Add this inside the main-content section, after the contentArea -->
+        <section id="notesSection" class="notes-section" style="display: none;">
+            <div class="notes-header">
+                <h2>Notes</h2>
+            </div>
+            <div class="notes-search">
+                <input type="text" id="notesSearch" placeholder="Search notes...">
+            </div>
+            <div id="notesList" class="notes-list content-area grid-view">
+                <!-- Notes will be dynamically injected here -->
+            </div>
+        </section>
+
+        <!-- Add this just before the closing </main> tag -->
+        <section id="noteEditorSection" class="note-editor-section">
+            <div class="note-editor-header">
+                <h2 id="noteEditorTitle">Edit Note</h2>
+                <button id="closeNoteEditor" class="close-button">&times;</button>
+            </div>
+            <div class="note-editor-content">
+                <h3 id="noteResourceTitle"></h3>
+                <a id="noteResourceLink" href="#" target="_blank" class="resource-link">View Resource</a>
+                <div id="noteEditorToolbar">
+                    <span class="ql-formats">
+                        <button class="ql-bold" title="Bold"></button>
+                        <button class="ql-italic" title="Italic"></button>
+                        <button class="ql-underline" title="Underline"></button>
+                        <button class="ql-strike" title="Strikethrough"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-header" value="1" title="Heading 1"></button>
+                        <button class="ql-header" value="2" title="Heading 2"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered" title="Numbered List"></button>
+                        <button class="ql-list" value="bullet" title="Bullet List"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-script" value="sub" title="Subscript"></button>
+                        <button class="ql-script" value="super" title="Superscript"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-blockquote" title="Blockquote"></button>
+                        <button class="ql-code-block" title="Code Block"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color" title="Text Color"></select>
+                        <select class="ql-background" title="Highlight Color"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-link" title="Insert Link"></button>
+                    </span>
+                </div>
+                <div id="noteEditorContent"></div>
+                <div id="wordCount" class="word-count">Words: 0</div>
+            </div>
+            <div class="note-editor-actions">
+                <button id="pinNote" class="btn-icon" title="Pin/Unpin Note"><i class="fas fa-thumbtack"></i></button>
+                <button id="deleteNote" class="btn-icon" title="Delete Note"><i class="fas fa-trash"></i></button>
+                <button id="saveNoteChanges" class="btn-primary">Save Changes</button>
+                <button id="discardNoteChanges" class="btn-secondary">Discard Changes</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modals -->
+    <div id="noteModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add/Edit Note</h2>
+            <textarea id="noteContent" rows="4" placeholder="Enter your note here"></textarea>
+            <button id="saveNote">Save Note</button>
+            <button id="deleteNote" style="display: none;">Delete Note</button>
+        </div>
+    </div>
+
+    <div id="collectionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add to Collection</h2>
+            <select id="collectionSelect">
+                <option value="">Select a collection</option>
+                <!-- Populate this dynamically -->
+            </select>
+            <input type="text" id="newCollectionName" placeholder="Or create a new collection">
+            <button id="addToCollection">Add to Collection</button>
+        </div>
+    </div>
+
+    <!-- Add this modal for creating and editing learning paths -->
+    <div id="learningPathModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="learningPathModalTitle">Create Learning Path</h2>
+            <form id="learningPathForm">
+                <input type="text" id="learningPathName" placeholder="Path Name" required>
+                <textarea id="learningPathDescription" placeholder="Path Description" rows="3"></textarea>
+                <button type="submit" class="btn-primary">Save Learning Path</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add this section for the learning paths blurb -->
+    <div id="learningPathsBlurb" class="info-blurb" style="display: none;">
+        <h3>Learning Paths</h3>
+        <p>Learning Paths help you organize your resources into structured courses. Create a path, add resources, and track your progress as you complete each item. Use Learning Paths to plan your studies, prepare for certifications, or master new skills.</p>
+        <button id="closeBlurb" class="btn-subtle">Got it!</button>
+    </div>
+
+    <!-- Add this modal for adding new resources -->
+    <div id="addResourceModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Resource</h2>
+            <input type="text" id="newResourceTitle" placeholder="Title" required>
+            <input type="text" id="newResourceUrl" placeholder="URL" required>
+            <input type="text" id="newResourceTags" placeholder="Tags (comma-separated)">
+            <select id="newResourceCategory">
+                <option value="">Select a category</option>
+            </select>
+            <select id="newResourceType">
+                <option value="">Select a type</option>
+            </select>
+            <button id="saveNewResource">Add Resource</button>
+        </div>
+    </div>
+
+    <!-- Add this modal for editing notes -->
+    <div id="editNoteModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Note</h2>
+            <input type="text" id="editNoteTitle" placeholder="Note Title">
+            <input type="text" id="editNoteResourceTitle" placeholder="Resource Title" readonly>
+            <input type="text" id="editNoteResourceUrl" placeholder="Resource URL" readonly>
+            <textarea id="editNoteContent" rows="6" placeholder="Note Content"></textarea>
+            <div class="note-actions">
+                <button id="saveEditedNote" class="btn-primary">Save Changes</button>
+                <button id="deleteNote" class="btn-danger">Delete Note</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Share Note</h2>
+            <div class="share-buttons">
+                <button id="shareEmail" class="share-button" title="Email"><i class="fas fa-envelope"></i></button>
+                <button id="shareTwitter" class="share-button" title="Twitter"><i class="fab fa-twitter"></i></button>
+                <button id="shareFacebook" class="share-button" title="Facebook"><i class="fab fa-facebook-f"></i></button>
+                <button id="shareWhatsApp" class="share-button" title="WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                <button id="shareLinkedIn" class="share-button" title="LinkedIn"><i class="fab fa-linkedin"></i></button>
+                <button id="shareCopyLink" class="share-button" title="Copy Link"><i class="fas fa-link"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Resource Modal -->
+    <div id="editResourceModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Resource</h2>
+            <input type="text" id="editResourceTitle" placeholder="Title">
+            <input type="text" id="editResourceUrl" placeholder="URL">
+            <input type="text" id="editResourceTags" placeholder="Tags (comma-separated)">
+            <select id="editResourceCategory">
+                <option value="">Select a category</option>
+            </select>
+            <select id="editResourceType">
+                <option value="">Select a type</option>
+            </select>
+            <button id="saveEditedResource">Save Changes</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="resource-bank.js"></script>
+</body>
+</html>
