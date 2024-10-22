@@ -23,6 +23,9 @@ body {
     letter-spacing: -.022em;
     color: var(--text-color);
     background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 /* Container */
@@ -105,6 +108,7 @@ nav ul li a:hover {
 
 main {
     padding-top: 44px;
+    flex: 1;
 }
 
 section {
@@ -1125,4 +1129,5 @@ header nav ul {
         cursor: pointer;
     }
 }
+
 
