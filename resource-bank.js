@@ -1767,14 +1767,30 @@ function deleteCollection(collectionId) {
 
 // Function to remove a resource from a collection
 function removeFromCollection(collectionId, resourceId) {
-    db.collection('users').doc(currentUser.uid).collection('collections').doc(collectionId).update({
+    // Get the collection reference
+    const collectionRef = db.collection('users').doc(currentUser.uid)
+        .collection('collections').doc(collectionId);
+
+    // Start the update process
+    collectionRef.update({
         resources: firebase.firestore.FieldValue.arrayRemove(resourceId)
-    }).then(() => {
-        console.log('Resource removed from collection successfully');
-        viewCollectionResources(collectionId);
-    }).catch((error) => {
-        console.error('Error removing resource from collection:', error);
-        alert('Failed to remove resource from collection. Please try again.');
+    })
+    .then(() => {
+        // Successfully removed the resource, update the UI
+        const resourceElement = document.querySelector(`[data-resource-id="${resourceId}"]`);
+        if (resourceElement) {
+            resourceElement.style.opacity = '0';
+            resourceElement.style.transform = 'translateX(-10px)';
+            setTimeout(() => {
+                resourceElement.remove();
+                // Optionally refresh the collection view
+                viewCollection(collectionId);
+            }, 300); // Match the CSS transition duration
+        }
+    })
+    .catch(error => {
+        console.error('Error removing resource:', error);
+        alert('Failed to remove resource. Please try again.');
     });
 }
 

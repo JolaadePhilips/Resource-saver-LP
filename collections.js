@@ -214,6 +214,12 @@
          resources: firebase.firestore.FieldValue.arrayRemove(resourceId)
      }).then(() => {
          console.log('Resource removed from collection successfully');
+         // Update the UI immediately
+         const resourceElement = document.querySelector(`.collection-resource-item[data-resource-id="${resourceId}"]`);
+         if (resourceElement) {
+             resourceElement.remove();
+         }
+         // Refresh the collection view
          viewCollection(collectionId);
      }).catch((error) => {
          console.error('Error removing resource from collection:', error);
