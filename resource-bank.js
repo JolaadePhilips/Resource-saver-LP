@@ -308,25 +308,72 @@ function addToCollection(resourceId, resource) {
         if (collectionSelect.value) {
             collectionRef = db.collection('users').doc(currentUser.uid).collection('collections').doc(collectionSelect.value);
         } else if (newCollectionName.value) {
-            collectionRef = db.collection('users').doc(currentUser.uid).collection('collections').doc();
+            // Check if collection already exists
+            db.collection('users').doc(currentUser.uid).collection('collections')
+                .where('name', '==', newCollectionName.value.trim())
+                .get()
+                .then((querySnapshot) => {
+                    if (!querySnapshot.empty) {
+                        // Collection exists, use existing reference
+                        collectionRef = querySnapshot.docs[0].ref;
+                    } else {
+                        // Create new collection
+                        collectionRef = db.collection('users').doc(currentUser.uid).collection('collections').doc();
+                    }
+                    
+                    // Continue with adding resource to collection
+                    return collectionRef.set({
+                        name: newCollectionName.value.trim(),
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        resources: firebase.firestore.FieldValue.arrayUnion(resourceId)
+                    }, { merge: true });
+                })
+                .then(() => {
+                    console.log('Resource added to collection successfully');
+                    closeAllModals();
+                    newCollectionName.value = '';
+                    
+                    // Clear and refresh collections once
+                    const collectionsGrid = document.querySelector('.collections-container');
+                    if (collectionsGrid) {
+                        collectionsGrid.innerHTML = '';
+                        fetchAndDisplayCollections();
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error adding resource to collection: ', error);
+                    alert('Failed to add resource to collection. Please try again.');
+                });
+                return; // Exit early to prevent duplicate creation
         } else {
             console.error('No collection selected or created');
             return;
         }
-
-        collectionRef.set({
-            name: newCollectionName.value || collectionSelect.options[collectionSelect.selectedIndex].text,
-            resources: firebase.firestore.FieldValue.arrayUnion(resourceId)
-        }, { merge: true })
-        .then(() => {
-            console.log('Resource added to collection successfully');
-            closeAllModals();
-            newCollectionName.value = '';
-        })
-        .catch((error) => {
-            console.error('Error adding resource to collection: ', error);
-            alert('Failed to add resource to collection. Please try again.');
-        });
+        
+        // Only execute this for existing collections
+        if (collectionRef) {
+            collectionRef.set({
+                name: newCollectionName.value || collectionSelect.options[collectionSelect.selectedIndex].text,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                resources: firebase.firestore.FieldValue.arrayUnion(resourceId)
+            }, { merge: true })
+            .then(() => {
+                console.log('Resource added to collection successfully');
+                closeAllModals();
+                newCollectionName.value = '';
+                
+                // Clear and refresh collections once
+                const collectionsGrid = document.querySelector('.collections-container');
+                if (collectionsGrid) {
+                    collectionsGrid.innerHTML = '';
+                    fetchAndDisplayCollections();
+                }
+            })
+            .catch((error) => {
+                console.error('Error adding resource to collection: ', error);
+                alert('Failed to add resource to collection. Please try again.');
+            });
+        }
     };
 
     // Close the modal when clicking on <span> (x)
@@ -748,6 +795,251 @@ document.getElementById('notesSearch').addEventListener('input', (e) => {
     });
 });
 
+// Function to display collections and their resources
+function viewCollection(collectionId) {
+    const collectionCard = document.querySelector(`[data-id="${collectionId}"]`).closest('.collection-card');
+    const existingExpanded = document.querySelector('.collection-expanded');
+    
+    // If clicking the same collection that's already expanded, collapse it
+    if (existingExpanded && existingExpanded.previousElementSibling === collectionCard) {
+        existingExpanded.classList.remove('active');
+        setTimeout(() => existingExpanded.remove(), 300); // Remove after animation
+        return;
+    }
+
+    // Remove any existing expanded section
+    if (existingExpanded) {
+        existingExpanded.classList.remove('active');
+        setTimeout(() => existingExpanded.remove(), 300);
+    }
+
+    // Create new expanded section
+    const expandedSection = document.createElement('div');
+    expandedSection.className = 'collection-expanded';
+    
+    expandedSection.innerHTML = `
+        <div class="collection-resources">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                <button class="btn-icon collapse-collection" title="Collapse">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+            <div class="resources-list"></div>
+        </div>
+    `;
+
+    // Insert after the collection card
+    collectionCard.insertAdjacentElement('afterend', expandedSection);
+    
+    // Add collapse button listener
+    expandedSection.querySelector('.collapse-collection').addEventListener('click', () => {
+        expandedSection.classList.remove('active');
+        setTimeout(() => expandedSection.remove(), 300);
+    });
+
+    // Trigger animation after a brief delay
+    setTimeout(() => expandedSection.classList.add('active'), 50);
+
+    // Populate resources
+    const resourcesList = expandedSection.querySelector('.resources-list');
+    db.collection('users').doc(currentUser.uid).collection('collections').doc(collectionId).get()
+        .then((doc) => {
+            const collection = doc.data();
+            if (collection.resources && collection.resources.length > 0) {
+                collection.resources.forEach(resourceId => {
+                    db.collection('users').doc(currentUser.uid).collection('resources').doc(resourceId).get()
+                        .then((resourceDoc) => {
+                            if (resourceDoc.exists) {
+                                const resource = resourceDoc.data();
+                                const resourceElement = document.createElement('div');
+                                resourceElement.className = 'resource-item';
+                                resourceElement.draggable = true;
+                                resourceElement.dataset.resourceId = resourceId;
+                                resourceElement.innerHTML = `
+                                    <div class="resource-drag-handle">
+                                        <i class="fas fa-grip-vertical"></i>
+                                    </div>
+                                    <h4><a href="${resource.url}" target="_blank">${resource.title}</a></h4>
+                                    <div class="resource-actions">
+                                        <button class="remove-from-collection" data-id="${resourceId}">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                `;
+                                resourcesList.appendChild(resourceElement);
+
+                                // Add drag event listeners
+                                resourceElement.addEventListener('dragstart', (e) => {
+                                    e.dataTransfer.setData('application/json', JSON.stringify({
+                                        resourceId: resourceId,
+                                        sourceCollectionId: collectionId
+                                    }));
+                                    resourceElement.classList.add('dragging');
+                                });
+
+                                resourceElement.addEventListener('dragend', () => {
+                                    resourceElement.classList.remove('dragging');
+                                    document.querySelectorAll('.collection-card').forEach(card => {
+                                        card.classList.remove('drag-over');
+                                    });
+                                });
+
+                                resourceElement.querySelector('.remove-from-collection').addEventListener('click', () => 
+                                    removeFromCollection(collectionId, resourceId));
+                            }
+                        });
+                });
+            } else {
+                resourcesList.innerHTML = '<p class="no-resources">No resources in this collection yet.</p>';
+            }
+        });
+}
+
+function fetchAndDisplayCollections() {
+    const contentArea = document.getElementById('contentArea');
+    
+    // Clear existing content and set up the collections section
+    contentArea.innerHTML = `
+        <div class="collections-section">
+            <div class="collections-header">
+                <h2>My Collections</h2>
+                <button id="createCollectionBtn" class="btn-primary">
+                    <i class="fas fa-plus"></i> Create Collection
+                </button>
+            </div>
+            <div class="collections-list"></div>
+        </div>
+    `;
+
+    const collectionsList = document.querySelector('.collections-list');
+
+    // Fetch collections
+    db.collection('users').doc(currentUser.uid).collection('collections')
+        .orderBy('createdAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            if (querySnapshot.empty) {
+                collectionsList.innerHTML = '<p class="no-collections">No collections yet. Create your first collection!</p>';
+                return;
+            }
+
+            // Create a fragment for better performance
+            const fragment = document.createDocumentFragment();
+
+            querySnapshot.forEach((doc) => {
+                const collection = doc.data();
+                const collectionCard = document.createElement('div');
+                collectionCard.className = 'collection-card';
+                
+                const resourceCount = collection.resources ? collection.resources.length : 0;
+                const lastUpdated = collection.updatedAt ? new Date(collection.updatedAt.toDate()).toLocaleDateString() : 'Never';
+                
+                collectionCard.innerHTML = `
+                    <div class="collection-icon">
+                        <i class="fas fa-folder"></i>
+                    </div>
+                    <div class="collection-content">
+                        <h3>${collection.name || 'Unnamed Collection'}</h3>
+    
+                        <div class="collection-meta">
+                            <span><i class="fas fa-bookmark"></i> ${resourceCount} resources</span>
+                            <span><i class="fas fa-clock"></i> Last updated: ${lastUpdated}</span>
+                        </div>
+                    </div>
+                    <div class="collection-actions">
+                        <button class="view-collection" data-id="${doc.id}" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="edit-collection" data-id="${doc.id}" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-collection" data-id="${doc.id}" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+
+                // Add event listeners
+                const viewBtn = collectionCard.querySelector('.view-collection');
+                const editBtn = collectionCard.querySelector('.edit-collection');
+                const deleteBtn = collectionCard.querySelector('.delete-collection');
+                
+                viewBtn.addEventListener('click', () => viewCollection(doc.id));
+                editBtn.addEventListener('click', () => editCollection(doc.id));
+                deleteBtn.addEventListener('click', () => deleteCollection(doc.id));
+
+                // Add drop zone functionality
+                collectionCard.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    collectionCard.classList.add('drag-over');
+                });
+
+                collectionCard.addEventListener('dragleave', () => {
+                    collectionCard.classList.remove('drag-over');
+                });
+
+                collectionCard.addEventListener('drop', async (e) => {
+                    e.preventDefault();
+                    collectionCard.classList.remove('drag-over');
+                    
+                    try {
+                        const data = JSON.parse(e.dataTransfer.getData('application/json'));
+                        const targetCollectionId = doc.id;
+                        
+                        if (data.sourceCollectionId === targetCollectionId) return;
+
+                        // Remove from source collection
+                        await db.collection('users').doc(currentUser.uid)
+                            .collection('collections').doc(data.sourceCollectionId)
+                            .update({
+                                resources: firebase.firestore.FieldValue.arrayRemove(data.resourceId)
+                            });
+
+                        // Add to target collection
+                        await db.collection('users').doc(currentUser.uid)
+                            .collection('collections').doc(targetCollectionId)
+                            .update({
+                                resources: firebase.firestore.FieldValue.arrayUnion(data.resourceId)
+                            });
+
+                        // Refresh both collections
+                        viewCollection(data.sourceCollectionId);
+                        viewCollection(targetCollectionId);
+                        
+                        console.log('Resource moved successfully');
+                    } catch (error) {
+                        console.error('Error moving resource:', error);
+                        alert('Failed to move resource. Please try again.');
+                    }
+                });
+
+                fragment.appendChild(collectionCard);
+            });
+
+            // Append all cards at once
+            collectionsList.appendChild(fragment);
+        })
+        .catch((error) => {
+            console.error("Error fetching collections: ", error);
+            collectionsList.innerHTML = '<p class="error-message">Error loading collections. Please try again.</p>';
+        });
+
+    // Add event listener for create collection button
+    const createCollectionBtn = document.getElementById('createCollectionBtn');
+    if (createCollectionBtn) {
+        const newBtn = createCollectionBtn.cloneNode(true);
+        createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
+        
+        newBtn.addEventListener('click', () => {
+            const modal = document.getElementById('collectionModal');
+            modal.style.display = 'block';
+            document.getElementById('newCollectionName').value = '';
+            modal.querySelector('h2').textContent = 'Create New Collection';
+            document.getElementById('addToCollection').textContent = 'Create Collection';
+        });
+    }
+}
+
 // Update the event listeners
 document.addEventListener('DOMContentLoaded', () => {
     // ... existing code ...
@@ -860,18 +1152,147 @@ function shareNote(note) {
 // Add this function to fetch and display collections
 function fetchAndDisplayCollections() {
     const contentArea = document.getElementById('contentArea');
+    
+    // Clear existing content and set up the collections section
     contentArea.innerHTML = `
-        <div class="collections-header">
-            <h2>Collections</h2>
-            <button id="createCollectionBtn" class="btn-primary" title="Create New Collection"><i class="fas fa-plus"></i> Create Collection</button>
+        <div class="collections-section">
+            <div class="collections-header">
+                <h2>My Collections</h2>
+                <button id="createCollectionBtn" class="btn-primary">
+                    <i class="fas fa-plus"></i> Create Collection
+                </button>
+            </div>
+            <div class="collections-list"></div>
         </div>
-        <div id="collectionsContainer" class="collections-container"></div>
     `;
 
-    displayCollections();
+    const collectionsList = document.querySelector('.collections-list');
 
-    // Add event listener for creating a new collection
-    document.getElementById('createCollectionBtn').addEventListener('click', showCreateCollectionModal);
+    // Fetch collections
+    db.collection('users').doc(currentUser.uid).collection('collections')
+        .orderBy('createdAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            if (querySnapshot.empty) {
+                collectionsList.innerHTML = '<p class="no-collections">No collections yet. Create your first collection!</p>';
+                return;
+            }
+
+            // Create a fragment for better performance
+            const fragment = document.createDocumentFragment();
+            
+            querySnapshot.forEach((doc) => {
+                const collection = doc.data();
+                const collectionCard = document.createElement('div');
+                collectionCard.className = 'collection-card';
+    
+    const resourceCount = collection.resources ? collection.resources.length : 0;
+                const lastUpdated = collection.updatedAt ? new Date(collection.updatedAt.toDate()).toLocaleDateString() : 'Never';
+    
+                collectionCard.innerHTML = `
+                    <div class="collection-icon">
+                        <i class="fas fa-folder"></i>
+                    </div>
+        <div class="collection-content">
+            <h3>${collection.name || 'Unnamed Collection'}</h3>
+           
+            <div class="collection-meta">
+                <span><i class="fas fa-bookmark"></i> ${resourceCount} resources</span>
+                            <span><i class="fas fa-clock"></i> Last updated: ${lastUpdated}</span>
+            </div>
+        </div>
+        <div class="collection-actions">
+                        <button class="view-collection" data-id="${doc.id}" title="View">
+                <i class="fas fa-eye"></i>
+            </button>
+                        <button class="edit-collection" data-id="${doc.id}" title="Edit">
+                <i class="fas fa-edit"></i>
+            </button>
+                        <button class="delete-collection" data-id="${doc.id}" title="Delete">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `;
+
+    // Add event listeners
+                const viewBtn = collectionCard.querySelector('.view-collection');
+                const editBtn = collectionCard.querySelector('.edit-collection');
+                const deleteBtn = collectionCard.querySelector('.delete-collection');
+                
+                viewBtn.addEventListener('click', () => viewCollection(doc.id));
+                editBtn.addEventListener('click', () => editCollection(doc.id));
+                deleteBtn.addEventListener('click', () => deleteCollection(doc.id));
+
+    // Add drop zone functionality
+                collectionCard.addEventListener('dragover', (e) => {
+        e.preventDefault();
+                    collectionCard.classList.add('drag-over');
+                });
+
+                collectionCard.addEventListener('dragleave', () => {
+                    collectionCard.classList.remove('drag-over');
+                });
+
+                collectionCard.addEventListener('drop', async (e) => {
+                    e.preventDefault();
+                    collectionCard.classList.remove('drag-over');
+                    
+                    try {
+                        const data = JSON.parse(e.dataTransfer.getData('application/json'));
+                        const targetCollectionId = doc.id;
+                        
+                        if (data.sourceCollectionId === targetCollectionId) return;
+
+                        // Remove from source collection
+                        await db.collection('users').doc(currentUser.uid)
+                            .collection('collections').doc(data.sourceCollectionId)
+                            .update({
+                                resources: firebase.firestore.FieldValue.arrayRemove(data.resourceId)
+                            });
+
+                        // Add to target collection
+                        await db.collection('users').doc(currentUser.uid)
+                            .collection('collections').doc(targetCollectionId)
+                            .update({
+                                resources: firebase.firestore.FieldValue.arrayUnion(data.resourceId)
+                            });
+
+                        // Refresh both collections
+                        viewCollection(data.sourceCollectionId);
+                        viewCollection(targetCollectionId);
+                        
+                        console.log('Resource moved successfully');
+                    } catch (error) {
+                        console.error('Error moving resource:', error);
+                        alert('Failed to move resource. Please try again.');
+                    }
+                });
+
+                fragment.appendChild(collectionCard);
+            });
+
+            // Append all cards at once
+            collectionsList.appendChild(fragment);
+        })
+        .catch((error) => {
+            console.error("Error fetching collections: ", error);
+            collectionsList.innerHTML = '<p class="error-message">Error loading collections. Please try again.</p>';
+        });
+
+    // Add event listener for create collection button
+    const createCollectionBtn = document.getElementById('createCollectionBtn');
+    if (createCollectionBtn) {
+        const newBtn = createCollectionBtn.cloneNode(true);
+        createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
+        
+        newBtn.addEventListener('click', () => {
+            const modal = document.getElementById('collectionModal');
+            modal.style.display = 'block';
+            document.getElementById('newCollectionName').value = '';
+            modal.querySelector('h2').textContent = 'Create New Collection';
+            document.getElementById('addToCollection').textContent = 'Create Collection';
+        });
+    }
 }
 
 // Add this function to show the create collection modal
@@ -912,26 +1333,103 @@ function createNewCollection(name) {
     });
 }
 
-// Update the viewCollection function
-function viewCollection(id) {
-    db.collection('users').doc(currentUser.uid).collection('collections').doc(id).get()
+// Update the resource item creation in viewCollection function
+function viewCollection(collectionId) {
+    const collectionCard = document.querySelector(`[data-id="${collectionId}"]`).closest('.collection-card');
+    const existingExpanded = document.querySelector('.collection-expanded');
+    
+    // If clicking the same collection that's already expanded, collapse it
+    if (existingExpanded && existingExpanded.previousElementSibling === collectionCard) {
+        existingExpanded.classList.remove('active');
+        setTimeout(() => existingExpanded.remove(), 300); // Remove after animation
+        return;
+    }
+
+    // Remove any existing expanded section
+    if (existingExpanded) {
+        existingExpanded.classList.remove('active');
+        setTimeout(() => existingExpanded.remove(), 300);
+    }
+
+    // Create new expanded section
+    const expandedSection = document.createElement('div');
+    expandedSection.className = 'collection-expanded';
+    
+    expandedSection.innerHTML = `
+        <div class="collection-resources">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                <button class="btn-icon collapse-collection" title="Collapse">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+            <div class="resources-list"></div>
+        </div>
+    `;
+
+    // Insert after the collection card
+    collectionCard.insertAdjacentElement('afterend', expandedSection);
+    
+    // Add collapse button listener
+    expandedSection.querySelector('.collapse-collection').addEventListener('click', () => {
+        expandedSection.classList.remove('active');
+        setTimeout(() => expandedSection.remove(), 300);
+    });
+
+    // Trigger animation after a brief delay
+    setTimeout(() => expandedSection.classList.add('active'), 50);
+
+    // Populate resources
+    const resourcesList = expandedSection.querySelector('.resources-list');
+    db.collection('users').doc(currentUser.uid).collection('collections').doc(collectionId).get()
         .then((doc) => {
             const collection = doc.data();
-            const contentArea = document.getElementById('contentArea');
-            contentArea.innerHTML = `
-                <h2>${collection.name}</h2>
-                <p class="collection-description">${collection.description || 'No description'}</p>
-                <div id="collectionResources" class="content-area grid-view"></div>
-                <button id="backToCollections" class="btn-secondary"><i class="fas fa-arrow-left"></i> Back to Collections</button>
-            `;
-
             if (collection.resources && collection.resources.length > 0) {
-                displayResources(collection.resources);
-            } else {
-                document.getElementById('collectionResources').innerHTML = '<p>No resources in this collection.</p>';
-            }
+                collection.resources.forEach(resourceId => {
+                    db.collection('users').doc(currentUser.uid).collection('resources').doc(resourceId).get()
+                        .then((resourceDoc) => {
+                            if (resourceDoc.exists) {
+                                const resource = resourceDoc.data();
+                                const resourceElement = document.createElement('div');
+                                resourceElement.className = 'resource-item';
+                                resourceElement.draggable = true;
+                                resourceElement.dataset.resourceId = resourceId;
+                                resourceElement.innerHTML = `
+                                    <div class="resource-drag-handle">
+                                        <i class="fas fa-grip-vertical"></i>
+                                    </div>
+                                    <h4><a href="${resource.url}" target="_blank">${resource.title}</a></h4>
+                                    <div class="resource-actions">
+                                        <button class="remove-from-collection" data-id="${resourceId}">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                `;
+                                resourcesList.appendChild(resourceElement);
 
-            document.getElementById('backToCollections').addEventListener('click', fetchAndDisplayCollections);
+                                // Add drag event listeners
+                                resourceElement.addEventListener('dragstart', (e) => {
+                                    e.dataTransfer.setData('application/json', JSON.stringify({
+                                        resourceId: resourceId,
+                                        sourceCollectionId: collectionId
+                                    }));
+                                    resourceElement.classList.add('dragging');
+                                });
+
+                                resourceElement.addEventListener('dragend', () => {
+                                    resourceElement.classList.remove('dragging');
+                                    document.querySelectorAll('.collection-card').forEach(card => {
+        card.classList.remove('drag-over');
+                                    });
+                                });
+
+                                resourceElement.querySelector('.remove-from-collection').addEventListener('click', () => 
+                                    removeFromCollection(collectionId, resourceId));
+                            }
+                        });
+                });
+            } else {
+                resourcesList.innerHTML = '<p class="no-resources">No resources in this collection yet.</p>';
+            }
         });
 }
 
@@ -993,13 +1491,55 @@ function fetchAndDisplayFavorites() {
 }
 
 // Function to display collections and their resources
-function viewCollectionResources(collectionId) {
+function viewCollection(collectionId) {
+    const collectionCard = document.querySelector(`[data-id="${collectionId}"]`).closest('.collection-card');
+    const existingExpanded = document.querySelector('.collection-expanded');
+    
+    // If clicking the same collection that's already expanded, collapse it
+    if (existingExpanded && existingExpanded.previousElementSibling === collectionCard) {
+        existingExpanded.classList.remove('active');
+        setTimeout(() => existingExpanded.remove(), 300); // Remove after animation
+        return;
+    }
+
+    // Remove any existing expanded section
+    if (existingExpanded) {
+        existingExpanded.classList.remove('active');
+        setTimeout(() => existingExpanded.remove(), 300);
+    }
+
+    // Create new expanded section
+    const expandedSection = document.createElement('div');
+    expandedSection.className = 'collection-expanded';
+    
+    expandedSection.innerHTML = `
+        <div class="collection-resources">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                <button class="btn-icon collapse-collection" title="Collapse">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+            <div class="resources-list"></div>
+        </div>
+    `;
+
+    // Insert after the collection card
+    collectionCard.insertAdjacentElement('afterend', expandedSection);
+    
+    // Add collapse button listener
+    expandedSection.querySelector('.collapse-collection').addEventListener('click', () => {
+        expandedSection.classList.remove('active');
+        setTimeout(() => expandedSection.remove(), 300);
+    });
+
+    // Trigger animation after a brief delay
+    setTimeout(() => expandedSection.classList.add('active'), 50);
+
+    // Populate resources
+    const resourcesList = expandedSection.querySelector('.resources-list');
     db.collection('users').doc(currentUser.uid).collection('collections').doc(collectionId).get()
         .then((doc) => {
             const collection = doc.data();
-            const contentArea = document.getElementById('contentArea');
-            contentArea.innerHTML = `<h2>${collection.name}</h2>`;
-
             if (collection.resources && collection.resources.length > 0) {
                 collection.resources.forEach(resourceId => {
                     db.collection('users').doc(currentUser.uid).collection('resources').doc(resourceId).get()
@@ -1007,25 +1547,192 @@ function viewCollectionResources(collectionId) {
                             if (resourceDoc.exists) {
                                 const resource = resourceDoc.data();
                                 const resourceElement = document.createElement('div');
-                                resourceElement.classList.add('resource-card');
+                                resourceElement.className = 'resource-item';
+                                resourceElement.draggable = true;
+                                resourceElement.dataset.resourceId = resourceId;
                                 resourceElement.innerHTML = `
-                                    <h3><a href="${resource.url}" target="_blank">${resource.title}</a></h3>
-                                    <p>${resource.description || ''}</p>
-                                    <button class="remove-from-collection" data-id="${resourceId}">Remove from Collection</button>
-                                    <button class="move-to-collection" data-id="${resourceId}">Move to Another Collection</button>
+                                    <div class="resource-drag-handle">
+                                        <i class="fas fa-grip-vertical"></i>
+                                    </div>
+                                    <h4><a href="${resource.url}" target="_blank">${resource.title}</a></h4>
+                                    <div class="resource-actions">
+                                        <button class="remove-from-collection" data-id="${resourceId}">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
                                 `;
-                                contentArea.appendChild(resourceElement);
+                                resourcesList.appendChild(resourceElement);
 
-                                // Add event listeners for resource actions
-                                resourceElement.querySelector('.remove-from-collection').addEventListener('click', () => removeFromCollection(collectionId, resourceId));
-                                resourceElement.querySelector('.move-to-collection').addEventListener('click', () => moveToCollection(collectionId, resourceId));
+                                // Add drag event listeners
+                                resourceElement.addEventListener('dragstart', (e) => {
+                                    e.dataTransfer.setData('application/json', JSON.stringify({
+                                        resourceId: resourceId,
+                                        sourceCollectionId: collectionId
+                                    }));
+                                    resourceElement.classList.add('dragging');
+                                });
+
+                                resourceElement.addEventListener('dragend', () => {
+                                    resourceElement.classList.remove('dragging');
+                                    document.querySelectorAll('.collection-card').forEach(card => {
+                                        card.classList.remove('drag-over');
+                                    });
+                                });
+
+                                resourceElement.querySelector('.remove-from-collection').addEventListener('click', () => 
+                                    removeFromCollection(collectionId, resourceId));
                             }
                         });
                 });
             } else {
-                contentArea.innerHTML += '<p>No resources in this collection.</p>';
+                resourcesList.innerHTML = '<p class="no-resources">No resources in this collection yet.</p>';
             }
         });
+}
+
+function fetchAndDisplayCollections() {
+    const contentArea = document.getElementById('contentArea');
+    
+    // Clear existing content and set up the collections section
+    contentArea.innerHTML = `
+        <div class="collections-section">
+            <div class="collections-header">
+                <h2>My Collections</h2>
+                <button id="createCollectionBtn" class="btn-primary">
+                    <i class="fas fa-plus"></i> Create Collection
+                </button>
+            </div>
+            <div class="collections-list"></div>
+        </div>
+    `;
+
+    const collectionsList = document.querySelector('.collections-list');
+
+    // Fetch collections
+    db.collection('users').doc(currentUser.uid).collection('collections')
+        .orderBy('createdAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            if (querySnapshot.empty) {
+                collectionsList.innerHTML = '<p class="no-collections">No collections yet. Create your first collection!</p>';
+                return;
+            }
+
+            // Create a fragment for better performance
+            const fragment = document.createDocumentFragment();
+            
+            querySnapshot.forEach((doc) => {
+                const collection = doc.data();
+                const collectionCard = document.createElement('div');
+                collectionCard.className = 'collection-card';
+                
+                const resourceCount = collection.resources ? collection.resources.length : 0;
+                const lastUpdated = collection.updatedAt ? new Date(collection.updatedAt.toDate()).toLocaleDateString() : 'Never';
+                
+                collectionCard.innerHTML = `
+                    <div class="collection-icon">
+                        <i class="fas fa-folder"></i>
+                    </div>
+                    <div class="collection-content">
+                        <h3>${collection.name || 'Unnamed Collection'}</h3>
+                       
+                        <div class="collection-meta">
+                            <span><i class="fas fa-bookmark"></i> ${resourceCount} resources</span>
+                           
+                        </div>
+                    </div>
+                    <div class="collection-actions">
+                        <button class="view-collection" data-id="${doc.id}" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="edit-collection" data-id="${doc.id}" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-collection" data-id="${doc.id}" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+
+                // Add event listeners
+                const viewBtn = collectionCard.querySelector('.view-collection');
+                const editBtn = collectionCard.querySelector('.edit-collection');
+                const deleteBtn = collectionCard.querySelector('.delete-collection');
+                
+                viewBtn.addEventListener('click', () => viewCollection(doc.id));
+                editBtn.addEventListener('click', () => editCollection(doc.id));
+                deleteBtn.addEventListener('click', () => deleteCollection(doc.id));
+
+                // Add drop zone functionality
+                collectionCard.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    collectionCard.classList.add('drag-over');
+                });
+
+                collectionCard.addEventListener('dragleave', () => {
+                    collectionCard.classList.remove('drag-over');
+                });
+
+                collectionCard.addEventListener('drop', async (e) => {
+                    e.preventDefault();
+                    collectionCard.classList.remove('drag-over');
+                    
+                    try {
+                        const data = JSON.parse(e.dataTransfer.getData('application/json'));
+                        const targetCollectionId = doc.id;
+                        
+                        if (data.sourceCollectionId === targetCollectionId) return;
+
+                        // Remove from source collection
+                        await db.collection('users').doc(currentUser.uid)
+                            .collection('collections').doc(data.sourceCollectionId)
+                            .update({
+                                resources: firebase.firestore.FieldValue.arrayRemove(data.resourceId)
+                            });
+
+                        // Add to target collection
+                        await db.collection('users').doc(currentUser.uid)
+                            .collection('collections').doc(targetCollectionId)
+                            .update({
+                                resources: firebase.firestore.FieldValue.arrayUnion(data.resourceId)
+                            });
+
+                        // Refresh both collections
+                        viewCollection(data.sourceCollectionId);
+                        viewCollection(targetCollectionId);
+                        
+                        console.log('Resource moved successfully');
+                    } catch (error) {
+                        console.error('Error moving resource:', error);
+                        alert('Failed to move resource. Please try again.');
+                    }
+                });
+
+                fragment.appendChild(collectionCard);
+            });
+
+            // Append all cards at once
+            collectionsList.appendChild(fragment);
+        })
+        .catch((error) => {
+            console.error("Error fetching collections: ", error);
+            collectionsList.innerHTML = '<p class="error-message">Error loading collections. Please try again.</p>';
+        });
+
+    // Add event listener for create collection button
+    const createCollectionBtn = document.getElementById('createCollectionBtn');
+    if (createCollectionBtn) {
+        const newBtn = createCollectionBtn.cloneNode(true);
+        createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
+        
+        newBtn.addEventListener('click', () => {
+            const modal = document.getElementById('collectionModal');
+            modal.style.display = 'block';
+            document.getElementById('newCollectionName').value = '';
+            modal.querySelector('h2').textContent = 'Create New Collection';
+            document.getElementById('addToCollection').textContent = 'Create Collection';
+        });
+    }
 }
 
 // Function to rename a collection
@@ -1835,9 +2542,16 @@ function createCollectionCard(id, collection) {
     const card = document.createElement('div');
     card.className = 'collection-card';
     card.innerHTML = `
-        <h3>${collection.name}</h3>
-        <p class="collection-description">${collection.description || 'No description'}</p>
-        <p class="resource-count">${collection.resources ? collection.resources.length : 0} resources</p>
+        <div class="collection-icon">
+            <i class="fas fa-folder"></i>
+        </div>
+        <div class="collection-content">
+            <h3>${collection.name}</h3>
+            <p class="collection-description">${collection.description || 'No description'}</p>
+            <div class="collection-meta">
+                <span><i class="fas fa-book"></i> ${collection.resources ? collection.resources.length : 0} resources</span>
+            </div>
+        </div>
         <div class="collection-actions">
             <button class="btn-icon view-collection" title="View Collection"><i class="fas fa-eye"></i></button>
             <button class="btn-icon edit-collection" title="Edit Collection"><i class="fas fa-edit"></i></button>
@@ -1845,6 +2559,7 @@ function createCollectionCard(id, collection) {
         </div>
     `;
 
+    // Add event listeners
     card.querySelector('.view-collection').addEventListener('click', () => viewCollection(id));
     card.querySelector('.edit-collection').addEventListener('click', () => editCollection(id));
     card.querySelector('.delete-collection').addEventListener('click', () => deleteCollection(id));

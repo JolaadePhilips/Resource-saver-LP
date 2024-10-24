@@ -518,30 +518,7 @@ header {
     margin-top: 10px;
 }
 
-.note-card, .collection-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
-    transition: box-shadow 0.3s ease;
-}
 
-.note-card:hover, .collection-card:hover {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.note-card h3, .collection-card h3 {
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-    color: var(--text-color);
-}
-
-.note-card p, .collection-card p {
-    color: var(--secondary-color);
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-}
 
 .note-card small {
     display: block;
@@ -793,6 +770,7 @@ header {
 .learning-path-resource button:hover {
     opacity: 0.8;
 }
+
 
 /* Update the resource title hover styles */
 .resource-card:nth-child(8n+1) h3 a:hover { color: rgba(74, 144, 226, 1); }

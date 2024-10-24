@@ -1,0 +1,507 @@
+/* Main container adjustments */
+.main-content {
+    width: calc(100% - 250px);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Collections Section - Full width */
+.collections-section {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Collections Container */
+#collectionsContainer {
+    width: 100%;
+    margin: 0;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+/* Collection Card - SINGLE DEFINITION */
+.collection-card {
+    display: flex;
+    align-items: center;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px 20px;
+    width: calc(100vw - 300px);
+    min-width: 600px;
+    max-width: 1150px;
+    min-height: 80px;
+    box-sizing: border-box;
+    margin: 0 auto 12px auto;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    counter-reset: resource-counter;
+}
+
+/* Collection Icon - Add coolness */
+.collection-icon {
+    font-size: 24px;
+    color: var(--primary-color);
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    border-radius: 50%;
+    margin-right: 20px;
+    transition: all 0.3s ease;
+}
+
+.collection-card:hover .collection-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 0 15px rgba(var(--primary-color-rgb), 0.3);
+}
+
+/* Collection Content - Enhance title */
+.collection-content h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.collection-card:hover .collection-content h3 {
+    text-shadow: 1px 1px 2px rgba(var(--primary-color-rgb), 0.3);
+}
+
+/* Collection Actions - Align and style icons */
+.collection-actions {
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+    padding-left: 20px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--border-color);
+    min-width: 120px;
+    align-items: center;
+}
+
+.collection-actions button {
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    color: var(--secondary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+}
+
+.collection-actions button:hover {
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+/* Add a subtle hover effect to the entire card */
+.collection-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Collection Content */
+.collection-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    margin-right: 20px;
+    gap: 4px;
+}
+
+.collection-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Collection Meta */
+.collection-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+}
+
+
+
+/* Resource Actions */
+.resource-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.resource-actions button {
+    background: none;
+    border: none;
+    padding: 4px;
+    border-radius: 4px;
+    color: var(--secondary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
+}
+
+.resource-actions button:hover {
+    color: var(--primary-color);
+    background-color: var(--hover-color);
+    transform: scale(1.1);
+}
+
+/* Dark mode specific styles */
+.dark-mode .collection-resource-item {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .resource-title {
+    color: white;
+}
+
+.dark-mode .resource-actions button {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .resource-actions button:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Create Collection Button */
+.create-collection-btn {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.create-collection-btn:hover {
+    background-color: var(--primary-color-light);
+}
+
+/* Drag and Drop Styles */
+.collection-card.drag-over {
+    background-color: var(--hover-color);
+    border: 2px dashed var(--primary-color);
+}
+
+
+.collection-resource-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 6px 0;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    counter-increment: resource-counter; /* Increment counter for each item */
+}
+
+.collection-resource-item::before {
+    content: counter(resource-counter) ". "; /* Display the counter */
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-right: 10px;
+}
+
+.collection-resource-item:hover {
+    transform: translateX(3px);
+    border-color: var(--primary-color);
+    background-color: var(--hover-color);
+}
+
+/* Resource Title */
+.resource-title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+/* Resource Actions */
+.resource-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.resource-actions button {
+    background: none;
+    border: none;
+    padding: 4px;
+    border-radius: 4px;
+    color: var(--secondary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
+}
+
+.resource-actions button:hover {
+    color: var(--primary-color);
+    background-color: var(--hover-color);
+    transform: scale(1.1);
+}
+
+/* Dark mode specific styles */
+.dark-mode .collection-resource-item {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .resource-title {
+    color: white;
+}
+
+.dark-mode .resource-actions button {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .resource-actions button:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Hover state */
+.collection-resource-item:hover {
+    transform: translateX(5px);
+    border-color: var(--primary-color);
+    background-color: var(--hover-color);
+}
+
+/* Collection Card - Stretched Format */
+.collection-card {
+    display: flex;
+    align-items: center;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px 20px;
+    width: 340%;
+    min-height: 80px;
+    box-sizing: border-box;
+    margin: 0 auto 12px auto; /* Center the card */
+    transition: all 0.3s ease;
+    position: relative;
+    left: 0;
+}
+
+/* Collection Content - Allow it to stretch */
+.collection-content {
+    flex: 1;
+    min-width: 0; /* Prevents content overflow */
+    margin-right: 20px; /* Space before actions */
+}
+
+/* Keep actions tight on the right */
+.collection-actions {
+    display: flex;
+    gap: 15px;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Collection Card - Responsive Version */
+.collection-card {
+    display: flex;
+    align-items: center;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px 20px;
+    width: calc(100vw - 300px); /* Base width for large screens */
+    min-width: 600px; /* Minimum width to prevent too narrow cards */
+    max-width: 1150px; /* Maximum width to prevent too wide cards */
+    min-height: 80px;
+    box-sizing: border-box;
+    margin: 0 auto 12px auto;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Media queries for different screen sizes */
+@media screen and (max-width: 1200px) {
+    .collection-card {
+        width: calc(100vw - 280px);
+    }
+    
+    .collection-meta {
+        gap: 15px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .collection-card {
+        padding: 12px 15px;
+    }
+    
+    .collection-content {
+        max-width: calc(100% - 160px); /* Adjust space for icons on mobile */
+    }
+    
+    .collection-actions {
+        gap: 8px;
+        padding-left: 10px;
+        min-width: 100px; /* Slightly smaller on mobile */
+    }
+    
+    .collection-meta {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+
+
+
+.resource-number::before {
+    content: counter(resource-counter) ".";
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-right: 12px;
+}
+
+.resource-link {
+    color: var(--text-color);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.resource-link:hover {
+    color: var(--primary-color);
+}
+
+.resource-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: 16px;
+}
+
+.resource-item:hover {
+    transform: translateX(4px);
+    border-color: var(--primary-color);
+    background-color: var(--hover-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Simple Resource List Styles */
+.collection-resources {
+    margin: 15px 0 15px 20px;
+    padding: 0;
+    list-style-type: none;
+    width: calc(100% - 40px);
+    box-sizing: border-box;
+}
+
+/* Update collection resource item styles */
+.collection-expanded .resource-item {
+    padding: 8px 8px 8px 35px;
+    background-color: transparent;
+    display: grid;
+    grid-template-columns: 30px minmax(800px, 1fr) auto; /* Increased title width further */
+    gap: 15px;
+    align-items: center;
+    position: relative;
+    transition: all 0.2s ease;
+    border: none;
+    max-width: calc(100vw - 250px);
+    cursor: pointer;
+}
+
+.collection-expanded .resource-item h4 {
+    margin: 0;
+    min-width: 800px; /* Increased minimum width */
+}
+
+.collection-expanded .resource-item h4 a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    width: 100%;
+}
+
+/* Resource Actions - Position on the right */
+.collection-expanded .resource-actions {
+    display: flex;
+    gap: 12px;
+    opacity: 0.7;
+    margin-left: auto;
+    justify-content: flex-end;
+}
+
+.collection-expanded .resource-actions button {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+/* Hover effect without border */
+.collection-expanded .resource-item:hover {
+    color: var(--primary-color);
+    transform: translateX(2px);
+  
+    
+}
+
+/* Make title color change on hover */
+.collection-expanded .resource-item:hover h4 a {
+    color: var(--primary-color);
+}
+
+/* Remove any chevron icons */
+[class*="fa-chevron"],
+.fa-chevron-up,
+.fa-chevron-down,
+.fa-angle-up,
+.fa-angle-down,
+.collection-resource-item [class*="fa-chevron"],
+.collection-expanded [class*="fa-chevron"],
+.toggle-dropdown {
+    display: none !important;
+}
+
+/* Ensure no space is reserved for hidden icons */
+.collection-resource-item,
+.collection-expanded .resource-item {
+    padding-right: 12px !important;
+}
