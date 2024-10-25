@@ -50,11 +50,21 @@ function updateActiveTab() {
 function fetchAndDisplayContent() {
     const contentArea = document.getElementById('contentArea');
     const notesSection = document.getElementById('notesSection');
+    const paginationContainer = document.getElementById('pagination');
+
+    // Hide pagination by default
+    if (paginationContainer) {
+        paginationContainer.style.display = 'none';
+    }
 
     switch (currentTab) {
         case 'resources':
             contentArea.style.display = 'grid';
             notesSection.style.display = 'none';
+            // Show pagination only for resources tab
+            if (paginationContainer) {
+                paginationContainer.style.display = 'flex';
+            }
             fetchAndDisplayResources();
             break;
         case 'notes':
@@ -63,21 +73,28 @@ function fetchAndDisplayContent() {
             fetchAndDisplayNotes();
             break;
         case 'collections':
+            contentArea.style.display = 'block';
+            notesSection.style.display = 'none';
             fetchAndDisplayCollections();
             break;
         case 'favorites':
+            contentArea.style.display = 'grid';
+            notesSection.style.display = 'none';
             fetchAndDisplayFavorites();
             break;
-        case 'tags':
-            fetchAndDisplayTags();
-            break;
         case 'statistics':
+            contentArea.style.display = 'block';
+            notesSection.style.display = 'none';
             fetchAndDisplayStatistics();
             break;
         case 'learning-paths':
+            contentArea.style.display = 'block';
+            notesSection.style.display = 'none';
             fetchAndDisplayLearningPaths();
             break;
         case 'recent':
+            contentArea.style.display = 'block';
+            notesSection.style.display = 'none';
             fetchAndDisplayRecentActivity();
             break;
     }
@@ -911,16 +928,16 @@ function viewCollection(collectionId) {
 
 function fetchAndDisplayCollections() {
     const contentArea = document.getElementById('contentArea');
-    
+
     // Clear existing content and set up the collections section
     contentArea.innerHTML = `
         <div class="collections-section">
             <div class="collections-header">
                 <h2>My Collections</h2>
-                <button id="createCollectionBtn" class="btn-primary">
+            <button id="createCollectionBtn" class="btn-primary">
                     <i class="fas fa-plus"></i> Create Collection
-                </button>
-            </div>
+            </button>
+        </div>
             <div class="collections-list"></div>
         </div>
     `;
@@ -1194,41 +1211,41 @@ function fetchAndDisplayCollections() {
 
             // Create a fragment for better performance
             const fragment = document.createDocumentFragment();
-            
+
             querySnapshot.forEach((doc) => {
                 const collection = doc.data();
                 const collectionCard = document.createElement('div');
                 collectionCard.className = 'collection-card';
-    
-    const resourceCount = collection.resources ? collection.resources.length : 0;
+                
+                const resourceCount = collection.resources ? collection.resources.length : 0;
                 const lastUpdated = collection.updatedAt ? new Date(collection.updatedAt.toDate()).toLocaleDateString() : 'Never';
-    
+                
                 collectionCard.innerHTML = `
                     <div class="collection-icon">
                         <i class="fas fa-folder"></i>
                     </div>
-        <div class="collection-content">
-            <h3>${collection.name || 'Unnamed Collection'}</h3>
-           
-            <div class="collection-meta">
-                <span><i class="fas fa-bookmark"></i> ${resourceCount} resources</span>
+                    <div class="collection-content">
+                        <h3>${collection.name || 'Unnamed Collection'}</h3>
+    
+                        <div class="collection-meta">
+                            <span><i class="fas fa-bookmark"></i> ${resourceCount} resources</span>
                             <span><i class="fas fa-clock"></i> Last updated: ${lastUpdated}</span>
-            </div>
-        </div>
-        <div class="collection-actions">
+                        </div>
+                    </div>
+                    <div class="collection-actions">
                         <button class="view-collection" data-id="${doc.id}" title="View">
-                <i class="fas fa-eye"></i>
-            </button>
+                            <i class="fas fa-eye"></i>
+                        </button>
                         <button class="edit-collection" data-id="${doc.id}" title="Edit">
-                <i class="fas fa-edit"></i>
-            </button>
+                            <i class="fas fa-edit"></i>
+                        </button>
                         <button class="delete-collection" data-id="${doc.id}" title="Delete">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    `;
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
 
-    // Add event listeners
+                // Add event listeners
                 const viewBtn = collectionCard.querySelector('.view-collection');
                 const editBtn = collectionCard.querySelector('.edit-collection');
                 const deleteBtn = collectionCard.querySelector('.delete-collection');
@@ -1237,9 +1254,9 @@ function fetchAndDisplayCollections() {
                 editBtn.addEventListener('click', () => editCollection(doc.id));
                 deleteBtn.addEventListener('click', () => deleteCollection(doc.id));
 
-    // Add drop zone functionality
+                // Add drop zone functionality
                 collectionCard.addEventListener('dragover', (e) => {
-        e.preventDefault();
+                    e.preventDefault();
                     collectionCard.classList.add('drag-over');
                 });
 
@@ -1295,23 +1312,23 @@ function fetchAndDisplayCollections() {
 
     // Add event listener for create collection button
     document.addEventListener('DOMContentLoaded', () => {
-        // Add event listener for create collection button
-        const createCollectionBtn = document.getElementById('createCollectionBtn');
-        if (createCollectionBtn) {
+    // Add event listener for create collection button
+    const createCollectionBtn = document.getElementById('createCollectionBtn');
+    if (createCollectionBtn) {
             createCollectionBtn.addEventListener('click', showCreateCollectionModal);
-            const newBtn = createCollectionBtn.cloneNode(true);
-            createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
-            
-            newBtn.addEventListener('click', () => {
-                const modal = document.getElementById('collectionModal');
-                modal.style.display = 'block';
-                document.getElementById('newCollectionName').value = '';
-                modal.querySelector('h2').textContent = 'Create New Collection';
-                document.getElementById('addToCollection').textContent = 'Create Collection';
-            });
-        }
+        const newBtn = createCollectionBtn.cloneNode(true);
+        createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
+        
+        newBtn.addEventListener('click', () => {
+            const modal = document.getElementById('collectionModal');
+            modal.style.display = 'block';
+            document.getElementById('newCollectionName').value = '';
+            modal.querySelector('h2').textContent = 'Create New Collection';
+            document.getElementById('addToCollection').textContent = 'Create Collection';
+        });
+    }
     });
-        }
+}
 
 // Function to show the create collection modal
 function showCreateCollectionModal() {
@@ -1439,7 +1456,7 @@ function viewCollection(collectionId) {
                                 resourceElement.addEventListener('dragend', () => {
                                     resourceElement.classList.remove('dragging');
                                     document.querySelectorAll('.collection-card').forEach(card => {
-        card.classList.remove('drag-over');
+                                        card.classList.remove('drag-over');
                                     });
                                 });
 
@@ -1613,16 +1630,16 @@ function viewCollection(collectionId) {
 
 function fetchAndDisplayCollections() {
     const contentArea = document.getElementById('contentArea');
-    
+
     // Clear existing content and set up the collections section
     contentArea.innerHTML = `
         <div class="collections-section">
             <div class="collections-header">
                 <h2>My Collections</h2>
-                <button id="createCollectionBtn" class="btn-primary">
+            <button id="createCollectionBtn" class="btn-primary">
                     <i class="fas fa-plus"></i> Create Collection
-                </button>
-            </div>
+            </button>
+        </div>
             <div class="collections-list"></div>
         </div>
     `;
@@ -1931,40 +1948,168 @@ function fetchAndDisplayTags() {
 
 function fetchAndDisplayStatistics() {
     if (!currentUser) return;
-
+    
     const resourcesRef = db.collection('users').doc(currentUser.uid).collection('resources');
-    resourcesRef.get().then((querySnapshot) => {
+    const notesRef = db.collection('users').doc(currentUser.uid).collection('notes');
+    const collectionsRef = db.collection('users').doc(currentUser.uid).collection('collections');
+    
+    // Get current timestamp for time comparisons
+    const now = new Date();
+    const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+    
+    Promise.all([
+        resourcesRef.get(),
+        notesRef.where('createdAt', '>', sevenDaysAgo).get(),
+        collectionsRef.where('createdAt', '>', sevenDaysAgo).get(),
+        resourcesRef.where('isFavorite', '==', true).get()
+    ]).then(([resourcesSnapshot, recentNotesSnapshot, recentCollectionsSnapshot, favoritesSnapshot]) => {
         const stats = {
-            totalResources: querySnapshot.size,
+            totalResources: resourcesSnapshot.size,
             readResources: 0,
             unreadResources: 0,
             favoriteResources: 0,
             categoryCounts: {},
-            typeCounts: {}
+            typeCounts: {},
+            recentlyAdded: 0,
+            recentNotes: recentNotesSnapshot.size,
+            recentCollections: recentCollectionsSnapshot.size,
+            totalFavorites: favoritesSnapshot.size,
+            tagsCount: new Set(),
+            avgResourcesPerCategory: 0
         };
 
-        querySnapshot.forEach((doc) => {
+        resourcesSnapshot.forEach((doc) => {
             const resource = doc.data();
+            // Existing stats
             if (resource.status === 'read') stats.readResources++;
             else stats.unreadResources++;
             if (resource.favorite) stats.favoriteResources++;
             stats.categoryCounts[resource.category] = (stats.categoryCounts[resource.category] || 0) + 1;
             stats.typeCounts[resource.type] = (stats.typeCounts[resource.type] || 0) + 1;
+
+            // More accurate recent activity tracking
+            if (resource.createdAt && resource.createdAt.toDate() > sevenDaysAgo) {
+                stats.recentlyAdded++;
+            }
+            if (resource.tags) {
+                resource.tags.forEach(tag => stats.tagsCount.add(tag));
+            }
         });
+
+        // Calculate average resources per category
+        const categoryCount = Object.keys(stats.categoryCounts).length;
+        stats.avgResourcesPerCategory = categoryCount ? (stats.totalResources / categoryCount).toFixed(1) : 0;
 
         const contentArea = document.getElementById('contentArea');
         contentArea.innerHTML = `
-            <h2>Statistics</h2>
-            <p>Total Resources: ${stats.totalResources}</p>
-            <p>Read Resources: ${stats.readResources}</p>
-            <p>Unread Resources: ${stats.unreadResources}</p>
-            <p>Favorite Resources: ${stats.favoriteResources}</p>
-            <h3>Categories</h3>
-            <ul>${Object.entries(stats.categoryCounts).map(([category, count]) => `<li>${category}: ${count}</li>`).join('')}</ul>
-            <h3>Types</h3>
-            <ul>${Object.entries(stats.typeCounts).map(([type, count]) => `<li>${type}: ${count}</li>`).join('')}</ul>
+            <div class="statistics-container">
+                <h2 class="stats-header">Resource Statistics</h2>
+                
+                <!-- Overview Stats spread horizontally -->
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <i class="fas fa-book"></i>
+                        <h3>Total Resources</h3>
+                        <span>${stats.totalResources}</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Read</h3>
+                        <span>${stats.readResources}</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <h3>Unread</h3>
+                        <span>${stats.unreadResources}</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-star"></i>
+                        <h3>Favorites</h3>
+                        <span>${stats.favoriteResources}</span>
+                    </div>
+                </div>
+
+                <!-- Three equal columns for detailed stats -->
+                <div class="stats-details">
+                    <!-- Categories Distribution -->
+                    <div class="chart-container">
+                        <h3>Categories Distribution</h3>
+                        <div class="category-bars">
+                            ${Object.entries(stats.categoryCounts)
+                                .sort((a, b) => b[1] - a[1])
+                                .map(([category, count]) => `
+                                    <div class="bar-item">
+                                        <div class="bar-label">${category || 'Uncategorized'}</div>
+                                        <div class="bar-track">
+                                            <div class="bar-fill" style="width: ${(count/stats.totalResources)*100}%"></div>
+                                        </div>
+                                        <div class="bar-value">${count}</div>
+                                    </div>
+                                `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Resource Types -->
+                    <div class="chart-container">
+                        <h3>Resource Types</h3>
+                        <div class="type-grid">
+                            ${Object.entries(stats.typeCounts)
+                                .sort((a, b) => b[1] - a[1])
+                                .map(([type, count]) => `
+                                    <div class="type-item">
+                                        <div class="type-icon"><i class="fas ${getTypeIcon(type)}"></i></div>
+                                        <div class="type-details">
+                                            <span class="type-name">${type || 'Unspecified'}</span>
+                                            <span class="type-count">${count}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="stats-section">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-metrics">
+                            <div class="metric">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>${stats.recentlyAdded} new resources added</span>
+                            </div>
+                            <div class="metric">
+                                <i class="fas fa-sticky-note"></i>
+                                <span>${stats.recentNotes} new notes created</span>
+                            </div>
+                            <div class="metric">
+                                <i class="fas fa-folder-plus"></i>
+                                <span>${stats.recentCollections} new collections created</span>
+                            </div>
+                            <div class="metric">
+                                <i class="fas fa-star"></i>
+                                <span>${stats.totalFavorites} total favorites</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         `;
     });
+}
+
+// Helper function to get appropriate icon for resource type
+function getTypeIcon(type) {
+    const iconMap = {
+        'article': 'fa-newspaper',
+        'video': 'fa-video',
+        'book': 'fa-book',
+        'course': 'fa-graduation-cap',
+        'podcast': 'fa-podcast',
+        'document': 'fa-file-alt',
+        'tutorial': 'fa-chalkboard-teacher',
+        'tool': 'fa-tools',
+        'website': 'fa-globe',
+        'repository': 'fa-code-branch'
+    };
+    return iconMap[type.toLowerCase()] || 'fa-bookmark';
 }
 
 function fetchAndDisplayLearningPaths() {
@@ -2101,54 +2246,193 @@ function viewLearningPath(pathId) {
             const path = doc.data();
             const contentArea = document.getElementById('contentArea');
             contentArea.innerHTML = `
-                <h2>${path.name}</h2>
-                <p>${path.description || 'No description provided.'}</p>
-                <div class="learning-path-progress">
-                    <div class="progress-bar" style="width: ${calculateProgress(path)}%"></div>
+                <div class="notion-like-page">
+                    <div class="page-header">
+                        <div class="breadcrumb">
+                            <a href="#" id="backToLearningPaths">Learning Paths</a>
+                            <span class="separator">/</span>
+                            <span class="current-path">${path.name}</span>
+                        </div>
+                        <div class="page-actions">
+                            <button class="btn-subtle" id="editPathBtn">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="page-title">
+                        <h1 contenteditable="true" id="pathTitle">${path.name}</h1>
+                        <div class="path-tags">
+                            <span class="tag difficulty">${path.difficulty || 'Beginner'}</span>
+                            <span class="tag time">${path.estimatedTime || '2-3 hours'}</span>
+                            <span class="tag progress">${calculateProgress(path)}% Complete</span>
+                        </div>
+                    </div>
+
+                    <div class="page-content">
+                        <div class="content-block description">
+                            <div class="block-handle">⋮⋮</div>
+                            <div class="block-content" contenteditable="true">
+                                ${path.description || 'Add a description...'}
+                            </div>
+                        </div>
+
+                        <div class="content-block resources">
+                            <div class="block-header">
+                                <h3>Resources</h3>
+                                <button class="btn-subtle" id="addResourceBtn">
+                                    <i class="fas fa-plus"></i> Add Resource
+                                </button>
+                            </div>
+                            <div class="resources-list" id="pathResources">
+                                ${generateResourcesList(path.resources)}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p class="progress-text">${calculateCompletedResources(path)}/${path.resources ? path.resources.length : 0} resources completed</p>
-                <button id="addResourceToPath" class="btn-primary"><i class="fas fa-plus"></i> Add Resource to Path</button>
-                <h3>Resources:</h3>
-                <div id="pathResources" class="learning-path-resources"></div>
-                <button id="backToLearningPaths" class="btn-secondary"><i class="fas fa-arrow-left"></i> Back to Learning Paths</button>
+
+                <!-- Resource Selection Modal -->
+                <div id="resourceSelectionModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Add Resources to Path</h2>
+                            <button class="close">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="search-bar">
+                                <input type="text" id="resourceSearch" placeholder="Search resources...">
+                            </div>
+                            <div class="resources-grid" id="availableResources">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-secondary" id="cancelResourceAdd">Cancel</button>
+                            <button class="btn-primary" id="confirmResourceAdd">Add Selected</button>
+                        </div>
+                    </div>
+                </div>
             `;
 
-            const pathResourcesContainer = document.getElementById('pathResources');
+            // Event Listeners
+            setupPathEventListeners(pathId, path);
+        });
+}
 
-            if (path.resources && path.resources.length > 0) {
-                path.resources.forEach((resource, index) => {
-                    const resourceElement = document.createElement('div');
-                    resourceElement.classList.add('learning-path-resource');
-                    resourceElement.innerHTML = `
-                        <div class="learning-path-resource-number">${index + 1}</div>
-                        <div class="learning-path-resource-content">
-                            <h4>${resource.title}</h4>
-                            <p>${resource.description || 'No description provided.'}</p>
-                            <a href="${resource.url}" target="_blank" class="btn-link">View Resource</a>
-                        </div>
-                        <div class="learning-path-resource-status ${resource.completed ? 'completed' : ''}">
-                            ${resource.completed ? 'Completed' : 'Not Completed'}
-                        </div>
-                        <button class="btn-secondary toggle-resource-status" data-id="${resource.id}">
-                            ${resource.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
-                        </button>
-                        <button class="btn-danger remove-from-path" data-id="${resource.id}"><i class="fas fa-trash"></i></button>
-                    `;
-                    pathResourcesContainer.appendChild(resourceElement);
-                });
-            } else {
-                pathResourcesContainer.innerHTML = '<p>No resources added to this path yet.</p>';
-            }
+function setupPathEventListeners(pathId, path) {
+    // Back button
+    document.getElementById('backToLearningPaths').addEventListener('click', (e) => {
+        e.preventDefault();
+        fetchAndDisplayLearningPaths();
+    });
 
-            document.getElementById('addResourceToPath').addEventListener('click', () => addResourceToPath(pathId));
-            document.getElementById('backToLearningPaths').addEventListener('click', fetchAndDisplayLearningPaths);
-            pathResourcesContainer.addEventListener('click', (e) => {
-                if (e.target.classList.contains('remove-from-path')) {
-                    removeResourceFromPath(pathId, e.target.getAttribute('data-id'));
-                } else if (e.target.classList.contains('toggle-resource-status')) {
-                    toggleResourceStatus(pathId, e.target.getAttribute('data-id'));
-                }
-            });
+    // Title editing
+    const pathTitle = document.getElementById('pathTitle');
+    pathTitle.addEventListener('blur', () => {
+        updatePathField(pathId, 'name', pathTitle.textContent);
+    });
+
+    // Add resource button
+    document.getElementById('addResourceBtn').addEventListener('click', () => {
+        showResourceSelectionModal(pathId);
+    });
+
+    // Edit path button dropdown
+    document.getElementById('editPathBtn').addEventListener('click', (e) => {
+        showPathActions(e, pathId);
+    });
+}
+
+function generateResourcesList(resources) {
+    if (!resources || resources.length === 0) {
+        return '<div class="empty-state">No resources added yet</div>';
+    }
+
+    return resources.map((resource, index) => `
+        <div class="resource-block ${resource.completed ? 'completed' : ''}" data-id="${resource.id}">
+            <div class="resource-handle">⋮⋮</div>
+            <div class="resource-checkbox">
+                <input type="checkbox" id="resource${index}" 
+                    ${resource.completed ? 'checked' : ''}>
+                <label for="resource${index}"></label>
+            </div>
+            <div class="resource-content">
+                <div class="resource-header">
+                    <h4>${resource.title}</h4>
+                    <span class="resource-type">${resource.type || 'Article'}</span>
+                </div>
+                <p class="resource-description">${resource.description || ''}</p>
+                <div class="resource-meta">
+                    <a href="${resource.url}" target="_blank" class="resource-link">
+                        <i class="fas fa-external-link-alt"></i> Open Resource
+                    </a>
+                    <span class="resource-duration">
+                        <i class="far fa-clock"></i> ${resource.duration || '10 min'}
+                    </span>
+                </div>
+            </div>
+            <div class="resource-actions">
+                <button class="btn-icon remove-resource" title="Remove from path">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function showResourceSelectionModal(pathId) {
+    const modal = document.getElementById('resourceSelectionModal');
+    modal.style.display = 'flex';
+
+    // Fetch all user's resources that aren't in the path
+    fetchAvailableResources(pathId).then(resources => {
+        const resourcesGrid = document.getElementById('availableResources');
+        resourcesGrid.innerHTML = resources.map(resource => `
+            <div class="resource-card selectable" data-id="${resource.id}">
+                <input type="checkbox" id="select${resource.id}">
+                <label for="select${resource.id}">
+                    <h4>${resource.title}</h4>
+                    <p>${resource.description || ''}</p>
+                    <div class="resource-meta">
+                        <span>${resource.type || 'Article'}</span>
+                        <span>${resource.duration || '10 min'}</span>
+                    </div>
+                </label>
+            </div>
+        `).join('');
+    });
+
+    // Handle resource selection and adding
+    document.getElementById('confirmResourceAdd').addEventListener('click', () => {
+        const selectedResources = Array.from(document.querySelectorAll('#availableResources input:checked'))
+            .map(checkbox => checkbox.closest('.resource-card').dataset.id);
+        
+        addResourcesToPath(pathId, selectedResources);
+        modal.style.display = 'none';
+    });
+}
+
+async function fetchAvailableResources(pathId) {
+    const pathDoc = await db.collection('users').doc(currentUser.uid)
+        .collection('learningPaths').doc(pathId).get();
+    const pathResources = pathDoc.data().resources || [];
+
+    const allResources = await db.collection('users').doc(currentUser.uid)
+        .collection('resources').get();
+
+    return allResources.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(resource => !pathResources.includes(resource.id));
+}
+
+function addResourcesToPath(pathId, resourceIds) {
+    db.collection('users').doc(currentUser.uid)
+        .collection('learningPaths').doc(pathId)
+        .update({
+            resources: firebase.firestore.FieldValue.arrayUnion(...resourceIds)
+        })
+        .then(() => {
+            viewLearningPath(pathId);
         });
 }
 
@@ -2161,6 +2445,12 @@ function calculateProgress(path) {
 function calculateCompletedResources(path) {
     if (!path.resources) return 0;
     return path.resources.filter(r => r.completed).length;
+}
+
+function calculateEstimatedCompletion(path) {
+    const progress = calculateProgress(path);
+    const estimatedDays = Math.ceil(progress / 10);
+    return `${estimatedDays} day${estimatedDays > 1 ? 's' : ''}`;
 }
 
 function toggleResourceStatus(pathId, resourceId) {
@@ -2181,40 +2471,6 @@ function toggleResourceStatus(pathId, resourceId) {
         .catch((error) => {
             console.error('Error toggling resource status:', error);
             alert('Failed to update resource status. Please try again.');
-        });
-}
-
-function addResourceToPath(pathId) {
-    db.collection('users').doc(currentUser.uid).collection('resources').get()
-        .then((querySnapshot) => {
-            const resources = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            const modal = createModal('Add Resource to Path', `
-                <select id="resourceSelect">
-                    ${resources.map(resource => `<option value="${resource.id}">${resource.title}</option>`).join('')}
-                </select>
-            `);
-
-            modal.querySelector('form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const resourceId = document.getElementById('resourceSelect').value;
-                const selectedResource = resources.find(r => r.id === resourceId);
-                
-                db.collection('users').doc(currentUser.uid).collection('learningPaths').doc(pathId).update({
-                    resources: firebase.firestore.FieldValue.arrayUnion({
-                        id: selectedResource.id,
-                        title: selectedResource.title,
-                        description: selectedResource.description,
-                        url: selectedResource.url,
-                        completed: false
-                    })
-                }).then(() => {
-                    closeModal(modal);
-                    viewLearningPath(pathId);
-                }).catch((error) => {
-                    console.error('Error adding resource to path:', error);
-                    alert('Failed to add resource to path. Please try again.');
-                });
-            });
         });
 }
 
@@ -2278,54 +2534,199 @@ function fetchAndDisplayRecentActivity() {
     if (!currentUser) return;
 
     const recentActivity = [];
+    const promises = [];
 
-    // Fetch recent resources
-    db.collection('users').doc(currentUser.uid).collection('resources')
-        .orderBy('createdAt', 'desc')
-        .limit(10)
-        .get()
-        .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                const resource = doc.data();
-                recentActivity.push({
-                    type: 'resource',
-                    title: resource.title,
-                    date: resource.createdAt.toDate()
+    // Fetch recent resources (added/modified)
+    promises.push(
+        db.collection('users').doc(currentUser.uid).collection('resources')
+            .orderBy('createdAt', 'desc')
+            .limit(20)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const resource = doc.data();
+                    recentActivity.push({
+                        type: 'resource_added',
+                        title: resource.title,
+                        date: resource.createdAt.toDate(),
+                        category: resource.category,
+                        resourceType: resource.type,
+                        url: resource.url
+                    });
+
+                    // Add status changes if they exist
+                    if (resource.lastStatusChange) {
+                        recentActivity.push({
+                            type: 'status_change',
+                            title: resource.title,
+                            date: resource.lastStatusChange.toDate(),
+                            status: resource.status,
+                            url: resource.url
+                        });
+                    }
                 });
-            });
+            })
+    );
 
-            // Fetch recent notes
-            return db.collection('users').doc(currentUser.uid).collection('notes')
-                .orderBy('createdAt', 'desc')
-                .limit(10)
-                .get();
-        })
-        .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                const note = doc.data();
-                recentActivity.push({
-                    type: 'note',
-                    title: note.resourceTitle,
-                    date: note.createdAt.toDate()
+    // Fetch recent notes
+    promises.push(
+        db.collection('users').doc(currentUser.uid).collection('notes')
+            .orderBy('createdAt', 'desc')
+            .limit(20)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const note = doc.data();
+                    recentActivity.push({
+                        type: 'note_added',
+                        title: note.resourceTitle || 'Untitled Resource',
+                        noteContent: note.content.substring(0, 100) + '...',
+                        date: note.createdAt.toDate(),
+                        resourceId: note.resourceId
+                    });
                 });
-            });
+            })
+    );
 
+    // Fetch recent learning path progress
+    promises.push(
+        db.collection('users').doc(currentUser.uid).collection('learningPaths')
+            .orderBy('lastUpdated', 'desc')
+            .limit(10)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const path = doc.data();
+                    if (path.recentProgress) {
+                        recentActivity.push({
+                            type: 'learning_progress',
+                            title: path.name,
+                            date: path.lastUpdated.toDate(),
+                            progress: path.progress
+                        });
+                    }
+                });
+            })
+    );
+
+    Promise.all(promises)
+        .then(() => {
             // Sort all activities by date
             recentActivity.sort((a, b) => b.date - a.date);
 
             // Display recent activity
             const contentArea = document.getElementById('contentArea');
-            contentArea.innerHTML = '<h2>Recent Activity</h2>';
-            recentActivity.forEach(activity => {
-                const activityElement = document.createElement('div');
-                activityElement.classList.add('activity-item');
-                activityElement.innerHTML = `
-                    <p>${activity.type === 'resource' ? 'Added resource:' : 'Added note to:'} ${activity.title}</p>
-                    <small>${activity.date.toLocaleString()}</small>
-                `;
-                contentArea.appendChild(activityElement);
-            });
+            contentArea.innerHTML = `
+                <div class="recent-activity-container">
+                    <h2 class="activity-header">Recent Activity</h2>
+                    
+                    <div class="activity-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-clock"></i>
+                            <h3>Last 24 Hours</h3>
+                            <span>${countActivitiesInPeriod(recentActivity, 1)}</span>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-calendar-week"></i>
+                            <h3>Last 7 Days</h3>
+                            <span>${countActivitiesInPeriod(recentActivity, 7)}</span>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h3>Last 30 Days</h3>
+                            <span>${countActivitiesInPeriod(recentActivity, 30)}</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-timeline">
+                        ${recentActivity.map(activity => createActivityItem(activity)).join('')}
+                    </div>
+                </div>
+            `;
+        })
+        .catch(error => {
+            console.error('Error fetching recent activity:', error);
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = '<p class="error-message">Error loading recent activity. Please try again.</p>';
         });
+}
+
+// Helper function to count activities within a time period
+function countActivitiesInPeriod(activities, days) {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    return activities.filter(activity => activity.date > cutoffDate).length;
+}
+
+// Helper function to create activity item HTML
+function createActivityItem(activity) {
+    const timeAgo = formatTimeAgo(activity.date);
+    let icon, label, details;
+
+    switch (activity.type) {
+        case 'resource_added':
+            icon = 'fa-plus-circle';
+            label = 'Added new resource';
+            details = `<a href="${activity.url}" target="_blank">${activity.title}</a>
+                      <span class="activity-meta">${activity.category || 'Uncategorized'} · ${activity.resourceType || 'Unknown type'}</span>`;
+            break;
+
+        case 'note_added':
+            icon = 'fa-sticky-note';
+            label = 'Added note to';
+            details = `<strong>${activity.title}</strong>
+                      <div class="note-preview">${activity.noteContent}</div>`;
+            break;
+
+        case 'status_change':
+            icon = 'fa-check-circle';
+            label = `Marked as ${activity.status}`;
+            details = `<a href="${activity.url}" target="_blank">${activity.title}</a>`;
+            break;
+
+        case 'learning_progress':
+            icon = 'fa-graduation-cap';
+            label = 'Updated progress';
+            details = `<strong>${activity.title}</strong>
+                      <div class="progress-bar">
+                          <div class="progress" style="width: ${activity.progress}%"></div>
+                      </div>`;
+            break;
+
+        default:
+            icon = 'fa-circle';
+            label = 'Activity';
+            details = activity.title;
+    }
+
+    return `
+        <div class="activity-item">
+            <div class="activity-icon">
+                <i class="fas ${icon}"></i>
+            </div>
+            <div class="activity-content">
+                <div class="activity-header">
+                    <span class="activity-label">${label}</span>
+                    <span class="activity-time">${timeAgo}</span>
+                </div>
+                <div class="activity-details">
+                    ${details}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Helper function to format time ago
+function formatTimeAgo(date) {
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+
+    if (diffInSeconds < 60) return 'just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+    return date.toLocaleDateString();
 }
 
 // Add the deleteResource function
@@ -2617,7 +3018,7 @@ function createCollectionCard(id, collection) {
     card.innerHTML = `
         <div class="collection-icon">
             <i class="fas fa-folder"></i>
-        </div>
+            </div>
         <div class="collection-content">
             <h3>${collection.name}</h3>
             <p class="collection-description">${collection.description || 'No description'}</p>
@@ -2647,5 +3048,6 @@ function createNewCollection() {
 }
 
 // Make sure to add this event listener when initializing the app
+
 
 
