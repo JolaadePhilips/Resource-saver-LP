@@ -1,7 +1,12 @@
  // Import necessary Firebase modules and currentUser variable
  import { db, currentUser } from './resource-bank.js';
 
- // Function to fetch and display collections
+ // Define pagination variables
+ const COLLECTIONS_PER_PAGE = 10; // Number of collections per page
+ let currentCollectionPage = 1;
+ let totalCollectionPages = 1;
+
+ // Function to fetch and display collections with pagination
  function fetchAndDisplayCollections() {
      const collectionsContainer = document.getElementById('collectionsContainer');
      const collectionsSection = document.querySelector('.collections-section');
@@ -9,21 +14,29 @@
      // Add loading state
      collectionsSection.classList.add('loading');
      
-     db.collection('users').doc(currentUser.uid).collection('collections').orderBy('name').get()
+     db.collection('users').doc(currentUser.uid).collection('collections')
+         .orderBy('name')
+         .get()
          .then((querySnapshot) => {
+             const collections = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+             totalCollectionPages = Math.ceil(collections.length / COLLECTIONS_PER_PAGE);
+             
+             const startIndex = (currentCollectionPage - 1) * COLLECTIONS_PER_PAGE;
+             const endIndex = startIndex + COLLECTIONS_PER_PAGE;
+             const collectionsToDisplay = collections.slice(startIndex, endIndex);
+             
              // Clear container with fade out
              collectionsContainer.style.opacity = '0';
              
              setTimeout(() => {
                  collectionsContainer.innerHTML = '';
                  
-                 if (querySnapshot.empty) {
+                 if (collectionsToDisplay.length === 0) {
                      collectionsContainer.innerHTML = '<p class="no-collections">No collections yet. Create your first collection!</p>';
                  } else {
                      const fragment = document.createDocumentFragment();
-                     querySnapshot.forEach((doc, index) => {
-                         const collection = doc.data();
-                         const collectionCard = createCollectionCard(doc.id, collection);
+                     collectionsToDisplay.forEach((collection, index) => {
+                         const collectionCard = createCollectionCard(collection.id, collection);
                          
                          // Add entrance animation classes
                          collectionCard.classList.add('entering');
@@ -31,7 +44,7 @@
                              collectionCard.classList.remove('entering');
                              collectionCard.classList.add('entered');
                          }, index * 100); // Stagger the animations
-                        
+                       
                          fragment.appendChild(collectionCard);
                      });
                      collectionsContainer.appendChild(fragment);
@@ -40,6 +53,9 @@
                  // Fade in the container
                  collectionsContainer.style.opacity = '1';
                  collectionsSection.classList.remove('loading');
+                 
+                 // Update pagination controls
+                 updateCollectionPaginationControls();
              }, 300);
          })
          .catch((error) => {
@@ -48,7 +64,27 @@
              collectionsSection.classList.remove('loading');
          });
  }
- 
+
+ // Function to update pagination controls
+ function updateCollectionPaginationControls() {
+     const paginationContainer = document.getElementById('collectionPagination');
+     paginationContainer.innerHTML = '';
+
+     for (let i = 1; i <= totalCollectionPages; i++) {
+         const pageButton = document.createElement('button');
+         pageButton.textContent = i;
+         pageButton.className = 'pagination-button';
+         if (i === currentCollectionPage) {
+             pageButton.classList.add('active');
+         }
+         pageButton.addEventListener('click', () => {
+             currentCollectionPage = i;
+             fetchAndDisplayCollections();
+         });
+         paginationContainer.appendChild(pageButton);
+     }
+ }
+
  // Function to create a collection card
  function createCollectionCard(id, collection) {
      const card = document.createElement('div');

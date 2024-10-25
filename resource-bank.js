@@ -97,6 +97,13 @@ function fetchAndDisplayResources() {
             resources.push({ id: doc.id, ...doc.data() });
         });
         
+        // Sort resources by createdAt timestamp (newest first)
+        resources.sort((a, b) => {
+            const timeA = a.createdAt ? a.createdAt.toDate() : new Date(0);
+            const timeB = b.createdAt ? b.createdAt.toDate() : new Date(0);
+            return timeB - timeA; // Descending order (newest first)
+        });
+        
         totalPages = Math.ceil(resources.length / RESOURCES_PER_PAGE);
         const startIndex = (currentPage - 1) * RESOURCES_PER_PAGE;
         const endIndex = startIndex + RESOURCES_PER_PAGE;
@@ -189,6 +196,11 @@ function displayResources(resources) {
         resourceCard.querySelector('.toggle-favorite').addEventListener('click', () => toggleFavorite(resource.id, resource));
         resourceCard.querySelector('.share-resource').addEventListener('click', () => shareResource(resource.id, resource));
         resourceCard.querySelector('.delete-resource').addEventListener('click', () => deleteResource(resource.id, resource));
+
+        const title = resourceCard.querySelector('h3');
+        if (!resource.tags || resource.tags.length === 0) {
+            title.classList.add('multi-line');
+        }
     });
 }
 
@@ -546,6 +558,8 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
         console.error('Error signing out:', error);
     });
 });
+
+
 
 // Add these functions to handle the notes functionality
 
@@ -1280,22 +1294,26 @@ function fetchAndDisplayCollections() {
         });
 
     // Add event listener for create collection button
-    const createCollectionBtn = document.getElementById('createCollectionBtn');
-    if (createCollectionBtn) {
-        const newBtn = createCollectionBtn.cloneNode(true);
-        createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
-        
-        newBtn.addEventListener('click', () => {
-            const modal = document.getElementById('collectionModal');
-            modal.style.display = 'block';
-            document.getElementById('newCollectionName').value = '';
-            modal.querySelector('h2').textContent = 'Create New Collection';
-            document.getElementById('addToCollection').textContent = 'Create Collection';
-        });
-    }
-}
+    document.addEventListener('DOMContentLoaded', () => {
+        // Add event listener for create collection button
+        const createCollectionBtn = document.getElementById('createCollectionBtn');
+        if (createCollectionBtn) {
+            createCollectionBtn.addEventListener('click', showCreateCollectionModal);
+            const newBtn = createCollectionBtn.cloneNode(true);
+            createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
+            
+            newBtn.addEventListener('click', () => {
+                const modal = document.getElementById('collectionModal');
+                modal.style.display = 'block';
+                document.getElementById('newCollectionName').value = '';
+                modal.querySelector('h2').textContent = 'Create New Collection';
+                document.getElementById('addToCollection').textContent = 'Create Collection';
+            });
+        }
+    });
+        }
 
-// Add this function to show the create collection modal
+// Function to show the create collection modal
 function showCreateCollectionModal() {
     const modal = document.getElementById('collectionModal');
     const modalTitle = modal.querySelector('h2');
@@ -1316,7 +1334,7 @@ function showCreateCollectionModal() {
     };
 }
 
-// Add this function to create a new collection
+// Function to create a new collection
 function createNewCollection(name) {
     db.collection('users').doc(currentUser.uid).collection('collections').add({
         name: name,
@@ -1325,13 +1343,16 @@ function createNewCollection(name) {
     .then(() => {
         console.log('Collection created successfully');
         closeAllModals();
-        displayCollections();
+        fetchAndDisplayCollections(); // Refresh the collections list
     })
     .catch((error) => {
         console.error('Error creating collection:', error);
         alert('Failed to create collection. Please try again.');
     });
 }
+
+// Ensure the create collection button shows the modal
+document.getElementById('createCollectionBtn').addEventListener('click', showCreateCollectionModal);
 
 // Update the resource item creation in viewCollection function
 function viewCollection(collectionId) {
@@ -1719,20 +1740,56 @@ function fetchAndDisplayCollections() {
             collectionsList.innerHTML = '<p class="error-message">Error loading collections. Please try again.</p>';
         });
 
-    // Add event listener for create collection button
-    const createCollectionBtn = document.getElementById('createCollectionBtn');
-    if (createCollectionBtn) {
-        const newBtn = createCollectionBtn.cloneNode(true);
-        createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
-        
-        newBtn.addEventListener('click', () => {
-            const modal = document.getElementById('collectionModal');
-            modal.style.display = 'block';
-            document.getElementById('newCollectionName').value = '';
-            modal.querySelector('h2').textContent = 'Create New Collection';
-            document.getElementById('addToCollection').textContent = 'Create Collection';
-        });
-    }
+  // Add event listener for create collection button
+const createCollectionBtn = document.getElementById('createCollectionBtn');
+if (createCollectionBtn) {
+    const newBtn = createCollectionBtn.cloneNode(true);
+    createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
+    
+    newBtn.addEventListener('click', () => {
+        const modal = document.getElementById('collectionModal');
+        modal.style.display = 'block';
+        document.getElementById('newCollectionName').value = '';
+        modal.querySelector('h2').textContent = 'Create New Collection';
+        document.getElementById('addToCollection').textContent = 'Create Collection';
+
+        // Add event listener for the modal's create button
+        const addToCollectionBtn = document.getElementById('addToCollection');
+        addToCollectionBtn.onclick = function() {
+            const collectionName = document.getElementById('newCollectionName').value.trim();
+            if (collectionName) {
+                createNewCollection(collectionName);
+            } else {
+                alert('Please enter a collection name.');
+            }
+        };
+    });
+}
+
+// Function to create a new collection
+function createNewCollection(name) {
+    db.collection('users').doc(currentUser.uid).collection('collections').add({
+        name: name,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+        console.log('Collection created successfully');
+        closeAllModals();
+        fetchAndDisplayCollections(); // Refresh the collections list
+    })
+    .catch((error) => {
+        console.error('Error creating collection:', error);
+        alert('Failed to create collection. Please try again.');
+    });
+}
+
+// Function to close all modals
+function closeAllModals() {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.style.display = 'none';
+    });
+}
 }
 
 // Function to rename a collection
@@ -2590,4 +2647,5 @@ function createNewCollection() {
 }
 
 // Make sure to add this event listener when initializing the app
-document.getElementById('createCollectionBtn').addEventListener('click', createNewCollection);
+
+

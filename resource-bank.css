@@ -247,11 +247,124 @@ header {
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 15px;
-    transition: box-shadow 0.3s ease, transform 0.3s ease, height 0.3s ease;
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    height: 120px; /* Reduced from 150px */
+    height: 120px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    opacity: 0.4;
+}
+
+/* First card special treatment */
+.resource-card:first-child {
+    opacity: 0.9;
+    border-left: 4px solid var(--shadow-blue);
+}
+
+/* Adjacent cards in the same row */
+.resource-card:hover + .resource-card:not(:nth-child(3n+1)) {
+    opacity: 0.8;
+    transform: translateY(-1px);
+    z-index: 1;
+}
+
+/* Previous card in the same row */
+.resource-card:not(:nth-child(3n+1)):hover {
+    opacity: 1;
+}
+.resource-card:not(:nth-child(3n+1)):hover ~ .resource-card:not(:nth-child(3n+1)) {
+    opacity: 0.4;
+}
+
+/* Focused card - match border color with shadow color pattern */
+.resource-card:nth-child(8n+1):hover {
+    border-left: 4px solid var(--shadow-blue);
+}
+.resource-card:nth-child(8n+2):hover {
+    border-left: 4px solid var(--shadow-teal);
+}
+.resource-card:nth-child(8n+3):hover {
+    border-left: 4px solid var(--shadow-yellow);
+}
+.resource-card:nth-child(8n+4):hover {
+    border-left: 4px solid var(--shadow-red);
+}
+.resource-card:nth-child(8n+5):hover {
+    border-left: 4px solid var(--shadow-purple);
+}
+.resource-card:nth-child(8n+6):hover {
+    border-left: 4px solid var(--shadow-green);
+}
+.resource-card:nth-child(8n+7):hover {
+    border-left: 4px solid var(--shadow-orange);
+}
+.resource-card:nth-child(8n+8):hover {
+    border-left: 4px solid var(--shadow-pink);
+}
+
+/* Common hover effects */
+.resource-card:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    height: auto;
+    z-index: 2;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Optional: Add a subtle gradient to indicate scroll/more content */
+.content-area::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(transparent, var(--bg-color));
+    pointer-events: none;
+    z-index: 3;
+}
+
+.resource-card::before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.1) 20%,
+        transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* Ensures the overlay doesn't interfere with clicks */
+    z-index: 1;
+}
+
+.resource-card:hover::before {
+    opacity: 1;
+    top: -25%;
+    left: -25%;
+    animation: moveLight 2s infinite alternate ease-in-out;
+}
+
+@keyframes moveLight {
+    from {
+        transform: translate(-5%, -5%);
+    }
+    to {
+        transform: translate(5%, 5%);
+    }
+}
+
+/* Ensure content stays above the light effect */
+.resource-card > * {
+    position: relative;
+    z-index: 2;
 }
 
 .resource-card:hover {
@@ -284,21 +397,34 @@ header {
     margin-bottom: 10px;
     font-size: 0.9rem;
     color: var(--text-color);
+    transition: white-space 0.3s ease, overflow 0.3s ease;
+    flex-shrink: 0;
+}
+
+/* Default style - single line truncated */
+.resource-card h3 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: white-space 0.3s ease, overflow 0.3s ease;
+    height: 1.2em;
 }
 
-.resource-card:hover h3 {
+/* Style for resources without tags - allow multiple lines */
+.resource-card h3.multi-line {
     white-space: normal;
     overflow: visible;
+    max-height: 2.4em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .resource-card p {
     color: var(--secondary-color);
     font-size: 0.9rem;
     margin-bottom: 10px;
+    min-height: 1em; /* Minimum height for tags section */
+    flex-shrink: 0;  /* Prevents shrinking */
 }
 
 .resource-meta {
@@ -307,6 +433,8 @@ header {
     gap: 10px;
     font-size: 0.8rem;
     color: var(--secondary-color);
+    min-height: 2em; /* Minimum height for metadata */
+    flex-shrink: 0;  /* Prevents shrinking */
 }
 
 .resource-meta span {
@@ -318,8 +446,9 @@ header {
 .resource-actions {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    margin-top: auto; /* Pushes actions to bottom */
     flex-wrap: wrap;
+    flex-shrink: 0;   /* Prevents shrinking */
 }
 
 .resource-actions button {
@@ -352,6 +481,12 @@ header {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.pagination-button:hover {
+    background-color: var(--primary-color-light);
+    transform: translateY(-2px);
 }
 
 .pagination-button:disabled {
@@ -1500,11 +1635,6 @@ header {
     background-color: #e0e0e0;
 }
 
-.ql-toolbar.ql-snow .ql-color-picker,
-.ql-toolbar.ql-snow .ql-background {
-    width: auto;
-}
-
 .ql-toolbar.ql-snow .ql-color-picker .ql-picker-label,
 .ql-toolbar.ql-snow .ql-background .ql-picker-label {
     padding: 0;
@@ -1597,4 +1727,14 @@ header {
 
 .share-button:hover {
     color: var(--primary-color);
+}
+
+.resource-card.priority::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-style: solid;
+    border-width: 0 20px 20px 0;
+    border-color: transparent var(--primary-color) transparent transparent;
 }
