@@ -2112,234 +2112,327 @@ function getTypeIcon(type) {
     return iconMap[type.toLowerCase()] || 'fa-bookmark';
 }
 
+// Add event listeners for the learning paths tab
+document.querySelector('[data-tab="learning-paths"]').addEventListener('click', (e) => {
+    e.preventDefault();
+    currentTab = 'learning-paths';
+    updateActiveTab();
+    fetchAndDisplayLearningPaths();
+});
+
+// Function to fetch and display learning paths
 function fetchAndDisplayLearningPaths() {
-    if (!currentUser) return;
-
+    const contentArea = document.getElementById('contentArea');
+    contentArea.innerHTML = ''; // Clear existing content
+    
     const learningPathsRef = db.collection('users').doc(currentUser.uid).collection('learningPaths');
+    
     learningPathsRef.get().then((querySnapshot) => {
-        const contentArea = document.getElementById('contentArea');
-        contentArea.innerHTML = '<h2>Learning Paths</h2>';
-        contentArea.innerHTML += '<button id="createLearningPath" class="btn-primary"><i class="fas fa-plus"></i> Create New Learning Path</button>';
-        contentArea.innerHTML += '<div class="learning-paths-container"></div>';
-
-        // Show the learning paths blurb if it hasn't been dismissed before
-        if (!localStorage.getItem('learningPathsBlurbDismissed')) {
-            document.getElementById('learningPathsBlurb').style.display = 'block';
-        }
-
-        const learningPathsContainer = contentArea.querySelector('.learning-paths-container');
-
-        if (querySnapshot.empty) {
-            learningPathsContainer.innerHTML = '<p>You haven\'t created any learning paths yet. Click the "Create New Learning Path" button to get started!</p>';
-        } else {
-            querySnapshot.forEach((doc) => {
-                const path = doc.data();
-                const pathElement = document.createElement('div');
-                pathElement.classList.add('learning-path-card');
-                const completedResources = path.resources ? path.resources.filter(r => r.completed).length : 0;
-                const totalResources = path.resources ? path.resources.length : 0;
-                const progressPercentage = totalResources > 0 ? (completedResources / totalResources) * 100 : 0;
-
-                pathElement.innerHTML = `
-                    <h3>${path.name}</h3>
-                    <p>${path.description || 'No description provided.'}</p>
-                    <div class="learning-path-progress">
-                        <div class="progress-bar" style="width: ${progressPercentage}%"></div>
-                    </div>
-                    <p class="progress-text">${completedResources}/${totalResources} resources completed</p>
-                    <div class="learning-path-actions">
-                        <button class="btn-primary view-learning-path" data-id="${doc.id}"><i class="fas fa-eye"></i> View</button>
-                        <button class="btn-secondary edit-learning-path" data-id="${doc.id}"><i class="fas fa-edit"></i> Edit</button>
-                        <button class="btn-danger delete-learning-path" data-id="${doc.id}"><i class="fas fa-trash"></i> Delete</button>
-                    </div>
-                `;
-                learningPathsContainer.appendChild(pathElement);
-            });
-        }
-
-        // Add event listeners
-        document.getElementById('createLearningPath').addEventListener('click', () => showLearningPathModal());
-        document.querySelectorAll('.view-learning-path').forEach(btn => {
-            btn.addEventListener('click', (e) => viewLearningPath(e.target.closest('button').getAttribute('data-id')));
+        const paths = [];
+        querySnapshot.forEach((doc) => {
+            paths.push({ id: doc.id, ...doc.data() });
         });
-        document.querySelectorAll('.edit-learning-path').forEach(btn => {
-            btn.addEventListener('click', (e) => showLearningPathModal(e.target.closest('button').getAttribute('data-id')));
+
+        // Sort paths by last updated
+        paths.sort((a, b) => {
+            const timeA = a.updatedAt ? a.updatedAt.toDate() : new Date(0);
+            const timeB = b.updatedAt ? b.updatedAt.toDate() : new Date(0);
+            return timeB - timeA;
         });
-        document.querySelectorAll('.delete-learning-path').forEach(btn => {
-            btn.addEventListener('click', (e) => deleteLearningPath(e.target.closest('button').getAttribute('data-id')));
-        });
-        document.getElementById('closeBlurb').addEventListener('click', dismissLearningPathsBlurb);
-    });
-}
 
-function showLearningPathModal(pathId = null) {
-    const modal = document.getElementById('learningPathModal');
-    const form = document.getElementById('learningPathForm');
-    const titleElement = document.getElementById('learningPathModalTitle');
-    const nameInput = document.getElementById('learningPathName');
-    const descriptionInput = document.getElementById('learningPathDescription');
-
-    if (pathId) {
-        titleElement.textContent = 'Edit Learning Path';
-        db.collection('users').doc(currentUser.uid).collection('learningPaths').doc(pathId).get()
-            .then((doc) => {
-                const path = doc.data();
-                nameInput.value = path.name;
-                descriptionInput.value = path.description || '';
-            });
-    } else {
-        titleElement.textContent = 'Create Learning Path';
-        form.reset();
-    }
-
-    modal.style.display = 'block';
-
-    form.onsubmit = (e) => {
-        e.preventDefault();
-        const name = nameInput.value.trim();
-        const description = descriptionInput.value.trim();
-
-        if (name) {
-            const pathData = {
-                name: name,
-                description: description,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            if (pathId) {
-                db.collection('users').doc(currentUser.uid).collection('learningPaths').doc(pathId).update(pathData)
-                    .then(() => {
-                        modal.style.display = 'none';
-                        fetchAndDisplayLearningPaths();
-                    });
-            } else {
-                pathData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                pathData.resources = [];
-                db.collection('users').doc(currentUser.uid).collection('learningPaths').add(pathData)
-                    .then(() => {
-                        modal.style.display = 'none';
-                        fetchAndDisplayLearningPaths();
-                    });
-            }
-        }
-    };
-
-    modal.querySelector('.close').onclick = () => {
-        modal.style.display = 'none';
-    };
-
-    window.onclick = (event) => {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
-    };
-}
-
-function dismissLearningPathsBlurb() {
-    document.getElementById('learningPathsBlurb').style.display = 'none';
-    localStorage.setItem('learningPathsBlurbDismissed', 'true');
-}
-
-function viewLearningPath(pathId) {
-    db.collection('users').doc(currentUser.uid).collection('learningPaths').doc(pathId).get()
-        .then((doc) => {
-            const path = doc.data();
-            const contentArea = document.getElementById('contentArea');
-            contentArea.innerHTML = `
-                <div class="notion-like-page">
-                    <div class="page-header">
-                        <div class="breadcrumb">
-                            <a href="#" id="backToLearningPaths">Learning Paths</a>
-                            <span class="separator">/</span>
-                            <span class="current-path">${path.name}</span>
+        contentArea.innerHTML = `
+            <div class="learning-paths-container">
+                ${paths.map(path => `
+                    <div class="learning-path-card" data-id="${path.id}">
+                        <div class="path-header">
+                            <h3 class="path-title">${path.name}</h3>
+                            <div class="path-metadata">
+                                <span>${path.difficulty || 'Beginner'}</span>
+                                <span>${path.estimatedTime || '2-3 hours'}</span>
+                            </div>
                         </div>
-                        <div class="page-actions">
-                            <button class="btn-subtle" id="editPathBtn">
-                                <i class="fas fa-ellipsis-h"></i>
+                        <div class="path-content">
+                            <p>${path.description || 'No description available'}</p>
+                            <div class="path-progress">
+                                <div class="progress-bar" style="width: ${calculateProgress(path)}%"></div>
+                            </div>
+                            <div class="progress-text">
+                                ${calculateCompletedResources(path)} of ${path.resources ? path.resources.length : 0} resources completed
+                            </div>
+                        </div>
+                        <div class="path-actions">
+                            <button class="path-action-button" onclick="event.stopPropagation(); viewLearningPath('${path.id}')">
+                                <i class="fas fa-eye"></i> View Path
+                            </button>
+                            <button class="path-action-button" onclick="event.stopPropagation(); editLearningPath('${path.id}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="path-action-button" onclick="event.stopPropagation(); deleteLearningPath('${path.id}')">
+                                <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
                     </div>
+                `).join('')}
+            </div>
+        `;
+    }).catch((error) => {
+        console.error("Error fetching learning paths: ", error);
+        contentArea.innerHTML = '<p class="error-message">Error loading learning paths. Please try again.</p>';
+    });
+}
 
-                    <div class="page-title">
-                        <h1 contenteditable="true" id="pathTitle">${path.name}</h1>
-                        <div class="path-tags">
-                            <span class="tag difficulty">${path.difficulty || 'Beginner'}</span>
-                            <span class="tag time">${path.estimatedTime || '2-3 hours'}</span>
-                            <span class="tag progress">${calculateProgress(path)}% Complete</span>
-                        </div>
+// Function to view a specific learning path
+function viewLearningPath(pathId) {
+    const contentArea = document.getElementById('contentArea');
+    
+    db.collection('users').doc(currentUser.uid).collection('learningPaths').doc(pathId).get()
+        .then((doc) => {
+            const path = doc.data();
+            contentArea.innerHTML = `
+                <div class="notion-like-page">
+                    <div class="breadcrumb">
+                        <a href="#" onclick="fetchAndDisplayLearningPaths()">
+                            <i class="fas fa-graduation-cap"></i> Learning Paths
+                        </a>
+                        <span class="separator">/</span>
+                        <span>${path.name}</span>
+                    </div>
+                    
+                    <div class="path-actions">
+                        <button class="path-action-button" onclick="editLearningPath('${pathId}')">
+                            <i class="fas fa-edit"></i> Edit Path
+                        </button>
+                        <button class="path-action-button" onclick="showResourceSelectionModal('${pathId}')">
+                            <i class="fas fa-plus"></i> Add Resources
+                        </button>
+                        <button class="path-action-button" onclick="deleteLearningPath('${pathId}')">
+                            <i class="fas fa-trash"></i> Delete Path
+                        </button>
                     </div>
 
-                    <div class="page-content">
-                        <div class="content-block description">
-                            <div class="block-handle">⋮⋮</div>
-                            <div class="block-content" contenteditable="true">
-                                ${path.description || 'Add a description...'}
+                    <div class="learning-hub">
+                        <div class="hub-sidebar">
+                            <div class="progress-section">
+                                <h3>Progress Overview</h3>
+                                <div class="path-progress">
+                                    <div class="progress-bar" style="width: ${calculateProgress(path)}%"></div>
+                                </div>
+                                <p class="progress-text">
+                                    ${calculateCompletedResources(path)} of ${path.resources ? path.resources.length : 0} completed
+                                </p>
+                            </div>
+                            
+                            <div class="path-metadata">
+                                <p><i class="fas fa-clock"></i> ${path.estimatedTime || 'Not specified'}</p>
+                                <p><i class="fas fa-signal"></i> ${path.difficulty || 'Not specified'}</p>
+                                <p><i class="fas fa-calendar"></i> Created: ${formatDate(path.createdAt)}</p>
                             </div>
                         </div>
 
-                        <div class="content-block resources">
-                            <div class="block-header">
-                                <h3>Resources</h3>
-                                <button class="btn-subtle" id="addResourceBtn">
-                                    <i class="fas fa-plus"></i> Add Resource
-                                </button>
+                        <div class="hub-main">
+                            <div class="resource-list">
+                                ${path.resources ? path.resources.map((resource, index) => `
+                                    <div class="resource-block ${resource.completed ? 'completed' : ''}" 
+                                         onclick="toggleResourceStatus('${pathId}', '${resource.id}')">
+                                        <div class="resource-number">${index + 1}</div>
+                                        <div class="resource-content">
+                                            <h4>${resource.title}</h4>
+                                            <p>${resource.description || ''}</p>
+                                            <div class="resource-meta">
+                                                <span><i class="fas fa-clock"></i> ${resource.duration || '10 min'}</span>
+                                                <span><i class="fas fa-tag"></i> ${resource.type || 'Article'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="resource-actions">
+                                            <a href="${resource.url}" target="_blank" class="resource-link">
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                            <button onclick="removeResourceFromPath('${pathId}', '${resource.id}')" class="remove-resource">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('') : '<p>No resources added to this path yet.</p>'}
                             </div>
-                            <div class="resources-list" id="pathResources">
-                                ${generateResourcesList(path.resources)}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Resource Selection Modal -->
-                <div id="resourceSelectionModal" class="modal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2>Add Resources to Path</h2>
-                            <button class="close">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="search-bar">
-                                <input type="text" id="resourceSearch" placeholder="Search resources...">
-                            </div>
-                            <div class="resources-grid" id="availableResources">
-                                <!-- Will be populated dynamically -->
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn-secondary" id="cancelResourceAdd">Cancel</button>
-                            <button class="btn-primary" id="confirmResourceAdd">Add Selected</button>
                         </div>
                     </div>
                 </div>
             `;
-
-            // Event Listeners
-            setupPathEventListeners(pathId, path);
         });
 }
 
-function setupPathEventListeners(pathId, path) {
-    // Back button
-    document.getElementById('backToLearningPaths').addEventListener('click', (e) => {
-        e.preventDefault();
-        fetchAndDisplayLearningPaths();
-    });
+// Function to toggle resource status
+function toggleResourceStatus(pathId, resourceId) {
+    // Implement the logic to toggle the resource status
+    console.log(`Toggling status for resource ${resourceId} in path ${pathId}`);
+}
 
-    // Title editing
-    const pathTitle = document.getElementById('pathTitle');
-    pathTitle.addEventListener('blur', () => {
-        updatePathField(pathId, 'name', pathTitle.textContent);
-    });
+function editLearningPath(pathId) {
+    db.collection('users').doc(currentUser.uid)
+        .collection('learningPaths').doc(pathId).get()
+        .then((doc) => {
+            const path = doc.data();
+            const modalContent = `
+                <div class="modal-content cia-style">
+                    <h2>Edit Learning Path</h2>
+                    <form id="editPathForm">
+                        <div class="form-group">
+                            <label for="editLearningPathName">Path Name</label>
+                            <input type="text" id="editLearningPathName" value="${path.name}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editLearningPathDescription">Description</label>
+                            <textarea id="editLearningPathDescription">${path.description || ''}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editLearningPathDifficulty">Difficulty Level</label>
+                            <select id="editLearningPathDifficulty">
+                                <option value="Beginner" ${path.difficulty === 'Beginner' ? 'selected' : ''}>Beginner</option>
+                                <option value="Intermediate" ${path.difficulty === 'Intermediate' ? 'selected' : ''}>Intermediate</option>
+                                <option value="Advanced" ${path.difficulty === 'Advanced' ? 'selected' : ''}>Advanced</option>
+                            </select>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                            <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            `;
 
-    // Add resource button
-    document.getElementById('addResourceBtn').addEventListener('click', () => {
-        showResourceSelectionModal(pathId);
-    });
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = modalContent;
+            document.body.appendChild(modal);
 
-    // Edit path button dropdown
-    document.getElementById('editPathBtn').addEventListener('click', (e) => {
-        showPathActions(e, pathId);
+            // Show modal with animation
+            setTimeout(() => modal.style.display = 'block', 0);
+
+            const form = modal.querySelector('#editPathForm');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const updatedPath = {
+                    name: document.getElementById('editLearningPathName').value,
+                    description: document.getElementById('editLearningPathDescription').value,
+                    difficulty: document.getElementById('editLearningPathDifficulty').value,
+                };
+
+                db.collection('users').doc(currentUser.uid)
+                    .collection('learningPaths').doc(pathId)
+                    .update(updatedPath)
+                    .then(() => {
+                        closeModal();
+                        viewLearningPath(pathId);
+                    })
+                    .catch(error => {
+                        console.error('Error updating path:', error);
+                        alert('Failed to update learning path. Please try again.');
+                    });
+            });
+        });
+}
+
+// Update the viewLearningPath function to include the add resources button
+function viewLearningPath(pathId) {
+    const contentArea = document.getElementById('contentArea');
+    
+    db.collection('users').doc(currentUser.uid).collection('learningPaths').doc(pathId).get()
+        .then((doc) => {
+            const path = doc.data();
+            contentArea.innerHTML = `
+                <div class="notion-like-page">
+                    <div class="breadcrumb">
+                        <a href="#" onclick="fetchAndDisplayLearningPaths()">
+                            <i class="fas fa-graduation-cap"></i> Learning Paths
+                        </a>
+                        <span class="separator">/</span>
+                        <span>${path.name}</span>
+                    </div>
+                    
+                    <div class="path-actions">
+                        <button class="path-action-button" onclick="editLearningPath('${pathId}')">
+                            <i class="fas fa-edit"></i> Edit Path
+                        </button>
+                        <button class="path-action-button" onclick="showResourceSelectionModal('${pathId}')">
+                            <i class="fas fa-plus"></i> Add Resources
+                        </button>
+                        <button class="path-action-button" onclick="deleteLearningPath('${pathId}')">
+                            <i class="fas fa-trash"></i> Delete Path
+                        </button>
+                    </div>
+                    <div class="learning-hub">
+                        <div class="hub-sidebar">
+                            <div class="progress-section">
+                                <h3>Progress Overview</h3>
+                                <div class="path-progress">
+                                    <div class="progress-bar" style="width: ${calculateProgress(path)}%"></div>
+                                </div>
+                                <p class="progress-text">
+                                    ${calculateCompletedResources(path)} of ${path.resources ? path.resources.length : 0} completed
+                                </p>
+                            </div>
+                            
+                            <div class="path-metadata">
+                                <p><i class="fas fa-clock"></i> ${path.estimatedTime || 'Not specified'}</p>
+                                <p><i class="fas fa-signal"></i> ${path.difficulty || 'Not specified'}</p>
+                                <p><i class="fas fa-calendar"></i> Created: ${formatDate(path.createdAt)}</p>
+                            </div>
+                        </div>
+
+                        <div class="hub-main">
+                            <div class="resource-list">
+                                ${path.resources ? path.resources.map((resource, index) => `
+                                    <div class="resource-block ${resource.completed ? 'completed' : ''}" 
+                                         onclick="toggleResourceStatus('${pathId}', '${resource.id}')">
+                                        <div class="resource-number">${index + 1}</div>
+                                        <div class="resource-content">
+                                            <h4>${resource.title}</h4>
+                                            <p>${resource.description || ''}</p>
+                                            <div class="resource-meta">
+                                                <span><i class="fas fa-clock"></i> ${resource.duration || '10 min'}</span>
+                                                <span><i class="fas fa-tag"></i> ${resource.type || 'Article'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="resource-actions">
+                                            <a href="${resource.url}" target="_blank" class="resource-link">
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                            <button onclick="removeResourceFromPath('${pathId}', '${resource.id}')" class="remove-resource">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('') : '<p>No resources added to this path yet.</p>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+}
+
+function calculateProgress(path) {
+    if (!path.resources || path.resources.length === 0) return 0;
+    const completed = path.resources.filter(resource => resource.completed).length;
+    return Math.round((completed / path.resources.length) * 100);
+}
+
+function calculateCompletedResources(path) {
+    if (!path.resources) return 0;
+    return path.resources.filter(resource => resource.completed).length;
+}
+
+function formatDate(timestamp) {
+    if (!timestamp) return 'Not available';
+    return new Date(timestamp.seconds * 1000).toLocaleDateString();
+}
+
+function closeModal() {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.style.display = 'none';
+        modal.remove();
     });
 }
 
@@ -2349,13 +2442,9 @@ function generateResourcesList(resources) {
     }
 
     return resources.map((resource, index) => `
-        <div class="resource-block ${resource.completed ? 'completed' : ''}" data-id="${resource.id}">
-            <div class="resource-handle">⋮⋮</div>
-            <div class="resource-checkbox">
-                <input type="checkbox" id="resource${index}" 
-                    ${resource.completed ? 'checked' : ''}>
-                <label for="resource${index}"></label>
-            </div>
+        <div class="resource-block ${resource.completed ? 'completed' : ''}" 
+             data-id="${resource.id}"
+             style="animation-delay: ${index * 0.1}s">
             <div class="resource-content">
                 <div class="resource-header">
                     <h4>${resource.title}</h4>
@@ -2372,6 +2461,9 @@ function generateResourcesList(resources) {
                 </div>
             </div>
             <div class="resource-actions">
+                <button class="btn-icon complete-resource" title="Mark as ${resource.completed ? 'incomplete' : 'complete'}">
+                    <i class="fas fa-${resource.completed ? 'check-circle' : 'circle'}"></i>
+                </button>
                 <button class="btn-icon remove-resource" title="Remove from path">
                     <i class="fas fa-times"></i>
                 </button>
@@ -2381,58 +2473,117 @@ function generateResourcesList(resources) {
 }
 
 function showResourceSelectionModal(pathId) {
-    const modal = document.getElementById('resourceSelectionModal');
-    modal.style.display = 'flex';
-
-    // Fetch all user's resources that aren't in the path
-    fetchAvailableResources(pathId).then(resources => {
-        const resourcesGrid = document.getElementById('availableResources');
-        resourcesGrid.innerHTML = resources.map(resource => `
-            <div class="resource-card selectable" data-id="${resource.id}">
-                <input type="checkbox" id="select${resource.id}">
-                <label for="select${resource.id}">
-                    <h4>${resource.title}</h4>
-                    <p>${resource.description || ''}</p>
-                    <div class="resource-meta">
-                        <span>${resource.type || 'Article'}</span>
-                        <span>${resource.duration || '10 min'}</span>
-                    </div>
-                </label>
-            </div>
-        `).join('');
-    });
-
-    // Handle resource selection and adding
-    document.getElementById('confirmResourceAdd').addEventListener('click', () => {
-        const selectedResources = Array.from(document.querySelectorAll('#availableResources input:checked'))
-            .map(checkbox => checkbox.closest('.resource-card').dataset.id);
-        
-        addResourcesToPath(pathId, selectedResources);
-        modal.style.display = 'none';
-    });
-}
-
-async function fetchAvailableResources(pathId) {
-    const pathDoc = await db.collection('users').doc(currentUser.uid)
-        .collection('learningPaths').doc(pathId).get();
-    const pathResources = pathDoc.data().resources || [];
-
-    const allResources = await db.collection('users').doc(currentUser.uid)
-        .collection('resources').get();
-
-    return allResources.docs
-        .map(doc => ({ id: doc.id, ...doc.data() }))
-        .filter(resource => !pathResources.includes(resource.id));
-}
-
-function addResourcesToPath(pathId, resourceIds) {
     db.collection('users').doc(currentUser.uid)
-        .collection('learningPaths').doc(pathId)
-        .update({
-            resources: firebase.firestore.FieldValue.arrayUnion(...resourceIds)
+        .collection('resources').get()
+        .then((querySnapshot) => {
+            const resources = [];
+            querySnapshot.forEach((doc) => {
+                resources.push({ id: doc.id, ...doc.data() });
+            });
+
+            const modalContent = `
+                <div class="modal-content cia-style">
+                    <h2>Add Resources to Path</h2>
+                    <div class="resource-selection-list">
+                        ${resources.map((resource, index) => `
+                            <div class="resource-selection-item">
+                                <span class="resource-number">${index + 1}.</span>
+                                <input type="checkbox" id="resource-${resource.id}" value="${resource.id}">
+                                <label for="resource-${resource.id}">${resource.title || 'Untitled'}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="modal-actions">
+                        <button onclick="addSelectedResourcesToPath('${pathId}')" class="btn-primary">Add Selected</button>
+                        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            `;
+
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = modalContent;
+            document.body.appendChild(modal);
+
+            setTimeout(() => modal.style.display = 'block', 0);
+        });
+}
+
+function addSelectedResourcesToPath(pathId) {
+    const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    if (selectedCheckboxes.length === 0) {
+        alert('Please select at least one resource');
+        return;
+    }
+
+    console.log('Selected resources:', selectedCheckboxes.length); // Debug log
+
+    // Get the path document
+    db.collection('users').doc(currentUser.uid)
+        .collection('learningPaths').doc(pathId).get()
+        .then((pathDoc) => {
+            if (!pathDoc.exists) {
+                throw new Error('Learning path not found');
+            }
+
+            const path = pathDoc.data();
+            const existingResources = path.resources || [];
+            console.log('Existing resources:', existingResources); // Debug log
+
+            // Create an array of promises to fetch each selected resource
+            const resourcePromises = Array.from(selectedCheckboxes).map(checkbox => {
+                const resourceId = checkbox.value;
+                console.log('Fetching resource:', resourceId); // Debug log
+
+                return db.collection('users').doc(currentUser.uid)
+                    .collection('resources').doc(resourceId).get()
+                    .then(doc => {
+                        if (!doc.exists) {
+                            console.log('Resource not found:', resourceId); // Debug log
+                            return null;
+                        }
+                        const resourceData = doc.data();
+                        return {
+                            id: doc.id,
+                            title: resourceData.title || 'Untitled',
+                            url: resourceData.url || '#',
+                            description: resourceData.description || '',
+                            type: resourceData.type || 'Article',
+                            duration: resourceData.duration || '10 min',
+                            completed: false
+                        };
+                    });
+            });
+
+            // Wait for all resource data to be fetched and filter out null values
+            return Promise.all(resourcePromises)
+                .then(newResources => {
+                    // Filter out null values and duplicates
+                    const validNewResources = newResources.filter(r => r !== null);
+                    console.log('Valid new resources:', validNewResources); // Debug log
+
+                    const existingIds = existingResources.map(r => r.id);
+                    const uniqueNewResources = validNewResources.filter(r => !existingIds.includes(r.id));
+                    console.log('Unique new resources:', uniqueNewResources); // Debug log
+
+                    // Combine existing and new resources
+                    const updatedResources = [...existingResources, ...uniqueNewResources];
+                    console.log('Updated resources:', updatedResources); // Debug log
+
+                    // Update the path with the new resources
+                    return db.collection('users').doc(currentUser.uid)
+                        .collection('learningPaths').doc(pathId)
+                        .update({ resources: updatedResources });
+                });
         })
         .then(() => {
+            console.log('Successfully added resources to path'); // Debug log
+            closeModal();
             viewLearningPath(pathId);
+        })
+        .catch(error => {
+            console.error('Detailed error adding resources to path:', error); // More detailed error logging
+            alert(`Failed to add resources to path: ${error.message}`);
         });
 }
 
@@ -2474,37 +2625,6 @@ function toggleResourceStatus(pathId, resourceId) {
         });
 }
 
-function editLearningPath(pathId) {
-    db.collection('users').doc(currentUser.uid).collection('learningPaths').doc(pathId).get()
-        .then((doc) => {
-            const path = doc.data();
-            const modal = createModal('Edit Learning Path', `
-                <input type="text" id="editLearningPathName" value="${path.name}" required>
-                <textarea id="editLearningPathDescription">${path.description || ''}</textarea>
-            `);
-
-            modal.querySelector('form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const name = document.getElementById('editLearningPathName').value;
-                const description = document.getElementById('editLearningPathDescription').value;
-
-                if (name) {
-                    db.collection('users').doc(currentUser.uid).collection('learningPaths').doc(pathId).update({
-                        name: name,
-                        description: description,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    }).then(() => {
-                        closeModal(modal);
-                        fetchAndDisplayLearningPaths();
-                    }).catch((error) => {
-                        console.error('Error updating learning path:', error);
-                        alert('Failed to update learning path. Please try again.');
-                    });
-                }
-            });
-        });
-}
-
 function deleteLearningPath(pathId) {
     if (confirm('Are you sure you want to delete this learning path? This action cannot be undone.')) {
         db.collection('users').doc(currentUser.uid).collection('learningPaths').doc(pathId).delete()
@@ -2519,14 +2639,27 @@ function deleteLearningPath(pathId) {
 
 function removeResourceFromPath(pathId, resourceId) {
     if (confirm('Are you sure you want to remove this resource from the path?')) {
-        db.collection('users').doc(currentUser.uid).collection('learningPaths').doc(pathId).update({
-            resources: firebase.firestore.FieldValue.arrayRemove(resourceId)
-        }).then(() => {
-            viewLearningPath(pathId);
-        }).catch((error) => {
-            console.error('Error removing resource from path:', error);
-            alert('Failed to remove resource from path. Please try again.');
-        });
+        // First get the current path data
+        db.collection('users').doc(currentUser.uid)
+            .collection('learningPaths').doc(pathId).get()
+            .then((doc) => {
+                const path = doc.data();
+                // Filter out the resource we want to remove
+                const updatedResources = path.resources.filter(resource => resource.id !== resourceId);
+                
+                // Update the path with the filtered resources
+                return db.collection('users').doc(currentUser.uid)
+                    .collection('learningPaths').doc(pathId)
+                    .update({ resources: updatedResources });
+            })
+            .then(() => {
+                console.log('Resource successfully removed from path');
+                viewLearningPath(pathId);
+            })
+            .catch((error) => {
+                console.error('Error removing resource from path:', error);
+                alert('Failed to remove resource from path. Please try again.');
+            });
     }
 }
 

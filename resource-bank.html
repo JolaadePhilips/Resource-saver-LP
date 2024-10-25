@@ -101,6 +101,19 @@
                 
             </section>
 
+            <!-- Add this section for learning paths after the collections section -->
+            <section id="learningPathsSection" class="learning-paths-section" style="display: none;">
+                <div class="section-header">
+                    <h2>Learning Paths</h2>
+                    <button id="createLearningPathBtn" class="btn-primary">
+                        <i class="fas fa-plus"></i> New Learning Path
+                    </button>
+                </div>
+                <div id="learningPathsContainer">
+                    <!-- Learning paths will be dynamically added here -->
+                </div>
+            </section>
+
             <footer>
                 <div id="pagination" class="pagination"></div>
             </footer>
@@ -197,13 +210,30 @@
 
     <!-- Add this modal for creating and editing learning paths -->
     <div id="learningPathModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content cia-style">
             <span class="close">&times;</span>
-            <h2 id="learningPathModalTitle">Create Learning Path</h2>
+            <h2>Create Learning Path</h2>
             <form id="learningPathForm">
-                <input type="text" id="learningPathName" placeholder="Path Name" required>
-                <textarea id="learningPathDescription" placeholder="Path Description" rows="3"></textarea>
-                <button type="submit" class="btn-primary">Save Learning Path</button>
+                <div class="form-group">
+                    <label for="learningPathName">Path Name</label>
+                    <input type="text" id="learningPathName" placeholder="Enter path name" required>
+                </div>
+                <div class="form-group">
+                    <label for="learningPathDescription">Description</label>
+                    <textarea id="learningPathDescription" placeholder="Enter path description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="learningPathDifficulty">Difficulty Level</label>
+                    <select id="learningPathDifficulty">
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Create Path</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
             </form>
         </div>
     </div>
