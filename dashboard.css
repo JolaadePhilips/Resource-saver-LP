@@ -192,6 +192,7 @@ h1 {
     justify-content: center;
     gap: 1rem;
     margin-bottom: 2rem;
+    padding: 0 15px; /* Add padding for mobile */
 }
 
 .btn-primary, .btn-secondary {
@@ -200,6 +201,8 @@ h1 {
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
+    text-align: center; /* Ensure text is centered */
+    white-space: nowrap; /* Prevent text wrapping */
 }
 
 .btn-primary {
@@ -408,11 +411,23 @@ main {
 
     .main-actions {
         flex-direction: column;
+        padding: 0 20px; /* Increase padding on mobile */
     }
 
     .btn-primary, .btn-secondary {
         width: 100%;
         margin-bottom: 1rem;
+        padding: 1rem; /* Slightly larger touch target on mobile */
+        font-size: 1rem; /* Ensure readable font size */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn-primary:active {
+        background: var(--neon-blue);
+        color: var(--black);
+        transform: scale(0.98); /* Slight press effect */
     }
 
     .video-container {
