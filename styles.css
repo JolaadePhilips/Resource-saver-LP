@@ -1639,7 +1639,7 @@ a:hover {
 
 .hero-text {
     max-width: 720px;
-    margin: 15px auto 10px; /* Reduced bottom margin */
+    margin: 15px auto 10px;
     text-align: center;
     color: var(--text-secondary);
     padding: 0 20px;
@@ -1694,3 +1694,61 @@ a:hover {
     }
 }
 
+/* Update the hero text styles to be mobile-friendly */
+.hero-text {
+    max-width: 720px;
+    margin: 15px auto 10px;
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 0 20px;
+    opacity: 0.75;
+    position: relative;
+}
+
+.hero-text p {
+    font-size: 19px;
+    line-height: 1.5;
+    letter-spacing: -0.011em;
+    font-weight: 300;
+    color: var(--text-secondary);
+    display: block;
+    white-space: nowrap;
+}
+
+/* Add mobile-specific styles */
+@media screen and (max-width: 768px) {
+    .hero-text {
+        padding: 0 15px;
+        margin: 10px auto;
+    }
+
+    .hero-text p {
+        white-space: normal; /* Allow text to wrap on mobile */
+        font-size: 16px; /* Slightly smaller font size */
+        padding: 0 10px; /* Add some padding */
+        margin-bottom: 12px; /* Spacing between paragraphs */
+    }
+    
+    /* Adjust the hero description container */
+    .hero-description {
+        padding: 0 10px;
+    }
+
+    /* Adjust the resource types container */
+    .resource-types {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .resource-types span {
+        margin-bottom: 5px;
+    }
+}
+
+/* Add extra small screen optimization */
+@media screen and (max-width: 480px) {
+    .hero-text p {
+        font-size: 15px;
+        padding: 0 5px;
+    }
+}
