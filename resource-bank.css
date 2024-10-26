@@ -2491,10 +2491,38 @@ header {
 #createLearningPathBtn i {
     font-size: 0.9rem;
 }
-
 /* Add some spacing between learning paths */
 #learningPathsContainer {
     display: grid;
     gap: 15px;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
+
+/* Add these styles for the learning paths section header */
+.learning-paths-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+#createLearningPathBtn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+#createLearningPathBtn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+

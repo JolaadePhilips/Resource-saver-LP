@@ -529,6 +529,26 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('editResourceModal').style.display = 'none';
         }
     };
+
+    // Add event listener for create learning path button
+    const createLearningPathBtn = document.getElementById('createLearningPathBtn');
+    if (createLearningPathBtn) {
+        createLearningPathBtn.addEventListener('click', function() {
+            const modal = document.getElementById('learningPathModal');
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        });
+    }
+
+    // Add form submission handler
+    const learningPathForm = document.getElementById('learningPathForm');
+    if (learningPathForm) {
+        learningPathForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            createNewLearningPath();
+        });
+    }
 });
 
 document.getElementById('gridViewBtn').addEventListener('click', () => {
@@ -2142,6 +2162,14 @@ function fetchAndDisplayLearningPaths() {
 
         contentArea.innerHTML = `
             <div class="learning-paths-container">
+                <div class="learning-paths-section">
+                    <div class="section-header">
+                        <h2>Learning Paths</h2>
+                        <button id="createLearningPathBtn" class="btn-primary">
+                            <i class="fas fa-plus"></i> New Path
+                        </button>
+                    </div>
+                </div>
                 ${paths.map(path => `
                     <div class="learning-path-card" data-id="${path.id}">
                         <div class="path-header">

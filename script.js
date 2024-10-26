@@ -136,199 +136,106 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Product showcase carousel
+    const words = [
+        'Articles',
+        'Videos',
+        'Podcasts',
+        'Research Papers',
+        'Courses',
+        'Newsletters',
+        'Blog Posts',
+        'Twitter Threads',
+        'YouTube Videos',
+        'Academic Papers',
+        'LinkedIn Posts',
+        'Case Studies',
+        'Tutorials',
+        'Whitepapers',
+        'Conference Talks',
+        'Webinars',
+        'Interviews',
+        'TED Talks',
+        'Learning Paths',
+        'Infographics',
+        'Presentations',
+        'Lecture Notes',
+        'Book Summaries',
+        'Journal Entries',
+        'Discussion Threads',
+        'Industry Reports',
+        'Expert Insights'
+    ];
+    
+    const textElement = document.getElementById('typewriter-text');
+    if (!textElement) return;
+    
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    
+    function type() {
+        const currentWord = words[wordIndex];
+        
+        if (isDeleting) {
+            textElement.textContent = currentWord.substring(0, charIndex - 1);
+            charIndex--;
+        } else {
+            textElement.textContent = currentWord.substring(0, charIndex + 1);
+            charIndex++;
+        }
+        
+        if (!isDeleting && charIndex === currentWord.length) {
+            setTimeout(() => {
+                isDeleting = true;
+            }, 1500);
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            wordIndex = (wordIndex + 1) % words.length;
+        }
+        
+        const typingSpeed = isDeleting ? 100 : 150;
+        setTimeout(type, typingSpeed);
+    }
+    
+    type();
+
+    // Get carousel elements
     const carousel = document.querySelector('.screenshot-carousel');
     const images = carousel.querySelectorAll('img');
     const prevBtn = carousel.querySelector('.prev');
     const nextBtn = carousel.querySelector('.next');
-    const descriptionText = document.getElementById('screenshot-text');
+
     let currentIndex = 0;
 
-    const features = [
-        {
-            title: "Resource Bank",
-            description: "Effortlessly manage all your resources in one place. Search, sort, and organize your saved content based on date added, tags, resource type, collections, and more."
-        },
-        {
-            title: "Collections",
-            description: "Create and curate themed collections of resources. Group related content together for easy access and better organization of your knowledge."
-        },
-        {
-            title: "Favorites",
-            description: "Quickly access your most important resources by adding them to your favorites list. Easily view and manage all your favorited content in one place."
-        },
-        {
-            title: "Add Resource",
-            description: "Seamlessly add new resources directly from the Resource Bank interface. Categorize, tag, and organize your content as you save it."
-        },
-        {
-            title: "Browser Extension",
-            description: "Save resources on the go with our powerful browser extension. Capture web content with a single click while you browse."
-        }
-    ];
-
-    // Add this array of gradient colors
-    const gradientColors = [
-        { start: '#FF6B6B', end: '#4ECDC4' },
-        { start: '#A770EF', end: '#CF8BF3' },
-        { start: '#FFD93D', end: '#FF9A3D' },
-        { start: '#6DD5FA', end: '#2980B9' },
-        { start: '#56CCF2', end: '#2F80ED' }
-    ];
-
+    // Function to show specific image
     function showImage(index) {
         images.forEach(img => img.classList.remove('active'));
-        images[index].classList.add('active');
-        descriptionText.innerHTML = `<h3 style="--gradient-start: ${gradientColors[index].start}; --gradient-end: ${gradientColors[index].end};">${features[index].title}</h3><p>${features[index].description}</p>`;
+        
+        // Handle wrapping around
+        if (index >= images.length) currentIndex = 0;
+        if (index < 0) currentIndex = images.length - 1;
+        else currentIndex = index;
+        
+        images[currentIndex].classList.add('active');
+        
+        // Update screenshot text based on the current image
+        const descriptions = [
+            "Organize all your resources in one place with our intuitive Resource Bank.",
+            "Create and manage collections to group related resources together.",
+            "Quick access to your favorite resources for faster navigation.",
+            "Easily add new resources with our streamlined interface.",
+            "Take and organize notes alongside your saved resources.",
+            "Save resources directly from your browser with our extension."
+        ];
+        
+        document.getElementById('screenshot-text').textContent = descriptions[currentIndex];
     }
 
-    prevBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-        showImage(currentIndex);
-    });
+    // Add click event listeners
+    prevBtn.addEventListener('click', () => showImage(currentIndex - 1));
+    nextBtn.addEventListener('click', () => showImage(currentIndex + 1));
 
-    nextBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % images.length;
-        showImage(currentIndex);
-    });
-
-    // Initialize the first image and description
+    // Initialize first image and description
     showImage(0);
-
-    // Call the functions to create the dynamic elements
-    createResourceCarousel();
-    createIdeaGalaxy();
-
-    // Remove these function definitions as they're not being used
-    // createIdeaCollage();
-    // createIdeaShowcase();
-
-    // Add this new code for smooth scrolling to the features section
-    const featuresLink = document.querySelector('nav ul li a[href="#features"]');
-    const productShowcase = document.getElementById('product-showcase');
-
-    featuresLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        productShowcase.scrollIntoView({ behavior: 'smooth' });
-    });
-
-    const closeBtns = document.querySelectorAll('.close');
-    closeBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const modal = btn.closest('.modal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        });
-    });
 });
 
-function createResourceCarousel() {
-    const carousel = document.getElementById('resource-carousel');
-    const resources = [
-        'Videos', 'Podcasts', 'Tweets', 'Articles', 'Newsletters', 'Books', 'Research Papers',
-        'Infographics', 'Webinars', 'Courses', 'Presentations', 'Case Studies', 'Whitepapers',
-        'Interviews', 'Tutorials', 'Documentaries', 'TED Talks', 'Blogs', 'Forums', 'Q&A Threads'
-    ];
-
-    const colors = [
-        'linear-gradient(45deg, #ff9a9e, #fad0c4)',
-        'linear-gradient(45deg, #a1c4fd, #c2e9fb)',
-        'linear-gradient(45deg, #ffecd2, #fcb69f)',
-        'linear-gradient(45deg, #84fab0, #8fd3f4)',
-        'linear-gradient(45deg, #d4fc79, #96e6a1)'
-    ];
-
-    let currentIndex = 0;
-
-    function createItem(text, color) {
-        const item = document.createElement('div');
-        item.classList.add('resource-item');
-        item.textContent = text;
-        item.style.background = color;
-        return item;
-    }
-
-    function updateCarousel() {
-        const isMobile = window.innerWidth <= 768;
-        
-        if (isMobile) {
-            carousel.innerHTML = '';
-            for (let i = 0; i < 2; i++) {
-                const index = (currentIndex + i) % resources.length;
-                const newItem = createItem(resources[index], colors[index % colors.length]);
-                newItem.style.opacity = '0';
-                carousel.appendChild(newItem);
-                setTimeout(() => {
-                    newItem.style.opacity = '1';
-                }, 50);
-            }
-            
-            setTimeout(() => {
-                const items = carousel.querySelectorAll('.resource-item');
-                items.forEach(item => {
-                    item.style.opacity = '0';
-                });
-                
-                setTimeout(() => {
-                    currentIndex = (currentIndex + 2) % resources.length;
-                    updateCarousel();
-                }, 500);
-            }, 3000);
-        } else {
-            // Desktop behavior remains the same
-            carousel.innerHTML = '';
-            for (let i = 0; i < 5; i++) {
-                const index = (currentIndex + i) % resources.length;
-                const newItem = createItem(resources[index], colors[i % colors.length]);
-                carousel.appendChild(newItem);
-            }
-            currentIndex = (currentIndex + 1) % resources.length;
-        }
-    }
-
-    updateCarousel();
-    
-    if (!window.matchMedia('(max-width: 768px)').matches) {
-        setInterval(updateCarousel, 5000);
-    }
-
-    window.addEventListener('resize', () => {
-        clearInterval(carouselInterval);
-        updateCarousel();
-        if (!window.matchMedia('(max-width: 768px)').matches) {
-            carouselInterval = setInterval(updateCarousel, 5000);
-        }
-    });
-}
-
-function createIdeaGalaxy() {
-    const galaxy = document.getElementById('idea-galaxy');
-    const ideas = [
-        { text: "Capture", icon: "💡" },
-        { text: "Organize", icon: "🗂️" },
-        { text: "Connect", icon: "🔗" },
-        { text: "Inspire", icon: "✨" },
-        { text: "Learn", icon: "🚀" },
-        { text: "Grow", icon: "🌱" },
-        { text: "Discover", icon: "🔍" },
-        { text: "Create", icon: "🎨" }
-    ];
-
-    ideas.forEach((idea, index) => {
-        const element = document.createElement('div');
-        element.classList.add('idea-planet');
-        element.innerHTML = `
-            <span class="idea-icon">${idea.icon}</span>
-            <p class="idea-text">${idea.text}</p>
-        `;
-        element.style.setProperty('--orbit-duration', `${20 + index * 5}s`);
-        element.style.setProperty('--orbit-size', `${150 + index * 50}px`);
-        galaxy.appendChild(element);
-    });
-
-    const centerSun = document.createElement('div');
-    centerSun.classList.add('idea-sun');
-    centerSun.textContent = "Your Ideas";
-    galaxy.appendChild(centerSun);
-}

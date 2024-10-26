@@ -1,24 +1,20 @@
 :root {
-    --primary-gradient: linear-gradient(135deg, #FF9A8B, #FF6A88);
-    --secondary-color: #F0F4F8;
-    --text-color: #333333;
-    --background-color: #FFFFFF;
-    --card-background: #F8F9FA;
-    --pastel-blue-gradient: linear-gradient(135deg, #6FA8DC, #4A90E2);
-    --pastel-green-gradient: linear-gradient(135deg, #7AC7A6, #4CAF50);
-    --pastel-yellow-gradient: linear-gradient(135deg, #FFC870, #FFB347);
+    --black: #0a0a0a;
+    --black-alt: #141414;
+    --neon-blue: #00f6ff;
+    --neon-green: #00ff41;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --glow-blue: 0 0 20px rgba(0, 246, 255, 0.3);
+    --glow-green: 0 0 20px rgba(0, 255, 65, 0.3);
+    --grid-lines: rgba(0, 246, 255, 0.07);
+    --border-color: rgba(0, 246, 255, 0.1);
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    background-color: var(--black);
+    color: var(--text-primary);
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .container {
@@ -28,7 +24,7 @@ body {
 }
 
 header {
-    background-color: var(--background-color);
+    background-color: var(--black);
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     padding: 1rem 0;
 }
@@ -42,7 +38,7 @@ nav {
 .logo {
     display: flex;
     align-items: center;
-    color: var(--text-color);
+    color: var(--text-primary);
     text-decoration: none;
     font-size: 1.2rem;
     font-weight: 600;
@@ -76,7 +72,7 @@ h1 {
     font-size: 2rem;
     margin-bottom: 2rem;
     text-align: center;
-    color: var(--text-color);
+    color: var(--text-primary);
 }
 
 .stats-overview {
@@ -84,52 +80,111 @@ h1 {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     margin-bottom: 2rem;
+    padding: 10px;
 }
 
 .stat-card {
+    background: var(--black-alt);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    color: white;
+    padding: 20px;
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
 }
 
-.stat-card:nth-child(1) { background-image: var(--pastel-blue-gradient); }
-.stat-card:nth-child(2) { background-image: var(--pastel-green-gradient); }
-.stat-card:nth-child(3) { background-image: var(--pastel-yellow-gradient); }
+.stat-card:nth-child(1),
+.stat-card:nth-child(2),
+.stat-card:nth-child(3) {
+    background-image: none;
+}
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        var(--neon-blue),
+        transparent
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
 }
 
 .stat-card i {
-    font-size: 1.5rem;
-    color: white;
-    margin-right: 15px;
+    font-size: 24px;
+    color: var(--neon-blue);
+    margin-bottom: 15px;
+    display: block;
 }
 
 .stat-content {
-    flex-grow: 1;
+    position: relative;
+    z-index: 1;
 }
 
 .stat-card h2 {
-    font-size: 1.5rem;
-    color: white;
-    margin: 0 0 5px 0;
+    font-size: 28px;
+    margin: 10px 0;
+    background: linear-gradient(90deg, var(--neon-blue), #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
 }
 
 .stat-card p {
     font-size: 0.9rem;
-    color: white;
+    color: var(--text-secondary);
     margin: 0;
 }
 
 .stat-card .count {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 246, 255, 0.1);
+}
+
+.stat-card:hover::before {
+    background: linear-gradient(
+        45deg,
+        transparent,
+        var(--neon-blue),
+        var(--neon-green),
+        var(--neon-blue),
+        transparent
+    );
+}
+
+@keyframes borderFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.stat-card::before {
+    animation: borderFlow 4s ease infinite;
+    background-size: 200% 200%;
 }
 
 .main-actions {
@@ -148,8 +203,15 @@ h1 {
 }
 
 .btn-primary {
-    background-image: var(--primary-gradient);
-    color: white;
+    background: transparent;
+    border: 1px solid var(--neon-blue);
+    color: var(--neon-blue);
+    box-shadow: var(--glow-blue);
+}
+
+.btn-primary:hover {
+    background: var(--neon-blue);
+    color: var(--black);
 }
 
 .btn-secondary {
@@ -157,7 +219,7 @@ h1 {
     color: var(--text-color);
 }
 
-.btn-primary:hover, .btn-secondary:hover {
+.btn-secondary:hover {
     opacity: 0.9;
     transform: translateY(-2px);
 }
@@ -418,15 +480,14 @@ main {
 }
 
 .resource-item {
-    background-color: var(--card-background);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: var(--black-alt);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
 }
 
 .resource-item h3 {
     margin-bottom: 10px;
-    color: var(--text-color);
+    color: var(--text-primary);
 }
 
 .resource-item p {
@@ -459,4 +520,30 @@ main {
 .pagination button.active {
     background-color: var(--primary-color);
     color: white;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(to right, transparent 49%, var(--grid-lines) 50%, transparent 51%) 0 0 / 50px 50px,
+        linear-gradient(transparent 49%, var(--grid-lines) 50%, transparent 51%) 0 0 / 50px 50px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: -1;
+}
+
+input, select {
+    background: var(--black-alt);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+input:focus, select:focus {
+    border-color: var(--neon-blue);
+    box-shadow: var(--glow-blue);
 }

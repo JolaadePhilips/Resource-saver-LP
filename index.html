@@ -28,14 +28,21 @@
             <div class="container">
                 <h1>Save, Organize, and Find Everything—Effortlessly</h1>
                 <div class="hero-description">
-                    <div id="resource-carousel" class="resource-carousel">
-                        <!-- We'll populate this with JavaScript -->
+                    <div class="resource-types">
+                        <span>Save your</span>
+                        <div class="typewriter">
+                            <span id="typewriter-text"></span>
+                            <span class="cursor">|</span>
+                        </div>
                     </div>
-                    <p class="hero-action">Save what matters, organize it your way, and find it when you need it—all in one place. The Resource Saver is simple, easy, and built to keep you on track.</p>
-                    <div class="cta-buttons">
-                        <a href="#" class="btn-modern" id="loginBtn">Log In</a>
-                        <a href="#" class="btn-modern" id="signupBtn">Get Started</a>
+                    <div class="hero-text">
+                        <p>Save what matters, organize it your way, and find it when you need it—all in one place.</p>
+                        <p>The Resource Saver is simple, easy, and built to keep you on track.</p>
                     </div>
+                </div>
+                <div class="cta-buttons">
+                    <a href="#" class="btn-modern" id="loginBtn">Log In</a>
+                    <a href="#" class="btn-modern" id="signupBtn">Get Started</a>
                 </div>
             </div>
         </section>
@@ -51,6 +58,7 @@
                     <img src="images/Collections.png" alt="Collections Feature">
                     <img src="images/Favorite.png" alt="Favorites List">
                     <img src="images/Add Resource.png" alt="Adding a Resource">
+                    <img src="images/Save note.png" alt="Notes Feature">
                     <img src="images/Extension.png" alt="Browser Extension">
                     <div class="carousel-nav">
                         <button class="prev">&lt;</button>
@@ -66,19 +74,76 @@
 
         <section id="features">
             <div class="container">
-                <h2>See Resource Saver Pro in Action</h2>
-                <div id="idea-galaxy">
-                    <!-- We'll create this with JavaScript -->
+                <h2>Your Knowledge Ecosystem</h2>
+                <div class="feature-grid">
+                    <div class="resource-feature">
+                        <div class="feature-header">
+                            <div class="feature-icon">
+                                <i class="fas fa-sticky-note"></i>
+                            </div>
+                            <h3 class="feature-title">Smart Notes</h3>
+                        </div>
+                        <p class="feature-description">Create, organize, and link your thoughts with our powerful note-taking system.</p>
+                        <div class="feature-meta">
+                            <span class="meta-item">
+                                <i class="fas fa-pen"></i>
+                                Rich Text Editor
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-link"></i>
+                                Cross-linking
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="resource-feature">
+                        <div class="feature-header">
+                            <div class="feature-icon">
+                                <i class="fas fa-folder"></i>
+                            </div>
+                            <h3 class="feature-title">Collections</h3>
+                        </div>
+                        <p class="feature-description">Group related resources into themed collections for better organization.</p>
+                        <div class="feature-meta">
+                            <span class="meta-item">
+                                <i class="fas fa-layer-group"></i>
+                                Nested Collections
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-share-alt"></i>
+                                Easy Sharing
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="resource-feature">
+                        <div class="feature-header">
+                            <div class="feature-icon">
+                                <i class="fas fa-road"></i>
+                            </div>
+                            <h3 class="feature-title">Learning Paths</h3>
+                        </div>
+                        <p class="feature-description">Create structured learning journeys from your collected resources.</p>
+                        <div class="feature-meta">
+                            <span class="meta-item">
+                                <i class="fas fa-map-signs"></i>
+                                Custom Paths
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-chart-line"></i>
+                                Progress Tracking
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ecosystem-cta">
+                    <h2>Okay, I need this, what's next?</h2>
+                    <a href="#" class="btn-modern" id="ctaSignupBtn">Get Started</a>
                 </div>
             </div>
         </section>
 
-        <section id="cta">
-            <div class="container">
-                <h2>Okay, I need this, what's next?</h2>
-                <a href="#" class="btn-modern" id="ctaSignupBtn">Get Started</a>
-            </div>
-        </section>
+      
     </main>
 
     <footer>

@@ -1,0 +1,117 @@
+/* Add these styles to your existing styles.css or in a new welcome.css file */
+
+.welcome-container {
+    max-width: 800px;
+    margin: 120px auto 40px;
+    padding: 40px 20px;
+    position: relative;
+}
+
+.welcome-container h1 {
+    color: var(--neon-blue);
+    font-size: 36px;
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, var(--neon-blue), #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.step {
+    margin-bottom: 30px;
+    padding: 25px;
+    background: var(--black-alt);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.step::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        var(--neon-blue),
+        transparent
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.step:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-blue);
+}
+
+.step h2 {
+    color: var(--neon-blue);
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.step p, .step li {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.step code {
+    background: rgba(0, 246, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--neon-blue);
+    font-family: monospace;
+}
+
+.video-container {
+    margin-top: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--black);
+}
+
+.step ol, .step ul {
+    margin: 15px 0;
+    padding-left: 20px;
+}
+
+.step li {
+    margin-bottom: 10px;
+}
+
+.step a {
+    color: var(--neon-blue);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.step a:hover {
+    text-shadow: var(--glow-blue);
+}
+
+/* Add the grid background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(to right, transparent 49%, var(--grid-lines) 50%, transparent 51%) 0 0 / 50px 50px,
+        linear-gradient(transparent 49%, var(--grid-lines) 50%, transparent 51%) 0 0 / 50px 50px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: -1;
+}
+
