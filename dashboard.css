@@ -190,9 +190,12 @@ h1 {
 .main-actions {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 1rem;
-    margin-bottom: 2rem;
-    padding: 0 15px; /* Add padding for mobile */
+    margin: 2rem auto;
+    max-width: 90%;
+    width: 100%;
+    padding: 0 15px;
 }
 
 .btn-primary, .btn-secondary {
@@ -411,14 +414,17 @@ main {
 
     .main-actions {
         flex-direction: column;
-        padding: 0 20px; /* Increase padding on mobile */
+        width: 90%;
+        margin: 2rem auto;
+        padding: 0;
     }
 
     .btn-primary, .btn-secondary {
         width: 100%;
-        margin-bottom: 1rem;
-        padding: 1rem; /* Slightly larger touch target on mobile */
-        font-size: 1rem; /* Ensure readable font size */
+        max-width: 300px;
+        margin: 0 auto 1rem auto;
+        padding: 1rem;
+        font-size: 1rem;
         display: flex;
         justify-content: center;
         align-items: center;
