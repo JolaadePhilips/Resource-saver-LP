@@ -3503,14 +3503,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const proceedBtn = document.getElementById('proceedAnyway');
         const desktopBtn = document.getElementById('viewOnDesktop');
         
-        // Show warning
-        mobileWarning.style.display = 'flex';
+        // Show warning by adding active class
+        mobileWarning.classList.add('active');
         
         // Handle "Proceed Anyway" click
         proceedBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            mobileWarning.style.display = 'none';
+            mobileWarning.classList.remove('active');
         });
         
         // Handle "View on Desktop" click
@@ -3519,27 +3519,50 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             // Copy current URL to clipboard
             const currentUrl = window.location.href;
-            navigator.clipboard.writeText(currentUrl)
-                .then(() => {
-                    alert('Link copied to clipboard! Please paste this link on your desktop browser.');
-                })
-                .catch(err => {
-                    // Fallback for browsers that don't support clipboard API
-                    const textArea = document.createElement('textarea');
-                    textArea.value = currentUrl;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try {
-                        document.execCommand('copy');
-                        alert('Link copied to clipboard! Please paste this link on your desktop browser.');
-                    } catch (err) {
-                        alert('Unable to copy link. Please manually copy the URL from your browser.');
-                    }
-                    document.body.removeChild(textArea);
-                });
+            
+            // Modern clipboard API with fallback
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(currentUrl)
+                    .then(() => {
+                        alert('Link copied! Please paste this link in your desktop browser.');
+                    })
+                    .catch(() => {
+                        fallbackCopyTextToClipboard(currentUrl);
+                    });
+            } else {
+                fallbackCopyTextToClipboard(currentUrl);
+            }
         });
     }
 });
+
+// Fallback function for copying to clipboard
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = '0';
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        document.execCommand('copy');
+        alert('Link copied! Please paste this link in your desktop browser.');
+    } catch (err) {
+        alert('Unable to copy link. Please manually copy the URL from your browser.');
+    }
+
+    document.body.removeChild(textArea);
+}
 
 
 

@@ -2762,7 +2762,6 @@ header {
 
 /* Mobile Warning Styles */
 .mobile-warning {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -2772,7 +2771,7 @@ header {
     z-index: 9999;
     padding: 20px;
     text-align: center;
-    display: flex;
+    display: none; /* Remove duplicate display property */
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -2831,4 +2830,9 @@ header {
     .mobile-warning {
         display: none !important;
     }
+}
+
+/* Add this for when the warning is active */
+.mobile-warning.active {
+    display: flex;
 }
