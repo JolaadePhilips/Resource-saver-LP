@@ -2771,7 +2771,7 @@ header {
     z-index: 9999;
     padding: 20px;
     text-align: center;
-    display: none;
+    display: none; /* Hidden by default */
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -2823,6 +2823,11 @@ header {
     background-color: transparent;
     border: 1px solid var(--primary-color);
     color: var(--primary-color);
+}
+
+/* Show warning when active */
+.mobile-warning.active {
+    display: flex !important;
 }
 
 /* Hide warning on desktop */
