@@ -2771,7 +2771,7 @@ header {
     z-index: 9999;
     padding: 20px;
     text-align: center;
-    display: flex; /* Change to flex by default */
+    display: none; /* Hidden by default */
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -2834,5 +2834,18 @@ header {
 
 /* Add this for when the warning is active */
 .mobile-warning.active {
-    display: flex;
+    display: flex !important; /* Override any other display properties */
+}
+
+/* Add close icon */
+.mobile-warning .close-warning {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
 }

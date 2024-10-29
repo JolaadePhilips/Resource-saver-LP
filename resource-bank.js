@@ -3502,37 +3502,51 @@ document.addEventListener('DOMContentLoaded', function() {
         const mobileWarning = document.getElementById('mobileWarning');
         const proceedBtn = document.getElementById('proceedAnyway');
         const desktopBtn = document.getElementById('viewOnDesktop');
+        const closeWarning = document.getElementById('closeWarning');
         
-        // Show warning by adding active class
+        if (!mobileWarning) return; // Exit if element not found
+        
+        // Show warning
         mobileWarning.classList.add('active');
         
-        // Handle "Proceed Anyway" click
-        proceedBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            mobileWarning.classList.remove('active');
-        });
+        // Function to hide warning
+        const hideWarning = () => {
+            mobileWarning.style.display = 'none';
+            sessionStorage.setItem('mobileWarningDismissed', 'true');
+        };
         
-        // Handle "View on Desktop" click
-        desktopBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            // Copy current URL to clipboard
-            const currentUrl = window.location.href;
-            
-            // Modern clipboard API with fallback
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(currentUrl)
-                    .then(() => {
-                        alert('Link copied! Please paste this link in your desktop browser.');
-                    })
-                    .catch(() => {
-                        fallbackCopyTextToClipboard(currentUrl);
-                    });
-            } else {
-                fallbackCopyTextToClipboard(currentUrl);
-            }
-        });
+        // Handle all click events
+        if (closeWarning) {
+            closeWarning.addEventListener('click', hideWarning);
+        }
+        
+        if (proceedBtn) {
+            proceedBtn.addEventListener('click', hideWarning);
+        }
+        
+        if (desktopBtn) {
+            desktopBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const currentUrl = window.location.href;
+                
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(currentUrl)
+                        .then(() => {
+                            alert('Link copied! Please paste this link in your desktop browser.');
+                        })
+                        .catch(() => {
+                            fallbackCopyTextToClipboard(currentUrl);
+                        });
+                } else {
+                    fallbackCopyTextToClipboard(currentUrl);
+                }
+            });
+        }
+        
+        // Check if warning was already dismissed
+        if (sessionStorage.getItem('mobileWarningDismissed') === 'true') {
+            mobileWarning.style.display = 'none';
+        }
     }
 });
 
