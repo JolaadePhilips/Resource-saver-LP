@@ -3493,5 +3493,38 @@ function shareResource(resource) {
     };
 }
 
+// Add this at the beginning of your JavaScript file
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if device is mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+        const mobileWarning = document.getElementById('mobileWarning');
+        const proceedBtn = document.getElementById('proceedAnyway');
+        const desktopBtn = document.getElementById('viewOnDesktop');
+        
+        // Show warning
+        mobileWarning.style.display = 'flex';
+        
+        // Handle "Proceed Anyway" click
+        proceedBtn.addEventListener('click', () => {
+            mobileWarning.style.display = 'none';
+            // Optionally set a cookie/localStorage to remember user's choice
+            localStorage.setItem('proceedOnMobile', 'true');
+        });
+        
+        // Handle "View on Desktop" click
+        desktopBtn.addEventListener('click', () => {
+            // You could redirect to a landing page or show additional instructions
+            alert('Please visit this site on a desktop computer for the best experience.');
+        });
+        
+        // Check if user has previously chosen to proceed
+        if (localStorage.getItem('proceedOnMobile') === 'true') {
+            mobileWarning.style.display = 'none';
+        }
+    }
+});
+
 
 
