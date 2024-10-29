@@ -503,6 +503,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeTabs();
     closeAllModals();
     fetchAndDisplayResources();
+    initializeQuillEditor();
+
+    // Add mobile menu initialization
+    initializeMobileMenu();
 
     // Add existing event listeners
     document.getElementById('searchInput').addEventListener('input', debounce(() => {
@@ -1420,11 +1424,8 @@ function fetchAndDisplayCollections() {
         });
 
     // Add event listener for create collection button
-    document.addEventListener('DOMContentLoaded', () => {
-    // Add event listener for create collection button
     const createCollectionBtn = document.getElementById('createCollectionBtn');
     if (createCollectionBtn) {
-            createCollectionBtn.addEventListener('click', showCreateCollectionModal);
         const newBtn = createCollectionBtn.cloneNode(true);
         createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
         
@@ -1436,7 +1437,6 @@ function fetchAndDisplayCollections() {
             document.getElementById('addToCollection').textContent = 'Create Collection';
         });
     }
-    });
 }
 
 // Function to show the create collection modal
@@ -3511,6 +3511,33 @@ document.querySelectorAll('.nav-link').forEach(link => {
         document.querySelector('.menu-overlay').classList.remove('active');
     });
 });
+
+// Add this function to handle mobile menu initialization
+function initializeMobileMenu() {
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.querySelector('.nav-links');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    if (menuToggle && navLinks && menuOverlay) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+        });
+
+        menuOverlay.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            menuOverlay.classList.remove('active');
+        });
+
+        // Close menu when a link is clicked
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                menuOverlay.classList.remove('active');
+            });
+        });
+    }
+}
 
 
 
