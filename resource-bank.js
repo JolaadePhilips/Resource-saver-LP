@@ -3493,5 +3493,24 @@ function shareResource(resource) {
     };
 }
 
+// Add to your existing JavaScript
+document.getElementById('menuToggle').addEventListener('click', function() {
+    document.querySelector('.nav-links').classList.toggle('active');
+    document.querySelector('.menu-overlay').classList.toggle('active');
+});
+
+document.getElementById('menuOverlay').addEventListener('click', function() {
+    document.querySelector('.nav-links').classList.remove('active');
+    this.classList.remove('active');
+});
+
+// Close menu when a link is clicked
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function() {
+        document.querySelector('.nav-links').classList.remove('active');
+        document.querySelector('.menu-overlay').classList.remove('active');
+    });
+});
+
 
 
