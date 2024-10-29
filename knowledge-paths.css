@@ -1,0 +1,1325 @@
+.kp-paths-section {
+    padding: 20px;
+}
+
+.kp-path-card {
+    background: linear-gradient(145deg, var(--card-bg) 0%, var(--bg-color) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.kp-path-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    border-color: rgba(var(--primary-color-rgb), 0.3);
+}
+
+.kp-path-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.kp-path-title {
+    font-size: 1.4rem;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.kp-path-description {
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.kp-progress-container {
+    margin-bottom: 15px;
+}
+
+.kp-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to right, rgba(var(--primary-color-rgb), 0.1), rgba(var(--primary-color-rgb), 0.05));
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.kp-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color) 0%, rgba(var(--primary-color-rgb), 0.8) 100%);
+    transition: width 0.3s ease;
+    box-shadow: 0 2px 4px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.kp-progress-text {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    margin-top: 5px;
+}
+
+.kp-path-notes {
+    background: var(--bg-color);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.kp-path-notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.kp-path-resources {
+    margin-top: 15px;
+}
+
+.kp-resource-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background: var(--bg-color);
+}
+
+.kp-resource-checkbox {
+    margin-right: 10px;
+}
+
+.kp-path-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.kp-path-action-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.kp-export-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+.kp-edit-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+/* Add these styles to your existing knowledge-paths.css */
+
+.kp-resource-selection-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin: 15px 0;
+    background: var(--bg-color);
+    padding: 5px 0;
+}
+
+.kp-resource-selection-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+.kp-resource-selection-item:last-child {
+    border-bottom: none;
+}
+
+.kp-resource-selection-item:hover {
+    background-color: var(--card-bg);
+}
+
+.kp-resource-selection-item input[type="checkbox"] {
+    margin: 3px 12px 0 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.kp-resource-selection-item label {
+    display: block;
+    width: calc(100% - 28px);
+    cursor: pointer;
+    text-align: left;
+}
+
+.kp-resource-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.kp-resource-title {
+    display: block;
+    color: var(--text-color);
+    font-weight: 500;
+    text-align: left;
+    margin-bottom: 4px;
+}
+
+.kp-resource-meta {
+    display: block;
+    color: var(--secondary-color);
+    font-size: 0.85em;
+    text-align: left;
+}
+
+.kp-empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--secondary-color);
+}
+
+.kp-empty-state i {
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.kp-empty-state h3 {
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.kp-empty-state p {
+    font-size: 0.9em;
+}
+
+/* Modal specific styles */
+#knowledgePathModal .modal-content {
+    max-width: 600px;
+    width: 90%;
+}
+
+#knowledgePathModal input[type="text"],
+#knowledgePathModal textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+#knowledgePathModal textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.kp-path-resources-section {
+    margin: 20px 0;
+}
+
+.kp-path-resources-section h3 {
+    margin-bottom: 10px;
+    font-size: 1em;
+    color: var(--text-color);
+}
+
+.kp-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Update the modal styles */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Changed from center to flex-start */
+    padding: 20px;
+    overflow-y: auto; /* Enable scrolling */
+}
+
+.modal-content {
+    background: var(--bg-color);
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh; /* Maximum height of 90% of viewport height */
+    overflow-y: auto; /* Enable scrolling within the modal content */
+    margin: 20px auto; /* Add margin to top */
+    position: relative; /* For positioning the close button */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+/* Style scrollbars for better visibility */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+/* Make sure the modal actions stay visible */
+.modal-actions {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg-color);
+    padding: 15px 0;
+    margin-top: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Adjust the resource selection list */
+.kp-resource-selection-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin: 10px 0;
+    padding: 5px;
+    background: var(--bg-color);
+}
+
+/* Make the close button sticky */
+.modal .close {
+    position: sticky;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1;
+    float: right;
+}
+
+/* Add some spacing between form elements */
+#knowledgePathModal input[type="text"],
+#knowledgePathModal textarea {
+    margin-bottom: 20px;
+}
+
+.kp-path-resources-section {
+    margin: 20px 0;
+    padding: 15px;
+    background: var(--card-bg);
+    border-radius: 8px;
+}
+
+/* Make the modal title sticky as well */
+#knowledgePathModal h2 {
+    position: sticky;
+    top: 0;
+    background: var(--bg-color);
+    padding: 15px 0;
+    margin: -15px 0 20px 0;
+    z-index: 1;
+}
+
+/* Path Details View */
+.kp-path-details {
+    background: linear-gradient(145deg, var(--card-bg) 0%, var(--bg-color) 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.kp-path-details-header {
+    margin-bottom: 30px;
+}
+
+.kp-back-button {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.kp-path-goals-detail {
+    background: linear-gradient(145deg, var(--bg-color) 0%, var(--card-bg) 100%);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.kp-goal-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.kp-goal-item i {
+    color: var(--primary-color);
+}
+
+.kp-path-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.kp-path-resources, .kp-path-notes {
+    background: var(--bg-color);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.kp-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.kp-resource-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    background: linear-gradient(145deg, var(--card-bg) 0%, var(--bg-color) 100%);
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.kp-resource-item.completed {
+    border-left: 4px solid var(--primary-color);
+    opacity: 0.8;
+}
+
+.kp-resource-status .btn-status {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.kp-resource-content {
+    flex-grow: 1;
+}
+
+.kp-resource-meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    font-size: 0.85rem; /* Restore original font size */
+}
+
+.kp-resource-type, 
+.kp-resource-category {
+    color: var(--secondary-color);
+    font-size: 0.85rem; /* Restore original font size */
+}
+
+.kp-resource-link {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.kp-resource-actions {
+    /* Remove or comment out these lines */
+    /* opacity: 0;
+    transition: opacity 0.3s ease; */
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Remove or comment out this hover state */
+/* .resource-item:hover .resource-actions {
+    opacity: 1;
+} */
+
+.kp-empty-resources, .kp-empty-note {
+    color: var(--secondary-color);
+    text-align: center;
+    padding: 20px;
+}
+
+/* Goal Setup Styles */
+.kp-path-goals-setup {
+    background: var(--bg-color);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.kp-goal-field {
+    margin: 15px 0;
+}
+
+.kp-goal-field label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.kp-goal-field select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+
+.kp-custom-time {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.kp-custom-time input {
+    width: 80px;
+}
+
+/* Notes Editor Styles */
+.kp-notes-editor-modal {
+    width: 80%;
+    max-width: 700px;
+    height: 70vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.kp-notes-editor-modal h2 {
+    padding: 20px 25px;
+    margin: 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1.4rem;
+}
+
+.kp-notes-toolbar {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--card-bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.kp-notes-editor {
+    flex-grow: 1;
+    padding: 20px 25px;
+    overflow-y: auto;
+    background: var(--bg-color);
+    border: none !important;
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+/* Quill editor overrides */
+.ql-toolbar.ql-snow {
+    border: none !important;
+    padding: 12px 15px !important;
+    background: white !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.ql-formats {
+    margin: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px;
+}
+
+/* Style the toolbar buttons */
+.ql-formats button {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd !important;
+    border-radius: 4px;
+    background: white;
+    color: #444;
+    padding: 0;
+    margin: 0;
+}
+
+/* Active state for buttons */
+.ql-formats button.ql-active,
+.ql-formats button:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color) !important;
+}
+
+/* Style dropdowns (like heading selector) */
+.ql-formats select.ql-header,
+.ql-formats select.ql-size,
+.ql-formats select {
+    height: 28px;
+    min-width: 90px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    color: #444;
+    padding: 0 24px 0 8px;
+    margin: 0 4px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23444' d='M0 2l4 4 4-4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    appearance: none;
+}
+
+/* Editor content area */
+.ql-container.ql-snow {
+    border: none !important;
+    height: calc(100% - 60px);
+}
+
+.ql-editor {
+    padding: 20px !important;
+    min-height: 180px !important;
+    max-height: calc(70vh - 120px) !important;
+    overflow-y: auto !important;
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    color: var(--text-color);
+    background: var(--bg-color);
+}
+
+.ql-editor h1, 
+.ql-editor h2, 
+.ql-editor h3 {
+    margin: 1.5em 0 0.5em;
+    font-weight: 600;
+}
+
+.ql-editor p {
+    margin-bottom: 1em !important;
+}
+
+.ql-editor ul, 
+.ql-editor ol {
+    padding-left: 1.5em !important;
+    margin-bottom: 1em !important;
+}
+
+/* Notes content display */
+.kp-notes-content {
+    padding: 15px;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+.kp-notes-content p {
+    margin-bottom: 1em;
+}
+
+.kp-empty-note {
+    color: var(--secondary-color);
+    font-style: italic;
+    text-align: center;
+    padding: 30px 20px;
+}
+
+/* Modal actions for notes */
+.kp-notes-editor-modal .kp-modal-actions {
+    padding: 15px 25px;
+    background: var(--card-bg);
+    border-top: 1px solid var(--border-color);
+    margin-top: 0;
+}
+
+/* Resource Selection Styles */
+.kp-resources-selection {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.kp-resource-selection-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.kp-resource-selection-item:last-child {
+    border-bottom: none;
+}
+
+.kp-resource-selection-item label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+/* Resource Status Styles */
+.kp-status-select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+.kp-status-pending {
+    border-left: 4px solid #ffd700;
+}
+
+.kp-status-progress {
+    border-left: 4px solid #1e90ff;
+}
+
+.kp-status-completed {
+    border-left: 4px solid #32cd32;
+}
+
+.kp-completion-date {
+    font-size: 0.8em;
+    color: var(--secondary-color);
+}
+
+.kp-resource-item {
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    background: var(--card-bg);
+    transition: all 0.3s ease;
+}
+
+.kp-resource-item:hover {
+    transform: translateX(5px);
+}
+
+.kp-empty-resources {
+    text-align: center;
+    padding: 20px;
+    color: var(--secondary-color);
+}
+
+.kp-empty-resources button {
+    margin-top: 10px;
+}
+
+.kp-path-goals {
+    background: var(--bg-color);
+    padding: 12px;
+    border-radius: 6px;
+    margin: 10px 0;
+}
+
+.kp-goal-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 5px 0;
+    color: var(--text-color);
+}
+
+.kp-goal-item i {
+    color: var(--primary-color);
+    width: 16px;
+}
+
+.kp-goal-item span {
+    font-size: 0.9em;
+}
+
+.kp-btn-danger {
+    background: transparent;
+    color: var(--danger-color);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.kp-btn-danger:hover {
+    opacity: 1;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.kp-path-header-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.kp-btn-icon {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.kp-btn-icon:hover {
+    background: linear-gradient(145deg, rgba(var(--primary-color-rgb), 0.1) 0%, rgba(var(--primary-color-rgb), 0.05) 100%);
+    transform: translateY(-1px);
+}
+
+.kp-modal-input {
+    margin: 20px 0;
+}
+
+.kp-modal-input input,
+.kp-modal-input select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Make sure resource cards show full content */
+.kp-resource-card {
+    opacity: 1 !important; /* Override any opacity settings */
+    height: auto !important; /* Override any height restrictions */
+}
+
+/* Ensure action buttons are always visible */
+.kp-resource-actions {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* Update the visibility control for knowledge paths section */
+#knowledgePathsSection {
+    display: none !important;
+}
+
+/* Only show when knowledge-paths tab is active */
+.nav-link[data-tab="knowledge-paths"].active ~ .main-content #knowledgePathsSection {
+    display: block !important;
+}
+
+/* Hide knowledge paths content in other tabs */
+.nav-link:not([data-tab="knowledge-paths"]).active ~ .main-content #knowledgePathsSection {
+    display: none !important;
+}
+
+/* First, set default state */
+#knowledgePathsSection {
+    display: none;
+}
+
+/* Show knowledge paths section when its tab is active */
+body:has(.nav-link[data-tab="knowledge-paths"].active) #knowledgePathsSection {
+    display: block !important;
+}
+
+/* Alternative approach if :has() is not supported in all browsers */
+.nav-link[data-tab="knowledge-paths"].active ~ .main-content #knowledgePathsSection {
+    display: block !important;
+}
+/* Remove any other display:none rules that might be conflicting */
+.main-content #knowledgePathsSection {
+    display: block;
+}
+
+/* Hide when other tabs are active */
+.nav-link:not([data-tab="knowledge-paths"]).active ~ .main-content #knowledgePathsSection {
+    display: none !important;
+}
+
+/* Modal improvements */
+.kp-modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+/* Notes modal specific */
+.kp-notes-modal .kp-modal-content {
+    width: 90%;
+    max-width: 800px;
+    height: 80vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Action buttons styling */
+.kp-action-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Header layout */
+.kp-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.kp-delete-btn {
+    background: transparent;
+    color: var(--danger-color);
+    border: none;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.kp-delete-btn:hover {
+    opacity: 1;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* Form inputs */
+.kp-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Only add these specific rules */
+.kp-notes-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 80vh;
+    width: 90%;
+    max-width: 800px;
+    background: var(--bg-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.kp-notes-editor {
+    min-height: 300px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+/* Only add these specific rules */
+.kp-btn-primary {
+    background: linear-gradient(145deg, var(--primary-color) 0%, rgba(var(--primary-color-rgb), 0.9) 100%);
+    box-shadow: 0 2px 4px rgba(var(--primary-color-rgb), 0.2);
+    transition: all 0.3s ease;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: white;
+}
+
+.kp-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(var(--primary-color-rgb), 0.3);
+}
+
+.kp-btn-primary i {
+    font-size: 0.9em;
+}
+
+/* Only add these specific rules */
+#knowledgePathModal .kp-modal-content {
+    background: var(--bg-color);
+    padding: 20px;
+    border-radius: 12px;
+    width: auto;
+    min-width: 400px;
+    max-width: 500px;
+    margin: auto;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+#knowledgePathModal input,
+#knowledgePathModal textarea,
+#knowledgePathModal select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-color);
+}
+
+/* Resource Selection Modal Styles */
+.kp-resource-modal {
+    max-width: 600px !important;
+    padding: 0 !important;
+    background: var(--bg-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.kp-resources-selection {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 20px 25px;
+}
+
+.kp-resource-selection-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 15px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+}
+
+.kp-resource-selection-item:hover {
+    transform: translateX(5px);
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.kp-resource-selection-item input[type="checkbox"] {
+    margin: 3px 12px 0 0;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.kp-resource-selection-item label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    cursor: pointer;
+}
+
+.kp-resource-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.kp-resource-meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+}
+
+.kp-resource-type {
+    padding: 2px 8px;
+    background: var(--bg-color);
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+.kp-empty-message {
+    text-align: center;
+    color: var(--secondary-color);
+    padding: 20px;
+}
+
+/* Create Path Modal Specific Styles */
+.kp-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.kp-modal-header h2 {
+    font-size: 1.4rem;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.kp-modal-body {
+    padding: 0 10px;
+}
+
+.kp-form-group {
+    margin-bottom: 20px;
+}
+
+.kp-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.kp-form-section {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.kp-form-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.kp-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.kp-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.1);
+    outline: none;
+}
+
+.kp-custom-time {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.kp-custom-time .kp-input {
+    margin-bottom: 0;
+}
+
+.kp-custom-date {
+    margin-top: 10px;
+}
+
+.kp-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.kp-btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.kp-btn-secondary:hover {
+    background: var(--card-bg);
+}
+
+/* Update existing modal styles for resource selection */
+.resources-selection {
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-color);
+}
+
+.resource-selection-item {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.resource-selection-item:last-child {
+    border-bottom: none;
+}
+
+.resource-selection-item input[type="checkbox"] {
+    margin-right: 8px;
+    width: 14px;
+    height: 14px;
+}
+
+.resource-selection-item label {
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+/* Modal content adjustments */
+.modal-content {
+    max-width: 500px;
+    padding: 20px;
+}
+
+.modal-content h2 {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+}
+
+/* Add search input to existing styles */
+.resource-search {
+    margin-bottom: 10px;
+    padding: 6px 10px;
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* Add this to ensure proper positioning */
+.kp-path-details {
+    position: relative;
+}
+
+.kp-path-details-header {
+    position: relative;
+}
+
+/* Add specific styles for the edit modals */
+.kp-edit-field {
+    margin: 10px 0;
+}
+
+.kp-edit-field select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+/* Update modal header styles */
+.kp-modal h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+/* Specific styles for small edit modals */
+.kp-edit-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background: transparent;
+}
+
+.kp-edit-modal .kp-modal-content {
+    background: var(--bg-color);
+    padding: 15px;
+    border-radius: 8px;
+    width: auto;
+    min-width: 200px;
+    max-width: 250px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border: 1px solid var(--border-color);
+    margin: 0 auto;
+}
+
+.kp-edit-modal h2 {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+.kp-edit-modal .kp-modal-actions {
+    margin-top: 12px;
+    padding-top: 12px;
+    gap: 8px;
+}

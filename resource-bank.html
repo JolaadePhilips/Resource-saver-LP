@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resource Saver Pro - Resource Bank</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="resource-bank.css">
     <link rel="stylesheet" href="collections.css">
+    <link rel="stylesheet" href="knowledge-paths.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 </head>
@@ -21,11 +22,10 @@
             <nav class="nav-links">
                 <a href="#" class="nav-link" data-tab="notes"><i class="fas fa-sticky-note"></i> Notes</a>
                 <a href="#" class="nav-link active" data-tab="resources"><i class="fas fa-book"></i> Resources</a>
-               
+                <a href="#" class="nav-link" data-tab="knowledge-paths"><i class="fas fa-road"></i> Knowledge Paths</a>
                 <a href="#" class="nav-link" data-tab="collections"><i class="fas fa-folder"></i> Collections</a>
                 <a href="#" class="nav-link" data-tab="favorites"><i class="fas fa-star"></i> Favorites</a>
                 <a href="#" class="nav-link" data-tab="statistics"><i class="fas fa-chart-bar"></i> Statistics</a>
-                <a href="#" class="nav-link" data-tab="learning-paths"><i class="fas fa-road"></i> Learning Paths</a>
                 <a href="#" class="nav-link" data-tab="recent"><i class="fas fa-history"></i> Recent Activity</a>
             </nav>
             <div class="sidebar-buttons">
@@ -101,16 +101,15 @@
                 
             </section>
 
-            <!-- Add this section for learning paths after the collections section -->
-            <section id="learningPathsSection" class="learning-paths-section" style="display: none;">
-                <div class="learning-paths-header">
-                    <h2>Learning Paths</h2>
-                    <button id="createNewPathBtn">
-                        <i class="fas fa-plus"></i> New Learning Path
+            <section id="knowledgePathsSection" class="knowledge-paths-section" style="display: none;">
+                <div class="section-header">
+                    <h2>Knowledge Paths</h2>
+                    <button id="createKnowledgePathBtn" class="btn-primary">
+                        <i class="fas fa-plus"></i> New Path
                     </button>
                 </div>
-                <div id="learningPathsContainer">
-                    <!-- Learning paths will be dynamically added here -->
+                <div id="knowledgePathsContainer" class="knowledge-paths-container">
+                    <!-- Paths will be dynamically added here -->
                 </div>
             </section>
 
@@ -208,43 +207,6 @@
         </div>
     </div>
 
-    <!-- Add this modal for creating and editing learning paths -->
-    <div id="learningPathModal" class="modal">
-        <div class="modal-content cia-style">
-            <span class="close">&times;</span>
-            <h2>Create Learning Path</h2>
-            <form id="learningPathForm">
-                <div class="form-group">
-                    <label for="learningPathName">Path Name</label>
-                    <input type="text" id="learningPathName" placeholder="Enter path name" required>
-                </div>
-                <div class="form-group">
-                    <label for="learningPathDescription">Description</label>
-                    <textarea id="learningPathDescription" placeholder="Enter path description"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="learningPathDifficulty">Difficulty Level</label>
-                    <select id="learningPathDifficulty">
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                    </select>
-                </div>
-                <div class="modal-actions">
-                    <button type="submit" class="btn-primary">Create Path</button>
-                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add this section for the learning paths blurb -->
-    <div id="learningPathsBlurb" class="info-blurb" style="display: none;">
-        <h3>Learning Paths</h3>
-        <p>Learning Paths help you organize your resources into structured courses. Create a path, add resources, and track your progress as you complete each item. Use Learning Paths to plan your studies, prepare for certifications, or master new skills.</p>
-        <button id="closeBlurb" class="btn-subtle">Got it!</button>
-    </div>
-
     <!-- Add this modal for adding new resources -->
     <div id="addResourceModal" class="modal">
         <div class="modal-content">
@@ -313,10 +275,34 @@
         </div>
     </div>
 
+    <!-- Add this with your other modals -->
+    <div id="knowledgePathModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create Knowledge Path</h2>
+            <input type="text" id="pathTitle" placeholder="Path Title" required>
+            <textarea id="pathDescription" placeholder="Path Description" rows="3"></textarea>
+            <div class="path-resources-section">
+                <h3>Add Resources</h3>
+                <div id="pathResourcesList" class="resource-selection-list">
+                    <!-- Resources will be dynamically added here -->
+                </div>
+            </div>
+            <textarea id="pathNotes" placeholder="Path Notes" rows="4"></textarea>
+            <div class="modal-actions">
+                <button id="saveKnowledgePath" class="btn-primary">Create Path</button>
+                <button class="btn-secondary close-modal">Cancel</button>
+                
+            </div>
+        </div>
+    </div>
+    <div id="knowledgePathModal" class="modal"></div>
+
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script src="resource-bank.js"></script>
+    <script src="knowledge-paths.js"></script>  <!-- Add this line -->
 </body>
 </html>

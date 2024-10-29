@@ -2526,3 +2526,12 @@ header {
     transform: translateY(-1px);
 }
 
+#knowledgePathsSection {
+    display: none;
+}
+
+/* Only show when knowledge-paths tab is active */
+.nav-link[data-tab="knowledge-paths"].active ~ .main-content #knowledgePathsSection {
+    display: block;
+}
+

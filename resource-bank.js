@@ -97,6 +97,20 @@ function fetchAndDisplayContent() {
             notesSection.style.display = 'none';
             fetchAndDisplayRecentActivity();
             break;
+        case 'knowledge-paths':
+            contentArea.style.display = 'none';
+            notesSection.style.display = 'none';
+            const knowledgePathsSection = document.getElementById('knowledgePathsSection');
+            if (knowledgePathsSection) {
+                knowledgePathsSection.style.display = 'block';
+                // Initialize knowledge paths if not already initialized
+                if (window.knowledgePath) {
+                    window.knowledgePath.loadPaths();
+                } else {
+                    window.knowledgePath = new KnowledgePath();
+                }
+            }
+            break;
     }
 }
 
