@@ -2771,7 +2771,7 @@ header {
     z-index: 9999;
     padding: 20px;
     text-align: center;
-    display: none; /* Remove duplicate display property */
+    display: flex; /* Change to flex by default */
     flex-direction: column;
     justify-content: center;
     align-items: center;
