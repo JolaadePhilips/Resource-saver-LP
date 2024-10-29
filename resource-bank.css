@@ -2848,3 +2848,95 @@ header {
         text-align: center;
     }
 }
+
+/* Update existing media queries for better mobile layout */
+@media screen and (max-width: 768px) {
+    /* Improve tab navigation layout */
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .nav-link {
+        flex: 0 1 calc(33.33% - 8px); /* 3 items per row */
+        text-align: center;
+        padding: 8px 4px;
+        font-size: 0.85rem;
+    }
+
+    /* Improve modal/popup layouts */
+    .modal-content {
+        width: 90%;
+        max-width: none;
+        margin: 20px auto;
+        padding: 15px;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    /* Form inputs in modals */
+    .modal input[type="text"],
+    .modal input[type="url"],
+    .modal textarea,
+    .modal select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+
+    /* Modal action buttons */
+    .modal-actions {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .modal-actions button {
+        width: 100%;
+        padding: 12px;
+    }
+
+    /* Improve search and filter layout */
+    .search-and-filter {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filter-options {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .filter-options select {
+        flex: 1 1 calc(50% - 4px);
+        min-width: 0;
+    }
+
+    /* Adjust header layout */
+    header {
+        padding: 10px;
+    }
+
+    #addResourceBtnTop {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+/* Additional refinements for very small screens */
+@media screen and (max-width: 480px) {
+    .nav-link {
+        flex: 0 1 calc(50% - 8px); /* 2 items per row */
+        font-size: 0.8rem;
+    }
+
+    .modal-content {
+        padding: 12px;
+    }
+
+    .filter-options select {
+        flex: 1 1 100%;
+    }
+}

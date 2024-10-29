@@ -1462,3 +1462,37 @@ body:has(.nav-link[data-tab="knowledge-paths"].active) #knowledgePathsSection {
         padding: 15px;
     }
 }
+
+/* Update existing media queries for knowledge paths */
+@media screen and (max-width: 768px) {
+    /* Improve path card layout */
+    .kp-path-card {
+        padding: 15px;
+    }
+
+    /* Better header layout */
+    .kp-path-header {
+        gap: 12px;
+    }
+
+    /* Improve resource items */
+    .kp-resource-item {
+        padding: 12px;
+    }
+
+    /* Better modal layout */
+    .kp-modal-content {
+        width: 95%;
+        padding: 15px;
+        margin: 10px auto;
+    }
+
+    /* Improve form layouts */
+    .kp-form-section {
+        padding: 12px;
+    }
+
+    .kp-input {
+        width: 100%;
+    }
+}

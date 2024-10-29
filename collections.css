@@ -639,6 +639,46 @@
     }
 }
 
+/* Update existing media queries for collections */
+@media screen and (max-width: 768px) {
+    /* Improve collection card layout */
+    .collection-card {
+        padding: 15px;
+        gap: 12px;
+    }
+
+    /* Better spacing for collection content */
+    .collection-content {
+        width: 100%;
+        padding-right: 0;
+    }
+
+    .collection-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    /* Improve collection actions alignment */
+    .collection-actions {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 10px 0;
+        border-top: 1px solid var(--border-color);
+        margin-top: 10px;
+    }
+
+    /* Better resource item layout */
+    .collection-resource-item {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .resource-actions {
+        width: auto;
+        margin-left: auto;
+    }
+}
+
 
 
 
