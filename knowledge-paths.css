@@ -1404,3 +1404,61 @@ body:has(.nav-link[data-tab="knowledge-paths"].active) #knowledgePathsSection {
     position: relative;
     padding-right: 40px; /* Make room for info button */
 }
+
+/* Add these media queries at the end of knowledge-paths.css */
+
+@media screen and (max-width: 768px) {
+    .kp-path-card {
+        padding: 15px;
+    }
+
+    .kp-path-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .kp-path-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .kp-resource-item {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .kp-resource-content {
+        width: 100%;
+    }
+
+    .kp-resource-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .kp-modal-content {
+        width: 90%;
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .kp-resource-selection-list {
+        max-height: 250px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .kp-path-title {
+        font-size: 1.2rem;
+    }
+
+    .kp-path-action-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .kp-info-content {
+        padding: 15px;
+    }
+}
