@@ -506,6 +506,263 @@
     padding-right: 12px !important;
 }
 
+/* Existing styles remain unchanged until the media queries */
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+    /* Main container adjustments */
+    .main-content {
+        width: 100%;
+        padding: 10px;
+    }
+
+    /* Collection Card - Mobile */
+    .collection-card {
+        width: 100%;
+        min-width: unset;
+        padding: 12px;
+        margin: 0 0 10px 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    /* Collection Icon - Mobile */
+    .collection-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        margin-right: 12px;
+    }
+
+    /* Collection Content - Mobile */
+    .collection-content {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .collection-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    /* Collection Actions - Mobile */
+    .collection-actions {
+        width: 100%;
+        padding-left: 0;
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+        padding-top: 10px;
+        margin-top: 10px;
+        justify-content: flex-start;
+    }
+
+    /* Resource Items - Mobile */
+    .collection-resource-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px;
+    }
+
+    .resource-title {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+
+    .resource-actions {
+        width: 100%;
+        justify-content: flex-start;
+        margin-left: 0;
+    }
+
+    /* Collection Expanded View - Mobile */
+    .collection-expanded .resource-item {
+        grid-template-columns: 1fr;
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .collection-expanded .resource-item h4 {
+        min-width: unset;
+        width: 100%;
+    }
+
+    /* Resource List - Mobile */
+    .collection-resources {
+        margin: 10px 0;
+        width: 100%;
+    }
+
+    /* Resource Actions in Expanded View - Mobile */
+    .collection-expanded .resource-actions {
+        opacity: 1;
+        position: static;
+        justify-content: flex-start;
+    }
+}
+
+/* Additional breakpoint for very small screens */
+@media screen and (max-width: 480px) {
+    .collection-card {
+        padding: 10px;
+    }
+
+    .collection-content h3 {
+        font-size: 1rem;
+    }
+
+    .collection-meta {
+        font-size: 0.75rem;
+    }
+
+    .collection-actions button {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Tablet breakpoint */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .collection-card {
+        width: calc(100vw - 40px);
+        min-width: unset;
+    }
+
+    .collection-expanded .resource-item h4 {
+        min-width: unset;
+    }
+
+    .collection-expanded .resource-item {
+        grid-template-columns: 30px 1fr auto;
+    }
+}
+
+/* Update existing media queries for collections */
+@media screen and (max-width: 768px) {
+    /* Improve collection card layout */
+    .collection-card {
+        padding: 15px;
+        gap: 12px;
+    }
+
+    /* Better spacing for collection content */
+    .collection-content {
+        width: 100%;
+        padding-right: 0;
+    }
+
+    .collection-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    /* Improve collection actions alignment */
+    .collection-actions {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 10px 0;
+        border-top: 1px solid var(--border-color);
+        margin-top: 10px;
+    }
+
+    /* Better resource item layout */
+    .collection-resource-item {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .resource-actions {
+        width: auto;
+        margin-left: auto;
+    }
+}
+
+/* Update mobile styles for collections */
+@media screen and (max-width: 768px) {
+    .collections-section {
+        padding: 10px;
+    }
+
+    /* Collection Card */
+    .collection-card {
+        width: 100%;
+        min-width: unset;
+        max-width: 100%;
+        padding: 15px;
+        margin-bottom: 15px;
+        flex-direction: column;
+    }
+
+    /* Collection Header */
+    .collection-header {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .collection-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .collection-content {
+        width: 100%;
+        padding: 0;
+    }
+
+    /* Collection Actions */
+    .collection-actions {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    /* Resource Items */
+    .collection-resource-item {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .resource-title {
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .resource-actions {
+        justify-content: flex-start;
+        gap: 15px;
+    }
+}
+
+/* Additional refinements for very small screens */
+@media screen and (max-width: 480px) {
+    .collection-card {
+        padding: 12px;
+    }
+
+    .collection-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .collection-actions button {
+        width: 32px;
+        height: 32px;
+        padding: 6px;
+    }
+
+    .resource-actions button {
+        padding: 6px;
+    }
+}
+
 
 
 

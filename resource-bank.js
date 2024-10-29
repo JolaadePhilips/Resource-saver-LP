@@ -3509,20 +3509,23 @@ document.addEventListener('DOMContentLoaded', function() {
         // Handle "Proceed Anyway" click
         proceedBtn.addEventListener('click', () => {
             mobileWarning.style.display = 'none';
-            // Optionally set a cookie/localStorage to remember user's choice
-            localStorage.setItem('proceedOnMobile', 'true');
+            // Remove the session-only storage when implementing "show every time"
         });
         
         // Handle "View on Desktop" click
         desktopBtn.addEventListener('click', () => {
-            // You could redirect to a landing page or show additional instructions
-            alert('Please visit this site on a desktop computer for the best experience.');
+            // Redirect to a landing page that explains desktop-first approach
+            window.location.href = 'desktop-version.html'; // Create this page
+            // Or use a more informative approach:
+            const message = 'This application is optimized for desktop use.\n\n' +
+                          'For the best experience, please:\n' +
+                          '1. Visit this site on a computer\n' +
+                          '2. Use a modern web browser\n' +
+                          '3. Set your window to at least 1024px width';
+            alert(message);
         });
         
-        // Check if user has previously chosen to proceed
-        if (localStorage.getItem('proceedOnMobile') === 'true') {
-            mobileWarning.style.display = 'none';
-        }
+        // Remove the localStorage check since we want to show warning every time
     }
 });
 
