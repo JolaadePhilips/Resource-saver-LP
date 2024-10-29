@@ -3507,25 +3507,37 @@ document.addEventListener('DOMContentLoaded', function() {
         mobileWarning.style.display = 'flex';
         
         // Handle "Proceed Anyway" click
-        proceedBtn.addEventListener('click', () => {
+        proceedBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             mobileWarning.style.display = 'none';
-            // Remove the session-only storage when implementing "show every time"
         });
         
         // Handle "View on Desktop" click
-        desktopBtn.addEventListener('click', () => {
-            // Redirect to a landing page that explains desktop-first approach
-            window.location.href = 'desktop-version.html'; // Create this page
-            // Or use a more informative approach:
-            const message = 'This application is optimized for desktop use.\n\n' +
-                          'For the best experience, please:\n' +
-                          '1. Visit this site on a computer\n' +
-                          '2. Use a modern web browser\n' +
-                          '3. Set your window to at least 1024px width';
-            alert(message);
+        desktopBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // Copy current URL to clipboard
+            const currentUrl = window.location.href;
+            navigator.clipboard.writeText(currentUrl)
+                .then(() => {
+                    alert('Link copied to clipboard! Please paste this link on your desktop browser.');
+                })
+                .catch(err => {
+                    // Fallback for browsers that don't support clipboard API
+                    const textArea = document.createElement('textarea');
+                    textArea.value = currentUrl;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        alert('Link copied to clipboard! Please paste this link on your desktop browser.');
+                    } catch (err) {
+                        alert('Unable to copy link. Please manually copy the URL from your browser.');
+                    }
+                    document.body.removeChild(textArea);
+                });
         });
-        
-        // Remove the localStorage check since we want to show warning every time
     }
 });
 
