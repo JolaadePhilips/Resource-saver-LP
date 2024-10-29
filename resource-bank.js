@@ -1420,11 +1420,8 @@ function fetchAndDisplayCollections() {
         });
 
     // Add event listener for create collection button
-    document.addEventListener('DOMContentLoaded', () => {
-    // Add event listener for create collection button
     const createCollectionBtn = document.getElementById('createCollectionBtn');
     if (createCollectionBtn) {
-            createCollectionBtn.addEventListener('click', showCreateCollectionModal);
         const newBtn = createCollectionBtn.cloneNode(true);
         createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
         
@@ -1436,7 +1433,6 @@ function fetchAndDisplayCollections() {
             document.getElementById('addToCollection').textContent = 'Create Collection';
         });
     }
-    });
 }
 
 // Function to show the create collection modal
@@ -2730,7 +2726,7 @@ function toggleResourceStatus(pathId, resourceId) {
                 path.resources[resourceIndex].completed = !path.resources[resourceIndex].completed;
                 return db.collection('users').doc(currentUser.uid).collection('learningPaths').doc(pathId).update({
                     resources: path.resources
-                });
+                }));
             }
         })
         .then(() => {
@@ -3510,6 +3506,33 @@ document.querySelectorAll('.nav-link').forEach(link => {
         document.querySelector('.nav-links').classList.remove('active');
         document.querySelector('.menu-overlay').classList.remove('active');
     });
+});
+
+// Mobile menu functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.querySelector('.nav-links');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    if (menuToggle && navLinks && menuOverlay) {
+        menuToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+        });
+
+        menuOverlay.addEventListener('click', function() {
+            navLinks.classList.remove('active');
+            this.classList.remove('active');
+        });
+
+        // Close menu when a link is clicked
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.classList.remove('active');
+                menuOverlay.classList.remove('active');
+            });
+        });
+    }
 });
 
 
