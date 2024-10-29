@@ -679,6 +679,148 @@
     }
 }
 
+/* Update mobile styles for collections */
+@media screen and (max-width: 768px) {
+    /* Main container adjustments */
+    .main-content {
+        width: calc(100% - 50px); /* Account for side tabs */
+        padding: 10px;
+        margin-left: 50px;
+    }
+
+    /* Collection Card - Mobile */
+    .collection-card {
+        width: 100%;
+        min-width: unset;
+        max-width: 100%;
+        padding: 15px;
+        margin: 0 0 15px 0;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    /* Collection Icon and Content Layout */
+    .collection-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        margin-right: 12px;
+    }
+
+    .collection-content {
+        flex: 1;
+        min-width: 0;
+        width: calc(100% - 60px); /* Account for icon */
+    }
+
+    .collection-content h3 {
+        font-size: 1rem;
+        margin-bottom: 4px;
+    }
+
+    /* Collection Meta Information */
+    .collection-meta {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 0.8rem;
+    }
+
+    /* Collection Actions */
+    .collection-actions {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 10px 0 0 0;
+        margin: 10px 0 0 0;
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .collection-actions button {
+        width: 36px;
+        height: 36px;
+        padding: 8px;
+    }
+
+    /* Resource Items in Collection */
+    .collection-resource-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        padding: 12px;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .collection-resource-item::before {
+        grid-column: 1;
+        margin-right: 8px;
+    }
+
+    .resource-title {
+        grid-column: 1;
+        width: 100%;
+        padding-right: 10px;
+    }
+
+    .resource-actions {
+        grid-column: 2;
+        display: flex;
+        gap: 8px;
+        margin-left: 0;
+    }
+
+    /* Expanded Collection View */
+    .collection-expanded .resource-item {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .collection-expanded .resource-item h4 {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .collection-expanded .resource-actions {
+        justify-content: flex-start;
+        opacity: 1;
+        padding-top: 5px;
+    }
+
+    /* Collection Resources List */
+    .collection-resources {
+        margin: 10px 0;
+        width: 100%;
+        padding: 0;
+    }
+}
+
+/* Additional refinements for very small screens */
+@media screen and (max-width: 480px) {
+    .collection-card {
+        padding: 12px;
+    }
+
+    .collection-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .collection-actions button {
+        width: 32px;
+        height: 32px;
+        padding: 6px;
+    }
+
+    .resource-actions button {
+        padding: 6px;
+    }
+}
+
 
 
 

@@ -1496,3 +1496,89 @@ body:has(.nav-link[data-tab="knowledge-paths"].active) #knowledgePathsSection {
         width: 100%;
     }
 }
+
+/* Update knowledge paths for mobile */
+@media screen and (max-width: 768px) {
+    .kp-path-content {
+        grid-template-columns: 1fr; /* Stack resources and notes */
+        gap: 15px;
+    }
+
+    .kp-path-card {
+        padding: 15px;
+        margin: 10px 0;
+    }
+
+    .kp-path-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .kp-path-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* Notes editor improvements */
+    .kp-notes-modal {
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        border-radius: 0;
+        top: 0;
+        left: 0;
+        transform: none;
+    }
+
+    .ql-toolbar.ql-snow {
+        padding: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .ql-formats {
+        margin: 4px !important;
+    }
+
+    /* Improve toolbar buttons touch targets */
+    .ql-formats button {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Make dropdowns more touch-friendly */
+    .ql-formats select {
+        height: 36px;
+        padding: 0 28px 0 8px;
+    }
+
+    .kp-notes-editor {
+        min-height: 200px;
+        max-height: calc(100vh - 200px);
+    }
+
+    /* Resource items in knowledge paths */
+    .kp-resource-item {
+        flex-direction: column;
+        padding: 12px;
+    }
+
+    .kp-resource-content {
+        width: 100%;
+    }
+
+    .kp-resource-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    /* Goals section */
+    .kp-path-goals {
+        padding: 10px;
+    }
+
+    .kp-goal-item {
+        padding: 8px;
+    }
+}
