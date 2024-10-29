@@ -504,6 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
     closeAllModals();
     fetchAndDisplayResources();
 
+    // Add existing event listeners
     document.getElementById('searchInput').addEventListener('input', debounce(() => {
         currentPage = 1;
         fetchAndDisplayResources();
@@ -563,6 +564,80 @@ document.addEventListener('DOMContentLoaded', () => {
             createNewLearningPath();
         });
     }
+
+    // Add these new event listeners for feedback functionality
+    const feedbackButton = document.getElementById('feedbackButton');
+    const feedbackDialog = document.getElementById('feedbackDialog');
+    const closeFeedback = document.querySelector('.close-feedback');
+    const cancelFeedback = document.getElementById('cancelFeedback');
+    const submitFeedback = document.getElementById('submitFeedback');
+    const feedbackTypeButtons = document.querySelectorAll('.feedback-type-btn');
+
+    function toggleFeedbackDialog() {
+        feedbackDialog.classList.toggle('active');
+    }
+
+    function closeFeedbackDialog() {
+        feedbackDialog.classList.remove('active');
+        // Reset form
+        document.getElementById('feedbackText').value = '';
+        feedbackTypeButtons.forEach(btn => btn.classList.remove('active'));
+        feedbackTypeButtons[0].classList.add('active');
+    }
+
+    feedbackButton.addEventListener('click', toggleFeedbackDialog);
+    closeFeedback.addEventListener('click', closeFeedbackDialog);
+    cancelFeedback.addEventListener('click', closeFeedbackDialog);
+
+    // Handle feedback type selection
+    feedbackTypeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            feedbackTypeButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        });
+    });
+
+    // Modify the feedback submission handler
+    submitFeedback.addEventListener('click', () => {
+        const feedbackType = document.querySelector('.feedback-type-btn.active').dataset.type;
+        const feedbackText = document.getElementById('feedbackText').value;
+
+        if (feedbackText.trim() === '') {
+            alert('Please enter your feedback before submitting.');
+            return;
+        }
+
+        // Create feedback object
+        const feedback = {
+            type: feedbackType,
+            text: feedbackText,
+            userId: currentUser.uid,
+            userEmail: currentUser.email,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'new' // Can be used for tracking feedback status (new, reviewed, resolved, etc.)
+        };
+
+        // Save to Firebase
+        db.collection('feedback').add(feedback)
+            .then(() => {
+                console.log('Feedback saved to Firebase');
+                alert('Thank you for your feedback!');
+                closeFeedbackDialog();
+            })
+            .catch((error) => {
+                console.error('Error saving feedback:', error);
+                alert('Failed to submit feedback. Please try again.');
+            });
+    });
+
+    // Close dialog when clicking outside
+    window.addEventListener('click', (e) => {
+        if (feedbackDialog.classList.contains('active') && 
+            !feedbackDialog.contains(e.target) && 
+            !feedbackButton.contains(e.target)) {
+            closeFeedbackDialog();
+        }
+    });
 });
 
 document.getElementById('gridViewBtn').addEventListener('click', () => {
@@ -3213,6 +3288,16 @@ function createCollectionCard(id, collection) {
     card.querySelector('.edit-collection').addEventListener('click', () => editCollection(id));
     card.querySelector('.delete-collection').addEventListener('click', () => deleteCollection(id));
 
+    // Update or add the share button event listener
+    const shareButton = card.querySelector('.share-resource');
+    if (shareButton) {
+        shareButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            shareResource(collection);
+        });
+    }
+
     return card;
 }
 
@@ -3223,6 +3308,190 @@ function createNewCollection() {
 }
 
 // Make sure to add this event listener when initializing the app
+
+// Function to delete a resource
+function deleteResource(resourceId) {
+    if (confirm('Are you sure you want to delete this resource? This action cannot be undone.')) {
+        // First, find all collections containing this resource and remove it
+        db.collection('users').doc(currentUser.uid)
+            .collection('collections')
+            .get()
+            .then((querySnapshot) => {
+                const updatePromises = [];
+                
+                querySnapshot.forEach((doc) => {
+                    const collection = doc.data();
+                    if (collection.resources && collection.resources.includes(resourceId)) {
+                        updatePromises.push(
+                            doc.ref.update({
+                                resources: firebase.firestore.FieldValue.arrayRemove(resourceId)
+                            })
+                        );
+                    }
+                });
+
+                // Wait for all collection updates to complete
+                return Promise.all(updatePromises);
+            })
+            .then(() => {
+                // Now delete the resource itself
+                return db.collection('users').doc(currentUser.uid)
+                    .collection('resources').doc(resourceId).delete();
+            })
+            .then(() => {
+                console.log('Resource and its references deleted successfully');
+                // Refresh the collections view if we're on that page
+                if (document.querySelector('#collectionsContainer')) {
+                    fetchAndDisplayCollections();
+                }
+                // Remove the resource card from the UI
+                const resourceCard = document.querySelector(`[data-id="${resourceId}"]`);
+                if (resourceCard) {
+                    resourceCard.remove();
+                }
+            })
+            .catch((error) => {
+                console.error('Error deleting resource:', error);
+                alert('Failed to delete resource. Please try again.');
+            });
+    }
+}
+
+// Add this to your existing JavaScript file
+document.addEventListener('DOMContentLoaded', function() {
+    const feedbackButton = document.getElementById('feedbackButton');
+    const feedbackDialog = document.getElementById('feedbackDialog');
+    const closeFeedback = document.querySelector('.close-feedback');
+    const cancelFeedback = document.getElementById('cancelFeedback');
+    const submitFeedback = document.getElementById('submitFeedback');
+    const feedbackTypeButtons = document.querySelectorAll('.feedback-type-btn');
+    
+    function toggleFeedbackDialog() {
+        feedbackDialog.classList.toggle('active');
+    }
+
+    function closeFeedbackDialog() {
+        feedbackDialog.classList.remove('active');
+        // Reset form
+        document.getElementById('feedbackText').value = '';
+        feedbackTypeButtons.forEach(btn => btn.classList.remove('active'));
+        feedbackTypeButtons[0].classList.add('active');
+    }
+
+    feedbackButton.addEventListener('click', toggleFeedbackDialog);
+    closeFeedback.addEventListener('click', closeFeedbackDialog);
+    cancelFeedback.addEventListener('click', closeFeedbackDialog);
+
+    // Handle feedback type selection
+    feedbackTypeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            feedbackTypeButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        });
+    });
+
+    // Modify the feedback submission handler
+    submitFeedback.addEventListener('click', () => {
+        const feedbackType = document.querySelector('.feedback-type-btn.active').dataset.type;
+        const feedbackText = document.getElementById('feedbackText').value;
+
+        if (feedbackText.trim() === '') {
+            alert('Please enter your feedback before submitting.');
+            return;
+        }
+
+        // Create feedback object
+        const feedback = {
+            type: feedbackType,
+            text: feedbackText,
+            userId: currentUser.uid,
+            userEmail: currentUser.email,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'new' // Can be used for tracking feedback status (new, reviewed, resolved, etc.)
+        };
+
+        // Save to Firebase
+        db.collection('feedback').add(feedback)
+            .then(() => {
+                console.log('Feedback saved to Firebase');
+                alert('Thank you for your feedback!');
+                closeFeedbackDialog();
+            })
+            .catch((error) => {
+                console.error('Error saving feedback:', error);
+                alert('Failed to submit feedback. Please try again.');
+            });
+    });
+
+    // Close dialog when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!feedbackDialog.contains(e.target) && !feedbackButton.contains(e.target)) {
+            closeFeedbackDialog();
+        }
+    });
+});
+
+// Add this new function to handle resource sharing
+function shareResource(resource) {
+    const shareModal = document.getElementById('shareModal');
+    const closeBtn = shareModal.querySelector('.close');
+    const shareUrl = resource.url || window.location.href;
+
+    // Show the modal
+    shareModal.style.display = 'block';
+
+    // Handle share button clicks
+    const shareButtons = {
+        'shareEmail': () => {
+            window.location.href = `mailto:?subject=Check out this resource&body=${encodeURIComponent(resource.title)}: ${encodeURIComponent(shareUrl)}`;
+        },
+        'shareTwitter': () => {
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(resource.title)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
+        },
+        'shareFacebook': () => {
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+        },
+        'shareWhatsApp': () => {
+            window.open(`https://wa.me/?text=${encodeURIComponent(resource.title + ': ' + shareUrl)}`, '_blank');
+        },
+        'shareLinkedIn': () => {
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank');
+        },
+        'shareCopyLink': () => {
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert('Link copied to clipboard!');
+            }).catch(console.error);
+        }
+    };
+
+    // Add click events to share buttons
+    Object.keys(shareButtons).forEach(buttonId => {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            // Remove any existing listeners
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            newButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                shareButtons[buttonId]();
+            });
+        }
+    });
+
+    // Close modal functionality
+    const closeModal = () => {
+        shareModal.style.display = 'none';
+    };
+
+    closeBtn.onclick = closeModal;
+
+    // Close when clicking outside the modal
+    window.onclick = (event) => {
+        if (event.target == shareModal) {
+            closeModal();
+        }
+    };
+}
 
 
 

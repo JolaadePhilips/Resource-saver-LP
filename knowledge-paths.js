@@ -26,6 +26,16 @@ class KnowledgePath {
         this.pathDescription = document.getElementById('pathDescription');
         this.pathNotes = document.getElementById('pathNotes');
         this.resourcesList = document.getElementById('pathResourcesList');
+
+        // Add info button to the section header
+        const sectionHeader = this.section.querySelector('.section-header') || this.section.firstElementChild;
+        if (sectionHeader) {
+            const infoBtn = document.createElement('button');
+            infoBtn.className = 'kp-info-btn';
+            infoBtn.innerHTML = '<i class="fas fa-info-circle"></i>';
+            infoBtn.onclick = () => this.showPathInfo();
+            sectionHeader.appendChild(infoBtn);
+        }
     }
 
     bindEvents() {
@@ -391,7 +401,12 @@ class KnowledgePath {
                         <i class="fas fa-arrow-left"></i> Back to Paths
                     </button>
                     <div class="kp-path-header-actions">
-                        <h2>${path.title}</h2>
+                        <div class="kp-header-with-info">
+                            <h2>${path.title}</h2>
+                            <button onclick="knowledgePath.editPathInfo('${pathId}', ${JSON.stringify(path).replace(/"/g, '&quot;')})" class="kp-btn-icon">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
                         <button onclick="knowledgePath.deletePath('${pathId}', '${path.title}')" class="kp-btn-danger">
                             <i class="fas fa-trash"></i> Delete Path
                         </button>
@@ -998,6 +1013,106 @@ class KnowledgePath {
             } catch (error) {
                 console.error('Error updating time commitment:', error);
                 alert('Error updating time commitment. Please try again.');
+            }
+        });
+    }
+
+    showPathInfo() {
+        const infoModal = document.createElement('div');
+        infoModal.className = 'kp-info-modal';
+        infoModal.innerHTML = `
+            <div class="kp-info-content">
+                <h3>About Knowledge Paths</h3>
+                <div class="kp-info-body">
+                    <p>Knowledge Paths help you organize your learning journey by:</p>
+                    <ul>
+                        <li>Creating structured learning paths with specific goals</li>
+                        <li>Tracking progress through your selected resources</li>
+                        <li>Setting time commitments and target dates</li>
+                        <li>Taking notes as you learn</li>
+                    </ul>
+                    <p>Tips for success:</p>
+                    <ul>
+                        <li>Break down large topics into manageable paths</li>
+                        <li>Add relevant resources in a logical order</li>
+                        <li>Set realistic time commitments</li>
+                        <li>Update your progress regularly</li>
+                    </ul>
+                </div>
+                <button class="kp-btn-primary kp-close-info">Got it!</button>
+            </div>
+        `;
+        
+        document.body.appendChild(infoModal);
+        
+        const closeBtn = infoModal.querySelector('.kp-close-info');
+        closeBtn.onclick = () => infoModal.remove();
+        
+        // Close on click outside
+        infoModal.onclick = (e) => {
+            if (e.target === infoModal) infoModal.remove();
+        };
+    }
+
+    async editPathInfo(pathId, path) {
+        const modal = document.createElement('div');
+        modal.className = 'kp-modal kp-edit-modal';
+        modal.style.display = 'block';
+        
+        modal.innerHTML = `
+            <div class="kp-modal-content">
+                <span class="kp-close">&times;</span>
+                <h2>Edit Path Information</h2>
+                <div class="kp-edit-field">
+                    <label for="editPathTitle">Title</label>
+                    <input type="text" id="editPathTitle" class="kp-input" value="${path.title}" required>
+                </div>
+                <div class="kp-edit-field">
+                    <label for="editPathDescription">Description</label>
+                    <textarea id="editPathDescription" class="kp-input" rows="3">${path.description || ''}</textarea>
+                </div>
+                <div class="kp-modal-actions">
+                    <button id="savePathInfo" class="kp-btn-primary">Save Changes</button>
+                    <button class="kp-btn-secondary kp-close-modal">Cancel</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Handle closing modal
+        const closeModal = () => modal.remove();
+        modal.querySelector('.kp-close').addEventListener('click', closeModal);
+        modal.querySelector('.kp-close-modal').addEventListener('click', closeModal);
+
+        // Handle saving
+        modal.querySelector('#savePathInfo').addEventListener('click', async () => {
+            const newTitle = document.getElementById('editPathTitle').value.trim();
+            const newDescription = document.getElementById('editPathDescription').value.trim();
+
+            if (!newTitle) {
+                alert('Title is required');
+                return;
+            }
+
+            try {
+                const pathRef = this.db.collection('users')
+                    .doc(this.currentUser.uid)
+                    .collection('knowledgePaths')
+                    .doc(pathId);
+
+                await pathRef.update({
+                    title: newTitle,
+                    description: newDescription,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                const updatedPath = (await pathRef.get()).data();
+                closeModal();
+                this.showPathDetails(pathId, updatedPath);
+            } catch (error) {
+                console.error('Error updating path information:', error);
+                alert('Error updating path information. Please try again.');
             }
         });
     }

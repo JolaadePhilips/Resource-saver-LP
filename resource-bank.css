@@ -2535,3 +2535,227 @@ header {
     display: block;
 }
 
+/* Feedback Button & Dialog Styles */
+.feedback-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 999;
+    font-size: 0.9rem;
+}
+
+.feedback-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.feedback-button i {
+    font-size: 1.2rem;
+}
+
+.feedback-dialog {
+    position: fixed;
+    bottom: 90px;
+    right: 30px;
+    width: 320px;
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.feedback-dialog.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.feedback-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.feedback-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.close-feedback {
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    cursor: pointer;
+    padding: 5px;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.close-feedback:hover {
+    color: var(--primary-color);
+}
+
+.feedback-content {
+    padding: 20px;
+}
+
+.feedback-type {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.feedback-type-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+    color: var(--text-color);
+}
+
+.feedback-type-btn i {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+}
+
+.feedback-type-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.feedback-type-btn.active i {
+    color: white;
+}
+
+.feedback-type-btn:hover:not(.active) {
+    background-color: var(--hover-color);
+}
+
+#feedbackText {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    resize: none;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.feedback-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.feedback-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.feedback-actions .btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.feedback-actions .btn-secondary {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.feedback-actions button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Help button and tooltips styling */
+.help-tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 8px;
+    color: var(--secondary-color);
+    cursor: pointer;
+}
+
+.help-tooltip i {
+    font-size: 16px;
+}
+
+/* Custom Intro.js styling */
+.introjs-tooltip {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.introjs-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-shadow: none;
+    transition: opacity 0.3s ease;
+}
+
+.introjs-button:hover {
+    opacity: 0.9;
+}
+
+.introjs-skipbutton {
+    color: var(--secondary-color);
+}
+
+/* Feature highlight boxes */
+.feature-highlight {
+    padding: 15px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.feature-highlight h4 {
+    color: var(--primary-color);
+    margin: 0 0 10px 0;
+}
+
+.feature-highlight p {
+    margin: 0;
+    font-size: 0.9rem;
+}
