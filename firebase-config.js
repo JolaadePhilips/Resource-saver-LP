@@ -1,12 +1,12 @@
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBLSEXbsGlIK6Du0I5kLVT9wAoH9LWsbuI",
-    authDomain: "resource-saver.firebaseapp.com",
-    databaseURL: "https://resource-saver-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "resource-saver",
-    storageBucket: "resource-saver.appspot.com",
-    messagingSenderId: "453012134492",
-    appId: "1:453012134492:web:1b5c5c7cf42dd337d5a499"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Initialize Firebase

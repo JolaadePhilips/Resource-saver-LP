@@ -3494,55 +3494,61 @@ function shareResource(resource) {
 }
 
 // Add this at the beginning of your JavaScript file, before any other code
-(function initializeMobileWarning() {
-    if (typeof document !== 'undefined') {
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if device is mobile
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            
-            if (isMobile) {
-                const mobileWarning = document.getElementById('mobileWarning');
-                if (!mobileWarning) return; // Exit if element not found
-                
-                // Show warning immediately
-                mobileWarning.classList.add('active');
-                
-                // Handle proceed anyway button
-                const proceedBtn = document.getElementById('proceedAnyway');
-                if (proceedBtn) {
-                    proceedBtn.addEventListener('click', function() {
-                        mobileWarning.classList.remove('active');
-                        sessionStorage.setItem('mobileWarningDismissed', 'true');
+function initializeMobileWarning() {
+    // Check if device is mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    
+    if (isMobile) {
+        const mobileWarning = document.getElementById('mobileWarning');
+        if (!mobileWarning) return; // Exit if element not found
+        
+        // Show warning immediately
+        mobileWarning.style.display = 'flex';
+        
+        // Handle proceed anyway button
+        const proceedBtn = document.getElementById('proceedAnyway');
+        if (proceedBtn) {
+            proceedBtn.addEventListener('click', function() {
+                mobileWarning.style.display = 'none';
+                sessionStorage.setItem('mobileWarningDismissed', 'true');
+            });
+        }
+        
+        // Handle desktop button (copy link)
+        const desktopBtn = document.getElementById('viewOnDesktop');
+        if (desktopBtn) {
+            desktopBtn.addEventListener('click', function() {
+                const currentUrl = window.location.href;
+                navigator.clipboard.writeText(currentUrl)
+                    .then(() => {
+                        alert('Link copied! Please paste this link in your desktop browser.');
+                    })
+                    .catch(() => {
+                        fallbackCopyTextToClipboard(currentUrl);
                     });
-                }
-                
-                // Handle desktop button (copy link)
-                const desktopBtn = document.getElementById('viewOnDesktop');
-                if (desktopBtn) {
-                    desktopBtn.addEventListener('click', function() {
-                        const currentUrl = window.location.href;
-                        if (navigator.clipboard && window.isSecureContext) {
-                            navigator.clipboard.writeText(currentUrl)
-                                .then(() => {
-                                    alert('Link copied! Please paste this link in your desktop browser.');
-                                })
-                                .catch(() => {
-                                    fallbackCopyTextToClipboard(currentUrl);
-                                });
-                        } else {
-                            fallbackCopyTextToClipboard(currentUrl);
-                        }
-                    });
-                }
-                
-                // Check if warning was previously dismissed
-                if (sessionStorage.getItem('mobileWarningDismissed') !== 'true') {
-                    mobileWarning.classList.add('active');
-                }
-            }
-        });
+            });
+        }
+
+        // Handle close button
+        const closeBtn = document.getElementById('closeWarning');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                mobileWarning.style.display = 'none';
+                sessionStorage.setItem('mobileWarningDismissed', 'true');
+            });
+        }
+        
+        // Check if warning was previously dismissed
+        if (sessionStorage.getItem('mobileWarningDismissed') === 'true') {
+            mobileWarning.style.display = 'none';
+        }
     }
-})();
+}
+
+// Call the function when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeMobileWarning);
+// Also call it on resize to catch orientation changes
+window.addEventListener('resize', initializeMobileWarning);
 
 // Fallback function for copying to clipboard
 function fallbackCopyTextToClipboard(text) {
