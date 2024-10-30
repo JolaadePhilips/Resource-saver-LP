@@ -807,6 +807,27 @@ function initializeQuillEditor() {
             toolbar: '#noteEditorToolbar'
         }
     });
+
+    // Add share button functionality
+    const shareNoteBtn = document.getElementById('shareNote');
+    if (shareNoteBtn) {
+        shareNoteBtn.addEventListener('click', () => {
+            const noteContent = quill.root.innerHTML;
+            const noteTitle = document.getElementById('noteEditorTitle').textContent;
+            const resourceTitle = document.getElementById('noteResourceTitle').textContent;
+            const resourceLink = document.getElementById('noteResourceLink').href;
+            
+            const note = {
+                content: noteContent,
+                resourceTitle: resourceTitle,
+                url: resourceLink,
+                title: noteTitle
+            };
+            
+            // Use the existing shareResource function
+            shareResource(null, note);
+        });
+    }
 }
 
 // Remove the imageHandler function as it's no longer needed
@@ -1227,16 +1248,67 @@ function editNote(noteId, note) {
 function shareNote(note) {
     const shareModal = document.getElementById('shareModal');
     const closeBtn = shareModal.querySelector('.close');
-    const shareUrl = `${window.location.origin}/shared-note.html?shareId=${note.shareId}`;
-
+    const shareUrl = note.url || window.location.href;
+    
+    // Use getExcerpt to clean the content and create a preview
+    const cleanContent = getExcerpt(note.content, 500); // Increased length for sharing
+    
+    // Create a share message with clean text
+    const shareMessage = `Check out this note about "${note.resourceTitle}"\n\n${cleanContent}\n\nShared via Resource Saver Pro - Your Personal Knowledge Hub`;
+    
+    // Show the modal
     shareModal.style.display = 'block';
 
-    closeBtn.onclick = () => {
-        shareModal.style.display = 'none';
+    // Handle share button clicks
+    const shareButtons = {
+        'shareEmail': () => {
+            window.location.href = `mailto:?subject=Note: ${encodeURIComponent(note.resourceTitle)}&body=${encodeURIComponent(shareMessage)}`;
+        },
+        'shareTwitter': () => {
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`, '_blank');
+        },
+        'shareFacebook': () => {
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareMessage)}`, '_blank');
+        },
+        'shareWhatsApp': () => {
+            window.open(`https://wa.me/?text=${encodeURIComponent(shareMessage)}`, '_blank');
+        },
+        'shareLinkedIn': () => {
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(shareMessage)}`, '_blank');
+        },
+        'shareIMessage': () => {
+            window.location.href = `sms:&body=${encodeURIComponent(shareMessage)}`;
+        },
+        'shareTelegram': () => {
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareMessage)}`, '_blank');
+        },
+        'shareSlack': () => {
+            window.open(`https://slack.com/share?text=${encodeURIComponent(shareMessage)}`, '_blank');
+        },
+        'shareCopyLink': () => {
+            navigator.clipboard.writeText(shareMessage).then(() => {
+                alert('Note content and link copied to clipboard!');
+            }).catch(console.error);
+        }
     };
 
+    // Add click events to share buttons
+    Object.keys(shareButtons).forEach(buttonId => {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            newButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                shareButtons[buttonId]();
+            });
+        }
+    });
+
+    // Close modal functionality
+    closeBtn.onclick = () => shareModal.style.display = 'none';
     window.onclick = (event) => {
-        if (event.target === shareModal) {
+        if (event.target == shareModal) {
             shareModal.style.display = 'none';
         }
     };
@@ -1767,7 +1839,7 @@ function fetchAndDisplayCollections() {
 
             // Create a fragment for better performance
             const fragment = document.createDocumentFragment();
-            
+
             querySnapshot.forEach((doc) => {
                 const collection = doc.data();
                 const collectionCard = document.createElement('div');
@@ -1782,10 +1854,10 @@ function fetchAndDisplayCollections() {
                     </div>
                     <div class="collection-content">
                         <h3>${collection.name || 'Unnamed Collection'}</h3>
-                       
+    
                         <div class="collection-meta">
                             <span><i class="fas fa-bookmark"></i> ${resourceCount} resources</span>
-                           
+                            <span><i class="fas fa-clock"></i> Last updated: ${lastUpdated}</span>
                         </div>
                     </div>
                     <div class="collection-actions">
@@ -1869,6 +1941,7 @@ function fetchAndDisplayCollections() {
   // Add event listener for create collection button
 const createCollectionBtn = document.getElementById('createCollectionBtn');
 if (createCollectionBtn) {
+    // Remove any existing listeners
     const newBtn = createCollectionBtn.cloneNode(true);
     createCollectionBtn.parentNode.replaceChild(newBtn, createCollectionBtn);
     
@@ -3432,34 +3505,67 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Add this new function to handle resource sharing
-function shareResource(resource) {
+function shareResource(resourceId, item) {
     const shareModal = document.getElementById('shareModal');
     const closeBtn = shareModal.querySelector('.close');
-    const shareUrl = resource.url || window.location.href;
-
+    const shareUrl = item.url;
+    const appUrl = 'https://resourcesaverpro.com';
+    
+    // Enhanced HTML stripping function
+    const cleanContent = (html) => {
+        // First remove common Quill editor formatting
+        let cleaned = html.replace(/<p>/g, '')
+                         .replace(/<\/p>/g, '\n')
+                         .replace(/<br>/g, '\n')
+                         .replace(/<strong>/g, '')
+                         .replace(/<\/strong>/g, '')
+                         .replace(/<em>/g, '')
+                         .replace(/<\/em>/g, '')
+                         .replace(/&nbsp;/g, ' ');
+        
+        // Then strip any remaining HTML tags
+        const temp = document.createElement('div');
+        temp.innerHTML = cleaned;
+        return temp.textContent || temp.innerText;
+    };
+    
+    // Updated share message with personalized note title
+    const shareMessage = item.content ? 
+        `Check out my note on "${item.resourceTitle}"\n\n${cleanContent(item.content)}\n\nResource: ${shareUrl}\n\n📚 Note captured with Resource Saver Pro\nOrganize your digital knowledge at ${appUrl}` :
+        `Check out this resource: ${item.title}\n\n${shareUrl}\n\n📚 Saved with Resource Saver Pro\nDiscover a better way to save and organize resources at ${appUrl}`;
+    
     // Show the modal
     shareModal.style.display = 'block';
 
     // Handle share button clicks
     const shareButtons = {
         'shareEmail': () => {
-            window.location.href = `mailto:?subject=Check out this resource&body=${encodeURIComponent(resource.title)}: ${encodeURIComponent(shareUrl)}`;
+            window.location.href = `mailto:?subject=${encodeURIComponent(item.content ? 'Note: ' + item.title : 'Resource: ' + item.title)}&body=${encodeURIComponent(shareMessage)}`;
         },
         'shareTwitter': () => {
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(resource.title)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`, '_blank');
         },
         'shareFacebook': () => {
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareMessage)}`, '_blank');
         },
         'shareWhatsApp': () => {
-            window.open(`https://wa.me/?text=${encodeURIComponent(resource.title + ': ' + shareUrl)}`, '_blank');
+            window.open(`https://wa.me/?text=${encodeURIComponent(shareMessage)}`, '_blank');
         },
         'shareLinkedIn': () => {
-            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank');
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(shareMessage)}`, '_blank');
+        },
+        'shareIMessage': () => {
+            window.location.href = `sms:&body=${encodeURIComponent(shareMessage)}`;
+        },
+        'shareTelegram': () => {
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareMessage)}`, '_blank');
+        },
+        'shareSlack': () => {
+            window.open(`https://slack.com/share?text=${encodeURIComponent(shareMessage)}`, '_blank');
         },
         'shareCopyLink': () => {
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                alert('Link copied to clipboard!');
+            navigator.clipboard.writeText(shareMessage).then(() => {
+                alert('Link and message copied to clipboard!');
             }).catch(console.error);
         }
     };

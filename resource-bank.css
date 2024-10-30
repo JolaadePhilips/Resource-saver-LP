@@ -677,50 +677,54 @@ header {
     padding: 20px;
 }
 
+/* Note Card Enhancements */
 .note-card {
-    position: relative; /* This ensures the pin icon is positioned correctly */
-    background-color: var(--card-bg);
+    position: relative;
+    background: linear-gradient(135deg, var(--card-bg) 0%, rgba(255,255,255,0.05) 100%);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 15px;
     margin-bottom: 15px;
     cursor: pointer;
-    transition: box-shadow 0.3s ease, background-color 0.3s ease;
-    height: 150px; /* Fixed height for all cards */
+    transition: all 0.3s ease;
+    height: 150px;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.note-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(74, 144, 226, 0.1);
+    border-left: 3px solid var(--primary-color);
 }
 
 .note-card.pinned {
-    background-color: var(--hover-color); /* Light orange background for pinned notes */
-    border-color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(255, 140, 0, 0.05) 0%, var(--card-bg) 100%);
+    border-color: rgba(255, 140, 0, 0.3);
 }
 
 .note-card.pinned::before {
-    content: '\f08d'; /* Pin icon */
+    content: '\f08d';
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;
     position: absolute;
     top: 10px;
     right: 10px;
-    color: var(--primary-color);
+    color: rgba(255, 140, 0, 0.6);
     font-size: 1.2em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.note-card:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
+/* Note title styling */
 .note-card h3 {
     margin: 0 0 10px 0;
     font-size: 1.1rem;
     color: var(--text-color);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding-right: 25px; /* Make space for the pin icon */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+/* Note excerpt styling */
 .note-card .note-excerpt {
     font-size: 0.9rem;
     color: var(--secondary-color);
@@ -728,20 +732,32 @@ header {
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 4; /* Show 4 lines of text */
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
+    line-height: 1.4;
 }
 
+/* Note metadata styling */
 .note-card .note-meta {
     font-size: 0.8rem;
     color: var(--secondary-color);
     margin-top: 5px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Note actions styling */
 .note-card .note-actions {
+    opacity: 0;
+    transition: opacity 0.3s ease;
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+    margin-top: 8px;
+}
+
+.note-card:hover .note-actions {
+    opacity: 1;
 }
 
 .note-card .note-actions button {
@@ -750,11 +766,14 @@ header {
     color: var(--secondary-color);
     cursor: pointer;
     font-size: 0.9rem;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    padding: 4px 8px;
+    border-radius: 4px;
 }
 
 .note-card .note-actions button:hover {
     color: var(--primary-color);
+    background-color: rgba(74, 144, 226, 0.1);
 }
 
 /* Learning Paths Styles */
@@ -2852,4 +2871,8 @@ header {
     font-size: 1.5rem;
     cursor: pointer;
     padding: 5px;
+}
+
+#shareModal {
+    display: none;  /* Add this specific rule */
 }
