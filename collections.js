@@ -338,6 +338,6 @@
         e.stopPropagation();
         removeFromCollection(collectionId, resource.id);
     });
-
     return li;
 }
+

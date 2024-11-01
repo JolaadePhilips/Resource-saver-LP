@@ -438,6 +438,22 @@ function closeAllModals() {
     });
 }
 
+// Add these simple event listeners when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Close button handlers
+    const closeButtons = document.querySelectorAll('.modal .close');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', closeAllModals);
+    });
+
+    // Click outside modal handler
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            closeAllModals();
+        }
+    };
+});
+
 // Function to toggle the read status of a resource
 function toggleReadStatus(resourceId, resource) {
     const newStatus = resource.status === 'read' ? 'unread' : 'read';
