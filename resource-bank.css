@@ -2792,53 +2792,64 @@ header {
 .mobile-warning {
     display: none;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--card-bg);
-    padding: 20px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobile-warning .warning-content {
+    background-color: var(--bg-color);
+    padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     text-align: center;
     max-width: 90%;
     width: 320px;
-    z-index: 1000;
-}
-
-.mobile-warning.active {
-    display: block;
+    position: relative;
+    margin: 20px;
 }
 
 .mobile-warning i {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: var(--primary-color);
     margin-bottom: 15px;
+    display: block;
 }
 
 .mobile-warning h2 {
-    margin: 10px 0;
+    margin: 15px 0;
     color: var(--text-color);
+    font-size: 1.4rem;
 }
 
 .mobile-warning p {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     color: var(--secondary-color);
-    font-size: 0.9rem;
-    line-height: 1.4;
+    font-size: 1rem;
+    line-height: 1.5;
+    padding: 0 10px;
 }
 
 .mobile-warning-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    padding: 0 10px;
 }
 
 .mobile-warning button {
-    padding: 10px;
+    width: 100%;
+    padding: 12px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    font-weight: 500;
     transition: all 0.3s ease;
 }
 
@@ -2854,19 +2865,29 @@ header {
 }
 
 .mobile-warning button:hover {
-    opacity: 0.9;
     transform: translateY(-1px);
+}
+
+.mobile-warning button:active {
+    transform: translateY(0);
 }
 
 .close-warning {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
     background: none;
     border: none;
     color: var(--secondary-color);
     cursor: pointer;
-    padding: 5px;
+    padding: 8px;
+    font-size: 1.2rem;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.close-warning:hover {
+    opacity: 1;
 }
 
 /* Show warning when active */
@@ -2880,6 +2901,7 @@ header {
         display: none !important;
     }
 }
+
 /* Add this for when the warning is active */
 .mobile-warning.active {
     display: flex !important;
