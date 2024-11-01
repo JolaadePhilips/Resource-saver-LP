@@ -297,7 +297,10 @@ function populateCategoryAndTypeDropdowns(selectedCategory = '', selectedType = 
 
             // Populate category dropdowns
             categorySelects.forEach(select => {
-                select.innerHTML = '<option value="">Select a category</option>';
+                select.innerHTML = `
+                    <option value="">Select a category</option>
+                    <option value="new">+ Add new category</option>
+                `;
                 categories.forEach(category => {
                     const option = document.createElement('option');
                     option.value = category;
@@ -305,11 +308,31 @@ function populateCategoryAndTypeDropdowns(selectedCategory = '', selectedType = 
                     if (category === selectedCategory) option.selected = true;
                     select.appendChild(option);
                 });
+
+                // Add change listener for new category
+                select.addEventListener('change', function() {
+                    if (this.value === 'new') {
+                        const newCategory = prompt('Enter new category name:');
+                        if (newCategory && newCategory.trim()) {
+                            const option = document.createElement('option');
+                            option.value = newCategory.trim();
+                            option.textContent = newCategory.trim();
+                            option.selected = true;
+                            // Insert before the "Add new" option
+                            this.insertBefore(option, this.querySelector('option[value="new"]'));
+                        } else {
+                            this.value = ''; // Reset to default if cancelled
+                        }
+                    }
+                });
             });
 
             // Populate type dropdowns
             typeSelects.forEach(select => {
-                select.innerHTML = '<option value="">Select a type</option>';
+                select.innerHTML = `
+                    <option value="">Select a type</option>
+                    <option value="new">+ Add new type</option>
+                `;
                 types.forEach(type => {
                     const option = document.createElement('option');
                     option.value = type;
@@ -317,10 +340,27 @@ function populateCategoryAndTypeDropdowns(selectedCategory = '', selectedType = 
                     if (type === selectedType) option.selected = true;
                     select.appendChild(option);
                 });
+
+                // Add change listener for new type
+                select.addEventListener('change', function() {
+                    if (this.value === 'new') {
+                        const newType = prompt('Enter new type name:');
+                        if (newType && newType.trim()) {
+                            const option = document.createElement('option');
+                            option.value = newType.trim();
+                            option.textContent = newType.trim();
+                            option.selected = true;
+                            // Insert before the "Add new" option
+                            this.insertBefore(option, this.querySelector('option[value="new"]'));
+                        } else {
+                            this.value = ''; // Reset to default if cancelled
+                        }
+                    }
+                });
             });
         })
         .catch((error) => {
-            console.error('Error fetching categories and types:', error);
+            console.error("Error fetching categories and types: ", error);
         });
 }
 
@@ -482,36 +522,82 @@ function toggleFavorite(resourceId, resource) {
 
 // Populate filter options
 function populateFilters() {
-    if (!currentUser) return;
+    const categoryFilter = document.getElementById('categoryFilter');
+    const typeFilter = document.getElementById('typeFilter');
 
-    const resourcesRef = db.collection('users').doc(currentUser.uid).collection('resources');
+    db.collection('users').doc(currentUser.uid).collection('resources').get()
+        .then((querySnapshot) => {
+            const categories = new Set();
+            const types = new Set();
 
-    resourcesRef.get().then((querySnapshot) => {
-        const categories = new Set();
-        const types = new Set();
+            querySnapshot.forEach((doc) => {
+                const resource = doc.data();
+                if (resource.category) categories.add(resource.category);
+                if (resource.type) types.add(resource.type);
+            });
 
-        querySnapshot.forEach((doc) => {
-            const resource = doc.data();
-            if (resource.category) categories.add(resource.category);
-            if (resource.type) types.add(resource.type);
+            // Populate category filter - removed "Add New" option
+            categoryFilter.innerHTML = `
+                <option value="">All Categories</option>
+                ${Array.from(categories).map(category => `
+                    <option value="${category}">${category}</option>
+                `).join('')}
+                <option value="manage">⚙️ Manage Categories</option>
+            `;
+
+            // Populate type filter - removed "Add New" option
+            typeFilter.innerHTML = `
+                <option value="">All Types</option>
+                ${Array.from(types).map(type => `
+                    <option value="${type}">${type}</option>
+                `).join('')}
+                <option value="manage">⚙️ Manage Types</option>
+            `;
+
+            // Simplified event listeners - only handle manage option
+            categoryFilter.addEventListener('change', function() {
+                if (this.value === 'manage') {
+                    showManageModal('category');
+                    this.value = ''; // Reset selection
+                }
+            });
+
+            typeFilter.addEventListener('change', function() {
+                if (this.value === 'manage') {
+                    showManageModal('type');
+                    this.value = ''; // Reset selection
+                }
+            });
         });
+}
 
-        const categoryFilter = document.getElementById('categoryFilter');
-        categories.forEach(category => {
-            const option = document.createElement('option');
-            option.value = category;
-            option.textContent = category;
-            categoryFilter.appendChild(option);
-        });
+function showManageModal(type) {
+    const modal = document.getElementById('manageModal');
+    const manageTitle = document.getElementById('manageTitle');
+    const manageList = document.getElementById('manageList');
+    
+    manageTitle.textContent = type === 'category' ? 'Categories' : 'Types';
+    modal.style.display = 'flex';  // Keep this as is
 
-        const typeFilter = document.getElementById('typeFilter');
-        types.forEach(type => {
-            const option = document.createElement('option');
-            option.value = type;
-            option.textContent = type;
-            typeFilter.appendChild(option);
+    db.collection('users').doc(currentUser.uid).collection('resources').get()
+        .then((querySnapshot) => {
+            const items = new Set();
+            querySnapshot.forEach(doc => {
+                const resource = doc.data();
+                if (type === 'category' && resource.category) {
+                    items.add(resource.category);
+                } else if (type === 'type' && resource.type) {
+                    items.add(resource.type);
+                }
+            });
+
+            manageList.innerHTML = Array.from(items).map(item => `
+                <div class="manage-item">
+                    <span class="item-name" title="${item}">${item}</span>
+                    <button onclick="deleteItem('${type}', '${item}')" class="delete-btn" title="Delete ${item}">×</button>
+                </div>
+            `).join('');
         });
-    });
 }
 
 // Event listeners
@@ -2243,7 +2329,7 @@ function fetchAndDisplayStatistics() {
                                         </div>
                                         <div class="bar-value">${count}</div>
                                     </div>
-                                `).join('')}
+                `).join('')}
                         </div>
                     </div>
 
@@ -3069,12 +3155,44 @@ function formatTimeAgo(date) {
 }
 
 // Add the deleteResource function
-function deleteResource(resourceId, resource) {
-    if (confirm(`Are you sure you want to delete the resource "${resource.title}"? This action cannot be undone.`)) {
-        db.collection('users').doc(currentUser.uid).collection('resources').doc(resourceId).delete()
+function deleteResource(resourceId) {
+    if (confirm('Are you sure you want to delete this resource? This action cannot be undone.')) {
+        // First, find all collections containing this resource and remove it
+        db.collection('users').doc(currentUser.uid)
+            .collection('collections')
+            .get()
+            .then((querySnapshot) => {
+                const updatePromises = [];
+                
+                querySnapshot.forEach((doc) => {
+                    const collection = doc.data();
+                    if (collection.resources && collection.resources.includes(resourceId)) {
+                        updatePromises.push(
+                            doc.ref.update({
+                                resources: firebase.firestore.FieldValue.arrayRemove(resourceId)
+                            })
+                        );
+                    }
+                });
+
+                return Promise.all(updatePromises);
+            })
             .then(() => {
-                console.log('Resource deleted successfully');
-                fetchAndDisplayResources();
+                // Now delete the resource itself
+                return db.collection('users').doc(currentUser.uid)
+                    .collection('resources').doc(resourceId).delete();
+            })
+            .then(() => {
+                console.log('Resource and its references deleted successfully');
+                // Remove the resource card from the UI
+                const resourceCard = document.querySelector(`[data-id="${resourceId}"]`);
+                if (resourceCard) {
+                    resourceCard.remove();
+                }
+                // Only refresh the current view
+                if (currentTab === 'resources') {
+                    fetchAndDisplayResources();
+                }
             })
             .catch((error) => {
                 console.error('Error deleting resource:', error);
@@ -3308,7 +3426,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modals.forEach(modal => {
         modal.addEventListener('click', (event) => {
             if (event.target === modal) {
-                closeAllModals();
+    closeAllModals();
             }
         });
     });
@@ -3338,7 +3456,7 @@ function displayCollections() {
             if (querySnapshot.empty) {
                 collectionsContainer.innerHTML = '<p class="no-collections">No collections yet. Create your first collection!</p>';
             } else {
-                querySnapshot.forEach((doc) => {
+            querySnapshot.forEach((doc) => {
                     const collection = doc.data();
                     const collectionCard = createCollectionCard(doc.id, collection);
                     collectionsContainer.appendChild(collectionCard);
@@ -3419,7 +3537,6 @@ function deleteResource(resourceId) {
                     }
                 });
 
-                // Wait for all collection updates to complete
                 return Promise.all(updatePromises);
             })
             .then(() => {
@@ -3429,14 +3546,14 @@ function deleteResource(resourceId) {
             })
             .then(() => {
                 console.log('Resource and its references deleted successfully');
-                // Refresh the collections view if we're on that page
-                if (document.querySelector('#collectionsContainer')) {
-                    fetchAndDisplayCollections();
-                }
                 // Remove the resource card from the UI
                 const resourceCard = document.querySelector(`[data-id="${resourceId}"]`);
                 if (resourceCard) {
                     resourceCard.remove();
+                }
+                // Only refresh the current view
+                if (currentTab === 'resources') {
+    fetchAndDisplayResources();
                 }
             })
             .catch((error) => {
@@ -3693,6 +3810,101 @@ function fallbackCopyTextToClipboard(text) {
 
     document.body.removeChild(textArea);
 }
+
+function showManageModal(type) {
+    const modal = document.getElementById('manageModal');
+    const manageTitle = document.getElementById('manageTitle');
+    const manageList = document.getElementById('manageList');
+    
+    manageTitle.textContent = type === 'category' ? 'Categories' : 'Types';
+    modal.style.display = 'flex';  // Keep this as is
+
+    db.collection('users').doc(currentUser.uid).collection('resources').get()
+        .then((querySnapshot) => {
+            const items = new Set();
+            querySnapshot.forEach(doc => {
+                const resource = doc.data();
+                if (type === 'category' && resource.category) {
+                    items.add(resource.category);
+                } else if (type === 'type' && resource.type) {
+                    items.add(resource.type);
+                }
+            });
+
+            manageList.innerHTML = Array.from(items).map(item => `
+                <div class="manage-item">
+                    <span class="item-name" title="${item}">${item}</span>
+                    <button onclick="deleteItem('${type}', '${item}')" class="delete-btn" title="Delete ${item}">×</button>
+                </div>
+            `).join('');
+        });
+}
+
+function deleteItem(type, item) {
+    if (confirm(`Are you sure you want to delete this ${type}? This will remove it from all resources using it.`)) {
+        // Update all resources using this category/type
+        db.collection('users').doc(currentUser.uid).collection('resources').get()
+            .then((querySnapshot) => {
+                const batch = db.batch();
+                querySnapshot.forEach(doc => {
+                    const resource = doc.data();
+                    if ((type === 'category' && resource.category === item) ||
+                        (type === 'type' && resource.type === item)) {
+                        batch.update(doc.ref, {
+                            [type]: ''  // Clear the category/type
+                        });
+                    }
+                });
+                return batch.commit();
+            })
+            .then(() => {
+                // Refresh filters and close modal
+                populateFilters();
+                closeAllModals();
+            })
+            .catch(error => {
+                console.error(`Error deleting ${type}:`, error);
+                alert(`Failed to delete ${type}. Please try again.`);
+            });
+    }
+}
+
+function initializeManageModal() {
+    // Add "Manage" option to category filter
+    const categoryFilter = document.getElementById('categoryFilter');
+    const manageOptionCategory = document.createElement('option');
+    manageOptionCategory.value = 'manage';
+    manageOptionCategory.textContent = '⚙️ Manage Categories';
+    categoryFilter.appendChild(manageOptionCategory);
+
+    // Add "Manage" option to type filter
+    const typeFilter = document.getElementById('typeFilter');
+    const manageOptionType = document.createElement('option');
+    manageOptionType.value = 'manage';
+    manageOptionType.textContent = '⚙️ Manage Types';
+    typeFilter.appendChild(manageOptionType);
+
+    // Add event listeners for filter changes
+    categoryFilter.addEventListener('change', function() {
+        if (this.value === 'manage') {
+            showManageModal('category');
+            this.value = ''; // Reset selection
+        }
+    });
+
+    typeFilter.addEventListener('change', function() {
+        if (this.value === 'manage') {
+            showManageModal('type');
+            this.value = ''; // Reset selection
+        }
+    });
+}
+
+// Call this function when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeManageModal();
+    // ... other initialization code ...
+});
 
 
 
