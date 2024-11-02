@@ -6,7 +6,15 @@
     <title>Resource Saver Pro - Curate Knowledge, Spark Brilliance</title>
     <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://www.gstatic.com https://*.firebaseio.com; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.firebaseio.com https://identitytoolkit.googleapis.com">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdn.quilljs.com https://unpkg.com https://cdnjs.cloudflare.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.quilljs.com https://unpkg.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src 'self' data: https: blob:;
+        connect-src 'self' https://*.firebaseio.com https://identitytoolkit.googleapis.com https://firestore.googleapis.com https://*.googleapis.com;
+        frame-src 'self' https://*.firebaseapp.com;
+        object-src 'none';">
 </head>
 <body>
     <header>
