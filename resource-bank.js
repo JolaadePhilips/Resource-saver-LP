@@ -3956,12 +3956,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // ... other initialization code ...
 });
 
-import DOMPurify from 'dompurify';
-
-function displayResourceTitle(title) {
-    const sanitizedTitle = DOMPurify.sanitize(title);
-    return sanitizedTitle;
-}
-
 
 
