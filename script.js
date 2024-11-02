@@ -206,36 +206,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn = carousel.querySelector('.next');
 
     let currentIndex = 0;
+    let autoScrollInterval;
+    const AUTO_SCROLL_INTERVAL = 5000; // 5 seconds between slides
 
-    // Function to show specific image
-    function showImage(index) {
-        images.forEach(img => img.classList.remove('active'));
+    // Function to show specific image with optional animation
+    function showImage(index, animate = true) {
+        images.forEach(img => img.classList.remove('active', 'slide-in'));
         
         // Handle wrapping around
         if (index >= images.length) currentIndex = 0;
         if (index < 0) currentIndex = images.length - 1;
         else currentIndex = index;
         
-        images[currentIndex].classList.add('active');
+        const activeImage = images[currentIndex];
+        activeImage.classList.add('active');
+        if (animate) {
+            activeImage.classList.add('slide-in');
+        }
         
-        // Update screenshot text based on the current image
+        // Descriptions array matching each image
         const descriptions = [
             "Organize all your resources in one place with our intuitive Resource Bank.",
             "Create and manage collections to group related resources together.",
-            "Quick access to your favorite resources for faster navigation.",
+            "Create structured learning paths to organize your resources into step-by-step learning journeys. Track your progress as you complete each resource.",
             "Easily add new resources with our streamlined interface.",
             "Take and organize notes alongside your saved resources.",
+            "Track your learning progress with detailed statistics about your saved resources and completed paths.",
             "Save resources directly from your browser with our extension."
         ];
         
         document.getElementById('screenshot-text').textContent = descriptions[currentIndex];
     }
 
-    // Add click event listeners
-    prevBtn.addEventListener('click', () => showImage(currentIndex - 1));
-    nextBtn.addEventListener('click', () => showImage(currentIndex + 1));
+    // Function to start auto-scrolling
+    function startAutoScroll() {
+        autoScrollInterval = setInterval(() => {
+            showImage(currentIndex + 1);
+        }, AUTO_SCROLL_INTERVAL);
+    }
 
-    // Initialize first image and description
-    showImage(0);
+    // Function to stop auto-scrolling
+    function stopAutoScroll() {
+        clearInterval(autoScrollInterval);
+    }
+
+    // Add click event listeners
+    prevBtn.addEventListener('click', () => {
+        stopAutoScroll();
+        showImage(currentIndex - 1);
+        startAutoScroll();
+    });
+
+    nextBtn.addEventListener('click', () => {
+        stopAutoScroll();
+        showImage(currentIndex + 1);
+        startAutoScroll();
+    });
+
+    // Pause auto-scroll when hovering over carousel
+    carousel.addEventListener('mouseenter', stopAutoScroll);
+    carousel.addEventListener('mouseleave', startAutoScroll);
+
+    // Initialize first image and start auto-scroll
+    showImage(0, false);
+    startAutoScroll();
 });
 

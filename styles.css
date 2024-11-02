@@ -966,10 +966,28 @@ header nav ul {
     border-radius: 8px;
     display: none;
     transition: opacity 0.3s ease;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }
 
 .screenshot-carousel img.active {
     display: block;
+    opacity: 1;
+}
+
+.screenshot-carousel img.slide-in {
+    animation: slideIn 0.5s ease-in-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .carousel-nav button {
