@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if user is logged in
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
-            console.log("User is signed in:", user.uid);
+            console.log("User authenticated");
             fetchUserData(user.uid);
         } else {
             console.log("No user is signed in.");

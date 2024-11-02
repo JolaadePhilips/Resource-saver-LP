@@ -131,7 +131,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Authentication error:', error);
-            errorElement.textContent = 'Invalid email or password. Please try again.';
+            let userMessage = 'An error occurred during authentication.';
+            
+            // Show specific messages for common errors
+            if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                userMessage = 'Invalid email or password. Please try again.';
+            } else if (error.code === 'auth/email-already-in-use') {
+                userMessage = 'This email is already registered. Please try logging in.';
+            }
+            
+            errorElement.textContent = userMessage;
             errorElement.style.display = 'block';
         }
     };

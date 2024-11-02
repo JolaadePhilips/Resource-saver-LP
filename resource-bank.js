@@ -60,7 +60,7 @@ let currentTab = 'resources';
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         currentUser = user;
-        console.log('User logged in:', currentUser);
+        console.log('User logged in with ID:', user.uid);
         initializeTabs();
         fetchAndDisplayContent();
         populateFilters();
@@ -3603,7 +3603,7 @@ function deleteResource(resourceId) {
                 }
                 // Only refresh the current view
                 if (currentTab === 'resources') {
-    fetchAndDisplayResources();
+                    fetchAndDisplayResources();
                 }
             })
             .catch((error) => {
@@ -3955,6 +3955,13 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeManageModal();
     // ... other initialization code ...
 });
+
+import DOMPurify from 'dompurify';
+
+function displayResourceTitle(title) {
+    const sanitizedTitle = DOMPurify.sanitize(title);
+    return sanitizedTitle;
+}
 
 
 
