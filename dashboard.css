@@ -568,3 +568,21 @@ input:focus, select:focus {
     border-color: var(--neon-blue);
     box-shadow: var(--glow-blue);
 }
+
+#extensionInstructions .btn-secondary {
+    display: inline-block;
+    padding: 12px 24px;
+    background: var(--black-alt);
+    color: var(--neon-blue);
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid var(--neon-blue);
+    margin: 15px 0;
+    transition: all 0.3s ease;
+}
+
+#extensionInstructions .btn-secondary:hover {
+    background: var(--neon-blue);
+    color: var(--black);
+    box-shadow: var(--glow-blue);
+}
