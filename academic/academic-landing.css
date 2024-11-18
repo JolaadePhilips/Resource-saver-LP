@@ -174,25 +174,42 @@
 /* Responsive */
 @media screen and (max-width: 768px) {
     .pain-points-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         padding: 0 20px;
     }
     
     .pain-point-row {
-        grid-template-columns: 1fr;
-        gap: 20px;
-        margin-bottom: 20px;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
     }
     
     .pain-point-item {
         width: 100%;
-        min-height: auto;
-        padding: 25px;
-        margin: 0 auto;
-        max-width: 400px;
+        margin-bottom: 20px;
     }
 
-    .pain-point-visual {
-        min-height: 120px;
+    /* Remove any transforms or animations on mobile */
+    .pain-point-item,
+    .pain-point-item:hover {
+        transform: none !important;
+        transition: none !important;
+    }
+
+    /* Ensure content is centered */
+    .pain-point-content {
+        text-align: center;
+    }
+
+    .pain-point-content h3 {
+        text-align: center;
+    }
+
+    .pain-point-content h3::after {
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 
