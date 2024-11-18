@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Saver Pro - Academic Research Organization Made Simple</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="./academic-landing.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <img src="../images/Rs logo.png" alt="Resource Saver Pro Logo">
+                Resource Saver Pro
+            </a>
+            <ul>
+                <li><a href="#solutions">Solutions</a></li>
+                <li><a href="#use-cases">Use Cases</a></li>
+                <li><a href="#social-proof">Testimonials</a></li>
+                <li><a href="#" class="btn-header" id="loginBtn">Log In</a></li>
+                <li><a href="#" class="btn-header btn-header-primary" id="signupBtn">Start Free</a></li>
+            </ul>
+            <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="academic-hero">
+            <div class="container">
+                <h1>Meet Your Digital Study Assistant</h1>
+                <p class="hero-subtitle">The all-in-one workspace to save, organize, and connect your academic resources with ease.</p>
+                
+                <div class="hero-cta">
+                    <a href="#" class="btn-modern primary-cta" id="signupBtn">
+                        Start organizing – it's free
+                        <span class="cta-arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" data-value="10000">10,000+</span>
+                        <span class="stat-label">Students & Researchers</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">1M+</span>
+                        <span class="stat-label">Resources Organized</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-value="50">50+</span>
+                        <span class="stat-label">Universities</span>
+                    </div>
+                </div>
+
+                <div class="floating-testimonials">
+                    <div class="floating-testimonial left-top">
+                        "Perfect for keeping track of course readings"
+                        <span class="floating-author">Alex • CS Student</span>
+                    </div>
+                    <div class="floating-testimonial left-bottom">
+                        "Finally organized my thesis research"
+                        <span class="floating-author">Emma • PhD Candidate</span>
+                    </div>
+                    <div class="floating-testimonial right-top">
+                        "Knowledge paths changed how I study"
+                        <span class="floating-author">Mark • Masters Student</span>
+                    </div>
+                    <div class="floating-testimonial right-bottom">
+                        "No more lost sources!"
+                        <span class="floating-author">Sarah • Researcher</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pain-points" class="pain-points-section">
+            <div class="container">
+                <div class="pain-points-header">
+                    <h2>Does This Sound Like You?</h2>
+                </div>
+                
+                <div class="pain-points-grid">
+                    <!-- First Row -->
+                    <div class="pain-point-row">
+                        <!-- Browser Chaos -->
+                        <div class="pain-point-item browser-chaos">
+                            <div class="pain-point-visual">
+                                <div class="browser-tabs">
+                                    <div class="tab">Research Paper.pdf</div>
+                                    <div class="tab">Course Reading</div>
+                                    <div class="tab">+47 more tabs...</div>
+                                </div>
+                            </div>
+                            <div class="pain-point-content">
+                                <h3>Browser Tab Chaos</h3>
+                                <div class="student-quotes">
+                                    <p>"Every assignment turns into 50+ open tabs."</p>
+                                    <p>"I bookmark everything but never organize them."</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scattered Notes -->
+                        <div class="pain-point-item scattered-notes">
+                            <div class="pain-point-visual">
+                                <div class="notes-scatter">
+                                    <div class="note">Google Docs</div>
+                                    <div class="note">OneNote</div>
+                                    <div class="note">Paper Notes</div>
+                                </div>
+                            </div>
+                            <div class="pain-point-content">
+                                <h3>Notes Everywhere</h3>
+                                <div class="student-quotes">
+                                    <p>"Notes scattered across 5 different apps."</p>
+                                    <p>"Can't remember where I put anything."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Second Row -->
+                    <div class="pain-point-row">
+                        <!-- Lost Sources -->
+                        <div class="pain-point-item lost-sources">
+                            <div class="pain-point-visual">
+                                <div class="search-simulation">
+                                    <div class="search-bar">
+                                        <i class="fas fa-search"></i>
+                                        <span class="typing-text">"that perfect paper..."</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pain-point-content">
+                                <h3>Lost Sources</h3>
+                                <div class="student-quotes">
+                                    <p>"I know I saved it somewhere..."</p>
+                                    <p>"Had to redo my entire research."</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reading Overload -->
+                        <div class="pain-point-item reading-overload">
+                            <div class="pain-point-visual">
+                                <div class="reading-stack">
+                                    <div class="reading-item">📚 Week 3 (Unread)</div>
+                                    <div class="reading-item active">📚 Week 4 (Current)</div>
+                                    <div class="reading-item">📚 Week 5 (Due Soon)</div>
+                                </div>
+                            </div>
+                            <div class="pain-point-content">
+                                <h3>Reading Backlog</h3>
+                                <div class="student-quotes">
+                                    <p>"Three weeks behind on readings."</p>
+                                    <p>"Can't track what's important."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Third Row -->
+                    <div class="pain-point-row">
+                        <!-- Deadline Stress -->
+                        <div class="pain-point-item deadline-stress">
+                            <div class="pain-point-visual">
+                                <div class="deadline-stack">
+                                    <div class="deadline overdue">Essay Due Yesterday</div>
+                                    <div class="deadline today">Quiz Today</div>
+                                    <div class="deadline">Paper Draft Tomorrow</div>
+                                </div>
+                            </div>
+                            <div class="pain-point-content">
+                                <h3>Deadline Stress</h3>
+                                <div class="student-quotes">
+                                    <p>"Everything's due at once."</p>
+                                    <p>"Can't keep track of all my deadlines."</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Citation Chaos -->
+                        <div class="pain-point-item citation-chaos">
+                            <div class="pain-point-visual">
+                                <div class="citation-mess">
+                                    <div class="citation">APA Format?</div>
+                                    <div class="citation">Missing Page Numbers</div>
+                                    <div class="citation">Where's the DOI?</div>
+                                </div>
+                            </div>
+                            <div class="pain-point-content">
+                                <h3>Citation Chaos</h3>
+                                <div class="student-quotes">
+                                    <p>"Can't remember which sources I cited."</p>
+                                    <p>"Always missing citation details."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solutions" class="solutions-section">
+            <div class="container">
+                <div class="solutions-header">
+                    <span class="overline">How We Help</span>
+                    <h2>Turn Chaos into Clarity</h2>
+                    <p>Simple, powerful tools to solve your study challenges</p>
+                </div>
+
+                <div class="solutions-list">
+                    <!-- One-Click Saving -->
+                    <div class="solution-item">
+                        <div class="solution-content">
+                            <span class="solution-tag">Save & Organize</span>
+                            <h3>One-Click Saving</h3>
+                            <p>Save any webpage, PDF, or article instantly. Everything gets automatically organized by course or topic.</p>
+                        </div>
+                        <div class="solution-visual">
+                            <img src="../images/Extension.png" alt="Browser Extension Interface" class="product-screenshot">
+                            <div class="visual-overlay">
+                                <div class="demo-action">
+                                    <div class="cursor"></div>
+                                    <div class="save-popup">Resource saved to "Course Materials"</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Smart Search -->
+                    <div class="solution-item">
+                        <div class="solution-visual">
+                            <img src="../images/Resource Bank.png" alt="Resource Bank Interface" class="product-screenshot">
+                            <div class="visual-overlay">
+                                <div class="search-demo">
+                                    <div class="search-bar-animation"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="solution-content">
+                            <span class="solution-tag">Smart Search</span>
+                            <h3>Find Anything, Fast</h3>
+                            <p>Powerful search across all your materials. Filter by course, topic, or type. Never lose a source again.</p>
+                        </div>
+                    </div>
+
+                    <!-- Connected Notes -->
+                    <div class="solution-item">
+                        <div class="solution-content">
+                            <span class="solution-tag">Connected Notes</span>
+                            <h3>Notes That Make Sense</h3>
+                            <p>Take notes directly linked to sources. Create connections between ideas. Build your knowledge web.</p>
+                        </div>
+                        <div class="solution-visual">
+                            <img src="../images/Save note.png" alt="Notes Interface" class="product-screenshot">
+                        </div>
+                    </div>
+
+                    <!-- Knowledge Paths -->
+                    <div class="solution-item">
+                        <div class="solution-visual">
+                            <img src="../images/Knowledge Path.png" alt="Knowledge Paths Interface" class="product-screenshot">
+                        </div>
+                        <div class="solution-content">
+                            <span class="solution-tag">Study Paths</span>
+                            <h3>Stay On Track</h3>
+                            <p>Create custom learning paths. Track reading progress. Keep up with deadlines and assignments.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="solutions-cta">
+                    <a href="#" class="cta-button" id="signupBtn">
+                        Start organizing – it's free
+                        <span class="cta-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="use-cases" class="use-cases-section">
+            <div class="container">
+                <div class="use-cases-header">
+                    <span class="overline">For Every Academic Level</span>
+                    <h2>Built For Your Journey</h2>
+                </div>
+
+                <div class="use-cases-grid">
+                    <!-- Undergraduate -->
+                    <div class="use-case-card">
+                        <div class="use-case-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="use-case-content">
+                            <span class="use-case-label">Undergraduate</span>
+                            <h3>Ace Your Assignments</h3>
+                            <ul class="use-case-features">
+                                <li>Track readings for multiple courses</li>
+                                <li>Create study guides that actually make sense</li>
+                                <li>Never lose a source for your papers again</li>
+                                <li>Keep all your course materials in one place</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Graduate -->
+                    <div class="use-case-card">
+                        <div class="use-case-icon">
+                            <i class="fas fa-book-reader"></i>
+                        </div>
+                        <div class="use-case-content">
+                            <span class="use-case-label">Graduate</span>
+                            <h3>Master Your Research</h3>
+                            <ul class="use-case-features">
+                                <li>Build comprehensive literature reviews</li>
+                                <li>Organize sources by research topics</li>
+                                <li>Create custom knowledge paths for your thesis</li>
+                                <li>Track your reading progress</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- PhD -->
+                    <div class="use-case-card">
+                        <div class="use-case-icon">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <div class="use-case-content">
+                            <span class="use-case-label">PhD</span>
+                            <h3>Own Your Research Journey</h3>
+                            <ul class="use-case-features">
+                                <li>Build a structured database of your field's literature</li>
+                                <li>Create interconnected research notes</li>
+                                <li>Track research progress across multiple topics</li>
+                                <li>Never lose valuable insights or connections</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="use-cases-cta">
+                    <a href="#" class="cta-button" id="signupBtn">
+                        Start organizing – it's free
+                        <span class="cta-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="social-proof" class="social-proof-section">
+            <div class="container">
+                <div class="social-proof-header">
+                    <span class="overline">Student Stories</span>
+                    <h2>From Chaos to Clarity</h2>
+                </div>
+
+                <div class="testimonials-flow">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"I was drowning in browser tabs and scattered notes for my thesis research. Resource Saver Pro changed everything. Now all my sources are organized, my notes are connected, and I can actually focus on writing."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <p>Sarah K. • PhD Candidate, Psychology</p>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"Used to spend hours searching for that 'one paper' I knew I saved somewhere. Now I can find anything in seconds. The search feature alone is worth its weight in gold."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <p>James M. • Masters Student, Engineering</p>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"Managing readings for 5 different courses was a nightmare. The knowledge paths feature helps me stay on track with each subject. No more falling behind on readings!"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <p>Emily R. • Undergraduate, Literature</p>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"The knowledge paths feature completely changed how I organize my coursework. Being able to create structured paths for each subject and track my progress has made staying on top of readings so much easier."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <p>Michael T. • Graduate Student, History</p>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"The connected notes feature is a game-changer for my research. Being able to link ideas across different papers has helped me discover connections I would have missed."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <p>Lisa W. • PhD Researcher, Neuroscience</p>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"Finally found a tool that actually understands how students work. From saving class readings to organizing research papers - everything just makes sense."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <p>David C. • Undergraduate, Computer Science</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="social-proof-cta">
+                    <a href="#" class="cta-button" id="signupBtn">
+                        Start organizing – it's free
+                        <span class="cta-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Resource Saver Pro</h3>
+                    <p>Save, Organize, and Find Everything—Effortlessly.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://x.com/Jolaade_philips" target="_blank">Twitter</a>
+                    <a href="https://www.youtube.com/@WIBTAL" target="_blank">YouTube</a>
+                    <a href="https://x.com/Jolaade_philips" target="_blank" id="footerCreatorLink">Contact the Creator</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 Resource Saver Pro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="./academic-landing.js"></script>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Join Resource Saver Pro</h2>
+            <form id="authForm">
+                <input type="email" id="email" placeholder="Your email" required>
+                <input type="password" id="password" placeholder="Create a password" required>
+                <p id="authError" class="error-message" style="display: none; color: red;"></p>
+                <button type="submit" id="authSubmit" class="btn-gradient">Get Started</button>
+            </form>
+            <p id="switchAuth">Already a member? <a href="#" id="switchAuthLink">Sign in</a></p>
+            <p id="forgotPassword"><a href="#" id="forgotPasswordLink">Forgot Password?</a></p>
+        </div>
+    </div>
+</body>
+</html>
