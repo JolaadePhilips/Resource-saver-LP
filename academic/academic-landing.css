@@ -1364,3 +1364,28 @@ footer {
         padding: 10px;
     }
 }
+
+@media screen and (max-width: 768px) {
+    /* Remove animations and transitions on mobile */
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    /* Fix content jumping */
+    .pain-points-section,
+    .solutions-section,
+    .use-cases-section,
+    .social-proof-section {
+        overflow: hidden;
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+    }
+
+    /* Ensure smooth scrolling */
+    html, body {
+        overflow-x: hidden;
+        position: relative;
+        width: 100%;
+    }
+}
