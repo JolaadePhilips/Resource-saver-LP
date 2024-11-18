@@ -1441,3 +1441,51 @@ footer {
 .pain-points-cta .cta-button:hover .cta-arrow {
     transform: translateX(4px);
 }
+
+/* Add/Update these styles for the modal close button */
+.modal .close {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 28px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    z-index: 1000;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+/* Mobile specific styles for the modal */
+@media screen and (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+        margin: 20px auto;
+        padding: 30px 20px;
+        position: relative;
+    }
+
+    .modal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        font-size: 24px;
+        padding: 10px;
+        color: var(--text-primary); /* Make more visible */
+        background: rgba(0, 246, 255, 0.1); /* Add subtle background */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Ensure modal is scrollable on mobile */
+    .modal {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
