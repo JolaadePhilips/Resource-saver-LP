@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openModal(isSignup = true) {
-        modal.style.display = 'block';
+        modal.classList.add('active');
         modalTitle.textContent = isSignup ? 'Sign Up' : 'Log In';
         authSubmit.textContent = isSignup ? 'Sign Up' : 'Log In';
         switchAuthLink.textContent = isSignup ? 'Log in' : 'Sign up';
@@ -171,12 +171,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close modal functionality
     closeBtn.onclick = () => {
-        modal.style.display = 'none';
+        modal.classList.remove('active');
     };
 
     window.onclick = (event) => {
         if (event.target == modal) {
-            modal.style.display = 'none';
+            modal.classList.remove('active');
         }
     };
 
