@@ -1409,3 +1409,35 @@ footer {
         width: 100%;
     }
 }
+
+/* Add these styles for the pain points CTA */
+.pain-points-cta {
+    margin-top: 60px;
+    text-align: center;
+    padding-top: 40px;
+    border-top: 1px solid rgba(0, 246, 255, 0.1);
+}
+
+.pain-points-cta .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 246, 255, 0.1);
+    border: 1px solid var(--neon-blue);
+    color: var(--neon-blue);
+    font-size: 15px;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.pain-points-cta .cta-button:hover {
+    background: rgba(0, 246, 255, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 246, 255, 0.1);
+}
+
+.pain-points-cta .cta-button:hover .cta-arrow {
+    transform: translateX(4px);
+}
