@@ -1345,43 +1345,43 @@ footer {
 }
 
 @media screen and (max-width: 768px) {
-    .mobile-menu-toggle {
-        display: block;
+    nav.container {
+        padding: 15px 20px;
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
 
     nav ul {
-        display: none;
-        position: fixed;
-        top: 70px;
-        left: 0;
-        right: 0;
-        background: var(--black-alt);
-        padding: 20px;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        z-index: 1000;
-        border-bottom: 1px solid rgba(0, 246, 255, 0.1);
-    }
-
-    nav ul.active {
         display: flex;
-    }
-
-    .mobile-menu-toggle {
-        display: block;
-        position: relative;
-        z-index: 1001;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        gap: 10px;
+        margin-top: 15px;
+        position: static;
+        background: none;
+        padding: 0;
+        border: none;
     }
 
     nav ul li {
-        width: 100%;
-        text-align: center;
+        font-size: 14px;
     }
 
-    nav ul li a {
-        display: block;
-        padding: 10px;
+    /* Remove all mobile menu toggle related styles */
+    .mobile-menu-toggle {
+        display: none;
+    }
+
+    /* Make buttons smaller on mobile */
+    .btn-header {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+
+    /* Remove any fixed positioning */
+    nav ul.active {
+        position: static;
     }
 }
 
