@@ -183,22 +183,26 @@
     .pain-point-row {
         width: 100%;
         max-width: 400px;
-        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
     }
     
     .pain-point-item {
         width: 100%;
-        margin-bottom: 20px;
+        margin: 0;
     }
 
-    /* Remove any transforms or animations on mobile */
+    /* Remove any transforms or animations */
     .pain-point-item,
     .pain-point-item:hover {
         transform: none !important;
         transition: none !important;
     }
 
-    /* Ensure content is centered */
+    /* Center content */
     .pain-point-content {
         text-align: center;
     }
@@ -207,9 +211,8 @@
         text-align: center;
     }
 
-    .pain-point-content h3::after {
-        left: 50%;
-        transform: translateX(-50%);
+    .student-quotes {
+        text-align: center;
     }
 }
 
