@@ -197,10 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (isSignup) {
                 await firebase.auth().createUserWithEmailAndPassword(email, password);
-                window.location.href = 'welcome.html';
+                window.location.href = '/welcome.html';
             } else {
                 await firebase.auth().signInWithEmailAndPassword(email, password);
-                window.location.href = 'dashboard.html';
+                window.location.href = '/dashboard.html';
             }
         } catch (error) {
             console.error('Authentication error:', error);
